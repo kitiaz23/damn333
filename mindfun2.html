@@ -3,930 +3,1172 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>MindFun — Asesmen Kognitif & Kepribadian</title>
+<title>MindFun — Kenali Dirimu, Rayakan Pikiranmu</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
-/* === CSS RESET & VARIABLES === */
+/* ===== RESET & ROOT ===== */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --bg:#0C0E14; --s1:#13161F; --s2:#1A1E2A; --s3:#222738;
-  --border:rgba(255,255,255,0.07); --text:#F2F0E8; --muted:#8A8FA8; --r:24px;
-  --iq:#6EE7B7; --iq2:#059669; 
-  --mbti:#818CF8; --mbti2:#4F46E5;
-  --zodiac:#F9A8D4; --zodiac2:#DB2777; 
-  --shio:#FCD34D; --shio2:#D97706;
-  --eq:#FBBF24; --eq2:#D97706; 
-  --ll:#F43F5E; --ll2:#BE123C; /* Warna pink/merah untuk Love Language */
+  --bg:#08061A;
+  --surface:#110E2A;
+  --surface2:#1A1640;
+  --surface3:#231E55;
+  --border:rgba(255,255,255,0.08);
+  --text:#F5F0FF;
+  --muted:#9B8FC2;
+  --r:20px;
+
+  --iq:#00E5A0;        --iq-glow:rgba(0,229,160,0.35);
+  --mbti:#818CF8;      --mbti-glow:rgba(129,140,248,0.35);
+  --zodiac:#FF6B9D;    --zodiac-glow:rgba(255,107,157,0.35);
+  --shio:#FFD166;      --shio-glow:rgba(255,209,102,0.35);
+  --eq:#FF8C42;        --eq-glow:rgba(255,140,66,0.35);
+  --ll:#EF476F;        --ll-glow:rgba(239,71,111,0.35);
 }
 html{scroll-behavior:smooth}
-body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;display:flex;flex-direction:column;overflow-x:hidden;}
-body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");opacity:.4;}
+body{background:var(--bg);color:var(--text);font-family:'Nunito',sans-serif;min-height:100vh;display:flex;flex-direction:column;overflow-x:hidden;}
 
-/* === NAVIGATION === */
-nav{position:sticky;top:0;z-index:100;background:rgba(12,14,20,0.85);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);padding:16px 32px;display:flex;align-items:center;justify-content:space-between;}
-.nav-logo{font-family:'Fraunces',serif;font-size:26px;font-weight:900;background:linear-gradient(135deg,var(--iq),var(--mbti),var(--zodiac),var(--shio));-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:-0.5px;}
-.nav-home{padding:9px 20px;border-radius:30px;border:1px solid var(--border);background:var(--s2);color:var(--muted);font-size:13px;font-weight:500;cursor:pointer;transition:all .18s;}
-.nav-home:hover{border-color:rgba(255,255,255,.2);color:var(--text);}
+/* ===== NOISE LAYER ===== */
+body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");opacity:.5;}
 
-/* === LAYOUTING === */
-main { flex: 1; position: relative; z-index: 10; }
-.screen{display:none;animation:fadeIn 0.4s ease;}
+/* ===== NAVIGATION ===== */
+nav{position:sticky;top:0;z-index:200;background:rgba(8,6,26,0.8);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:14px 32px;display:flex;align-items:center;justify-content:space-between;}
+.nav-logo-wrap{display:flex;align-items:center;gap:10px;cursor:pointer;text-decoration:none;}
+.nav-logo-icon{width:38px;height:38px;flex-shrink:0;}
+.nav-logo-text{font-family:'Fredoka One',cursive;font-size:24px;background:linear-gradient(135deg,var(--iq) 0%,var(--mbti) 50%,var(--zodiac) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.nav-home-btn{padding:9px 22px;border-radius:50px;border:1.5px solid var(--border);background:var(--surface);color:var(--muted);font-family:'Nunito',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s;}
+.nav-home-btn:hover{border-color:var(--mbti);color:var(--text);background:var(--surface2);}
+
+/* ===== SCREENS ===== */
+main{flex:1;position:relative;z-index:10;}
+.screen{display:none;animation:screenIn 0.45s cubic-bezier(0.34,1.56,0.64,1);}
 .screen.active{display:block;}
-@keyframes fadeIn{from{opacity:0;transform:translateY(15px);}to{opacity:1;transform:translateY(0);}}
+@keyframes screenIn{from{opacity:0;transform:translateY(20px) scale(0.98);}to{opacity:1;transform:translateY(0) scale(1);}}
 
-/* === HOME SCREEN === */
-#home{max-width:1100px;margin:0 auto;padding:72px 24px 80px; text-align:center;}
-.hero-tag{display:inline-block;font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--iq);border:1px solid rgba(110,231,183,.25);background:rgba(110,231,183,.07);padding:6px 16px;border-radius:30px;margin-bottom:28px;}
-.hero-title{font-family:'Fraunces',serif;font-size:clamp(44px,7vw,84px);font-weight:900;line-height:1.05;letter-spacing:-2px;margin-bottom:20px;}
-.hero-title span{background:linear-gradient(135deg,#fff 0%,var(--iq) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
-.hero-sub{font-size:18px;color:var(--muted);max-width:600px;line-height:1.6;margin:0 auto 64px;}
+/* ===== HOME / HERO ===== */
+#home{position:relative;overflow:hidden;}
 
-.cards{display:grid;grid-template-columns:repeat(auto-fit, minmax(300px, 1fr));gap:20px; text-align:left; margin: 0 auto;}
-.t-card{background:linear-gradient(180deg, var(--s1) 0%, var(--bg) 100%);border:1px solid var(--border);border-radius:var(--r);padding:32px;cursor:pointer;transition:all .3s ease;position:relative;overflow:hidden;}
-.t-card.iq{--c:var(--iq);} .t-card.mbti{--c:var(--mbti);} .t-card.zodiac{--c:var(--zodiac);} .t-card.shio{--c:var(--shio);} .t-card.eq{--c:var(--eq);} .t-card.ll{--c:var(--ll);}
-.t-card::before { content:''; position:absolute; top:0; left:0; right:0; height:4px; background:var(--c); opacity:0; transition:opacity .3s; }
-.t-card:hover{transform:translateY(-6px);border-color:rgba(255,255,255,0.15);box-shadow:0 12px 40px rgba(0,0,0,.5);}
-.t-card:hover::before { opacity: 1; }
-.t-card-icon{font-size:42px;margin-bottom:16px;display:block;}
-.t-card-name{font-family:'Fraunces',serif;font-size:22px;font-weight:700;color:var(--text);margin-bottom:8px;}
-.t-card-desc{font-size:14px;color:var(--muted);line-height:1.6;}
-.t-card-badge{display:inline-block;margin-top:16px;font-size:11px;font-weight:600;letter-spacing:.5px;padding:4px 12px;border-radius:20px;background:rgba(255,255,255,.05);color:var(--c);}
+/* Animated BG blobs */
+.hero-bg{position:absolute;inset:0;z-index:0;overflow:hidden;pointer-events:none;}
+.blob{position:absolute;border-radius:50%;filter:blur(80px);opacity:0.18;animation:blobFloat 8s ease-in-out infinite;}
+.blob-1{width:500px;height:500px;background:var(--mbti);top:-100px;left:-100px;animation-delay:0s;}
+.blob-2{width:400px;height:400px;background:var(--zodiac);top:100px;right:-80px;animation-delay:2s;}
+.blob-3{width:350px;height:350px;background:var(--iq);bottom:0;left:30%;animation-delay:4s;}
+.blob-4{width:280px;height:280px;background:var(--eq);bottom:80px;right:10%;animation-delay:1s;}
+@keyframes blobFloat{0%,100%{transform:translate(0,0) scale(1);}33%{transform:translate(20px,-30px) scale(1.05);}66%{transform:translate(-15px,20px) scale(0.95);}}
 
-/* MODAL MBTI */
-.modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.8); backdrop-filter:blur(5px); z-index:999; align-items:center; justify-content:center; padding:20px;}
-.modal-overlay.active { display:flex; animation:fadeIn .2s;}
-.modal-box { background:var(--s1); border:1px solid var(--mbti); border-radius:24px; padding:40px; max-width:500px; width:100%; text-align:center; position:relative;}
-.modal-title { font-family:'Fraunces',serif; font-size:28px; margin-bottom:12px; color:var(--mbti);}
-.modal-desc { font-size:15px; color:var(--muted); margin-bottom:30px; line-height:1.6;}
-.modal-btn { display:flex; flex-direction:column; gap:12px;}
-.m-btn { padding:16px; border-radius:16px; border:1px solid var(--border); background:var(--s2); color:var(--text); font-size:16px; font-weight:600; cursor:pointer; transition:all .2s; display:flex; flex-direction:column; align-items:center; gap:4px;}
-.m-btn:hover { border-color:var(--mbti); background:rgba(129,140,248,0.1);}
-.m-btn span { font-size:12px; color:var(--muted); font-weight:400;}
-.close-modal { position:absolute; top:20px; right:24px; background:none; border:none; color:var(--muted); font-size:24px; cursor:pointer;}
+/* Stars */
+.star-field{position:absolute;inset:0;z-index:0;pointer-events:none;}
+.star{position:absolute;background:#fff;border-radius:50%;animation:twinkle var(--dur) ease-in-out infinite;}
+@keyframes twinkle{0%,100%{opacity:0.1;transform:scale(1);}50%{opacity:0.8;transform:scale(1.5);}}
 
-/* === TEST SCREEN === */
-#test{max-width:760px;margin:0 auto;padding:60px 24px 100px;}
-.test-card{background:var(--s1);border:1px solid var(--border);border-radius:28px;padding:48px;position:relative; box-shadow: 0 20px 40px rgba(0,0,0,0.3);}
+/* Hero inner */
+.hero-inner{position:relative;z-index:10;max-width:1200px;margin:0 auto;padding:80px 24px 60px;display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;min-height:calc(100vh - 67px);}
+
+/* Hero left */
+.hero-left{}
+.hero-chip{display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--iq);border:1.5px solid rgba(0,229,160,.3);background:rgba(0,229,160,.07);padding:7px 16px;border-radius:50px;margin-bottom:28px;}
+.hero-chip-dot{width:8px;height:8px;background:var(--iq);border-radius:50%;animation:pulseDot 1.5s ease-in-out infinite;}
+@keyframes pulseDot{0%,100%{transform:scale(1);opacity:1;}50%{transform:scale(1.6);opacity:0.6;}}
+
+.hero-title{font-family:'Fredoka One',cursive;font-size:clamp(40px,5.5vw,72px);line-height:1.1;margin-bottom:18px;letter-spacing:-0.5px;}
+.hero-title-line1{color:var(--text);}
+.hero-title-line2{background:linear-gradient(135deg,var(--iq),var(--mbti),var(--zodiac));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+
+.hero-sub{font-size:16px;color:var(--muted);line-height:1.7;max-width:460px;margin-bottom:36px;font-weight:600;}
+
+.hero-ctas{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:48px;}
+.btn-hero{padding:16px 32px;border-radius:50px;font-family:'Nunito',sans-serif;font-size:16px;font-weight:800;cursor:pointer;border:none;transition:all .25s cubic-bezier(0.34,1.56,0.64,1);}
+.btn-hero-primary{background:linear-gradient(135deg,var(--iq),#00C97E);color:#06201A;box-shadow:0 8px 32px var(--iq-glow);}
+.btn-hero-primary:hover{transform:translateY(-3px) scale(1.05);box-shadow:0 12px 40px var(--iq-glow);}
+.btn-hero-secondary{background:var(--surface2);border:1.5px solid var(--border);color:var(--text);}
+.btn-hero-secondary:hover{transform:translateY(-3px);border-color:var(--mbti);background:var(--surface3);}
+
+.hero-stats{display:flex;gap:28px;flex-wrap:wrap;}
+.hero-stat{}
+.hero-stat-num{font-family:'Fredoka One',cursive;font-size:28px;background:linear-gradient(135deg,var(--text),var(--mbti));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.hero-stat-label{font-size:12px;color:var(--muted);font-weight:700;}
+
+/* ===== ORBITING CARDS (Hero Right) ===== */
+.hero-orbit{position:relative;width:100%;aspect-ratio:1/1;max-width:520px;margin:0 auto;}
+
+.orbit-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:10;}
+.brain-logo{width:120px;height:120px;background:linear-gradient(135deg,var(--surface2),var(--surface3));border:2px solid rgba(129,140,248,0.4);border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 0 60px rgba(129,140,248,0.3),0 0 120px rgba(0,229,160,0.15);animation:brainPulse 3s ease-in-out infinite;}
+@keyframes brainPulse{0%,100%{box-shadow:0 0 60px rgba(129,140,248,0.3),0 0 120px rgba(0,229,160,0.15);}50%{box-shadow:0 0 80px rgba(129,140,248,0.5),0 0 160px rgba(0,229,160,0.25);}}
+
+/* Ring decorations */
+.orbit-ring{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);border-radius:50%;border:1px solid;pointer-events:none;}
+.orbit-ring-1{width:180px;height:180px;border-color:rgba(129,140,248,0.12);animation:spin 40s linear infinite;}
+.orbit-ring-2{width:300px;height:300px;border-color:rgba(0,229,160,0.08);animation:spin 60s linear infinite reverse;}
+.orbit-ring-3{width:440px;height:440px;border-color:rgba(255,107,157,0.06);animation:spin 90s linear infinite;}
+@keyframes spin{from{transform:translate(-50%,-50%) rotate(0deg);}to{transform:translate(-50%,-50%) rotate(360deg);}}
+
+/* Floating test cards */
+.orbit-card{position:absolute;background:var(--surface);border:1.5px solid var(--border);border-radius:18px;padding:14px 16px;cursor:pointer;transition:all .3s cubic-bezier(0.34,1.56,0.64,1);display:flex;flex-direction:column;gap:5px;z-index:5;box-shadow:0 8px 24px rgba(0,0,0,0.4);animation:cardFloat var(--fdur) ease-in-out infinite;}
+@keyframes cardFloat{0%,100%{transform:translate(0,0);}50%{transform:translate(0,var(--fy));}}
+.orbit-card:hover{transform:scale(1.08) translateY(-4px)!important;box-shadow:0 16px 40px rgba(0,0,0,0.5);z-index:20;border-color:var(--c);}
+.orbit-card-icon{font-size:22px;line-height:1;}
+.orbit-card-name{font-family:'Fredoka One',cursive;font-size:13px;color:var(--text);line-height:1.2;white-space:nowrap;}
+.orbit-card-time{font-size:10px;color:var(--muted);font-weight:700;}
+.orbit-card-accent{width:30px;height:3px;border-radius:2px;background:var(--c);margin-top:2px;}
+
+/* Card positions - spread around orbit */
+.oc-iq{--c:var(--iq);--fdur:4.2s;--fy:-10px;top:2%;left:32%;}
+.oc-eq{--c:var(--eq);--fdur:5.1s;--fy:8px;top:22%;right:2%;}
+.oc-mbti{--c:var(--mbti);--fdur:3.8s;--fy:-12px;top:60%;right:0%;}
+.oc-ll{--c:var(--ll);--fdur:4.7s;--fy:10px;bottom:5%;left:28%;}
+.oc-zodiac{--c:var(--zodiac);--fdur:4.4s;--fy:-8px;top:60%;left:0%;}
+.oc-shio{--c:var(--shio);--fdur:5.5s;--fy:12px;top:20%;left:0%;}
+
+/* Sparkles */
+.sparkle{position:absolute;pointer-events:none;animation:sparkleAnim var(--sd) ease-in-out infinite;}
+@keyframes sparkleAnim{0%,100%{opacity:0;transform:scale(0) rotate(0deg);}50%{opacity:1;transform:scale(1) rotate(180deg);}}
+
+/* ===== SECTION: TEST CARDS GRID ===== */
+.section-cards{max-width:1200px;margin:0 auto;padding:0 24px 100px;}
+.section-label{text-align:center;margin-bottom:56px;}
+.section-eyebrow{display:inline-block;font-size:12px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--mbti);margin-bottom:14px;}
+.section-title{font-family:'Fredoka One',cursive;font-size:clamp(30px,4vw,48px);margin-bottom:12px;}
+.section-sub{font-size:15px;color:var(--muted);max-width:480px;margin:0 auto;font-weight:600;}
+
+.cards-grid{display:grid;grid-template-columns:repeat(auto-fill, minmax(320px, 1fr));gap:20px;}
+.t-card{background:var(--surface);border:1.5px solid var(--border);border-radius:24px;padding:32px;cursor:pointer;transition:all .3s cubic-bezier(0.34,1.56,0.64,1);position:relative;overflow:hidden;}
+.t-card::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 80% 20%, var(--c-glow,rgba(129,140,248,0.08)) 0%, transparent 70%);pointer-events:none;}
+.t-card::after{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg, var(--c), transparent);border-radius:24px 24px 0 0;opacity:0;transition:opacity .3s;}
+.t-card:hover{transform:translateY(-8px) scale(1.01);border-color:var(--c);box-shadow:0 20px 60px rgba(0,0,0,0.5),0 0 0 1px var(--c) inset;}
+.t-card:hover::after{opacity:1;}
+
+.t-card.iq{--c:var(--iq);--c-glow:var(--iq-glow);}
+.t-card.eq{--c:var(--eq);--c-glow:var(--eq-glow);}
+.t-card.mbti{--c:var(--mbti);--c-glow:var(--mbti-glow);}
+.t-card.ll{--c:var(--ll);--c-glow:var(--ll-glow);}
+.t-card.zodiac{--c:var(--zodiac);--c-glow:var(--zodiac-glow);}
+.t-card.shio{--c:var(--shio);--c-glow:var(--shio-glow);}
+
+.t-card-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:20px;}
+.t-card-icon-wrap{width:56px;height:56px;border-radius:16px;background:rgba(255,255,255,0.05);border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:26px;transition:all .3s;}
+.t-card:hover .t-card-icon-wrap{background:rgba(255,255,255,0.1);border-color:var(--c);}
+.t-card-badge{font-size:11px;font-weight:800;color:var(--c);background:rgba(255,255,255,0.05);border:1px solid var(--c);border-radius:50px;padding:4px 12px;white-space:nowrap;}
+.t-card-name{font-family:'Fredoka One',cursive;font-size:22px;color:var(--text);margin-bottom:8px;}
+.t-card-desc{font-size:14px;color:var(--muted);line-height:1.65;font-weight:600;}
+.t-card-footer{margin-top:20px;display:flex;align-items:center;justify-content:space-between;}
+.t-card-start{font-size:13px;font-weight:800;color:var(--c);display:flex;align-items:center;gap:5px;}
+.t-card-arrow{width:28px;height:28px;border-radius:50%;background:var(--c);display:flex;align-items:center;justify-content:center;transition:all .3s;flex-shrink:0;}
+.t-card:hover .t-card-arrow{transform:scale(1.15) rotate(45deg);}
+
+/* ===== MODAL ===== */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(8,6,26,0.85);backdrop-filter:blur(8px);z-index:999;align-items:center;justify-content:center;padding:20px;}
+.modal-overlay.active{display:flex;animation:screenIn .25s;}
+.modal-box{background:var(--surface);border:1.5px solid var(--mbti);border-radius:28px;padding:44px;max-width:500px;width:100%;text-align:center;position:relative;box-shadow:0 40px 80px rgba(0,0,0,0.7),0 0 80px var(--mbti-glow);}
+.modal-title{font-family:'Fredoka One',cursive;font-size:30px;margin-bottom:12px;background:linear-gradient(135deg,var(--mbti),var(--zodiac));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.modal-desc{font-size:15px;color:var(--muted);margin-bottom:30px;line-height:1.7;font-weight:600;}
+.modal-btn{display:flex;flex-direction:column;gap:12px;}
+.m-btn{padding:18px;border-radius:16px;border:1.5px solid var(--border);background:var(--surface2);color:var(--text);font-family:'Nunito',sans-serif;font-size:15px;font-weight:700;cursor:pointer;transition:all .25s;display:flex;flex-direction:column;align-items:center;gap:5px;}
+.m-btn:hover{border-color:var(--mbti);background:rgba(129,140,248,0.1);transform:translateY(-2px);}
+.m-btn span{font-size:12px;color:var(--muted);font-weight:600;}
+.close-modal{position:absolute;top:18px;right:22px;background:none;border:none;color:var(--muted);font-size:22px;cursor:pointer;transition:color .2s;}
+.close-modal:hover{color:var(--text);}
+
+/* ===== TEST SCREEN ===== */
+#test{max-width:740px;margin:0 auto;padding:60px 24px 100px;}
+.test-card{background:var(--surface);border:1.5px solid var(--border);border-radius:28px;padding:48px;position:relative;box-shadow:0 30px 60px rgba(0,0,0,0.4);}
 .test-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;}
-.test-label{font-family:'Fraunces',serif;font-size:24px;font-weight:700;}
-.test-timer{font-family:'DM Sans',monospace;font-size:18px;color:var(--iq);font-weight:700;display:none;background:rgba(110,231,183,0.1);padding:6px 14px;border-radius:8px;}
-.progress-container{width:100%;height:6px;background:var(--s3);border-radius:3px;margin-bottom:36px;overflow:hidden;}
-.progress-bar{height:100%;background:linear-gradient(90deg,var(--c,var(--iq)),#fff);width:0%;transition:width 0.4s ease;}
+.test-label{font-family:'Fredoka One',cursive;font-size:22px;}
+.test-timer{font-family:'Nunito',monospace;font-size:17px;color:var(--iq);font-weight:800;display:none;background:rgba(0,229,160,0.1);border:1px solid rgba(0,229,160,0.2);padding:6px 14px;border-radius:10px;}
+.progress-container{width:100%;height:8px;background:var(--surface3);border-radius:4px;margin-bottom:36px;overflow:hidden;}
+.progress-bar{height:100%;background:linear-gradient(90deg,var(--c,var(--iq)),var(--c2,#fff));width:0%;transition:width 0.5s cubic-bezier(0.4,0,0.2,1);border-radius:4px;}
 .form-body{min-height:280px;}
 
-.field-input{width:100%;background:var(--s2);border:1px solid var(--border);border-radius:12px;color:var(--text);font-size:16px;padding:16px 20px;outline:none;transition:border-color .18s; color-scheme:dark;}
+.field-input{width:100%;background:var(--surface2);border:1.5px solid var(--border);border-radius:14px;color:var(--text);font-size:16px;font-family:'Nunito',sans-serif;padding:16px 20px;outline:none;transition:border-color .2s;color-scheme:dark;font-weight:600;}
 .field-input:focus{border-color:var(--c,var(--iq));}
+.field-input option{background:var(--surface);}
 
-.question-container{display:none;animation:fadeIn 0.3s ease;}
+.question-container{display:none;animation:screenIn .3s;}
 .question-container.active{display:block;}
 
-/* MATRIX & IQ STYLES */
-.iq-q-text{font-size:20px;font-weight:500;margin-bottom:20px;line-height:1.5;text-align:center;}
-.stage-badge { display:inline-block; font-size:12px; font-weight:700; padding:4px 12px; border-radius:20px; background:rgba(110,231,183,0.15); color:var(--iq); margin-bottom:16px; letter-spacing:1px; text-transform:uppercase;}
-.matrix-container { display:flex; flex-direction:column; align-items:center; margin-bottom:36px; background:var(--s2); padding:32px; border-radius:20px; border:1px solid var(--border); box-shadow:inset 0 4px 20px rgba(0,0,0,0.2);}
-.matrix-grid { display:grid; grid-template-columns:repeat(3, 1fr); gap:16px; font-size:48px; line-height:1; }
-.matrix-cell { width:70px; height:70px; display:flex; align-items:center; justify-content:center; background:var(--s1); border-radius:12px; border:1px solid rgba(255,255,255,0.05); box-shadow:0 4px 10px rgba(0,0,0,0.2); }
-.matrix-cell.q { background:rgba(110,231,183,0.05); border:2px dashed var(--iq); color:var(--iq); font-weight:900; font-family:'Fraunces',serif; }
-.iq-opts{display:grid;gap:16px;}
-.iq-opts.matrix-opts { grid-template-columns:repeat(4, 1fr); }
-.iq-opts.text-opts { grid-template-columns:1fr 1fr; } 
-.iq-opt{display:flex;align-items:center;gap:12px;padding:20px;border-radius:16px;border:1px solid var(--border);background:var(--s2);cursor:pointer;transition:all .2s; position:relative;}
-.iq-opt.opt-matrix { justify-content:center; font-size:36px; line-height:1; padding:24px 10px;}
-.iq-opt.opt-text { font-size:16px; justify-content:flex-start; }
-.iq-opt:hover{border-color:rgba(255,255,255,.3);background:var(--s3); transform:translateY(-2px);}
-.iq-opt.selected{border-color:var(--c,var(--iq));background:rgba(110,231,183,0.05);color:var(--c,var(--iq));font-weight:600;box-shadow:0 0 0 2px var(--c,var(--iq)) inset;}
-.opt-label { position:absolute; top:8px; left:12px; font-size:11px; color:var(--muted); font-family:'DM Sans'; font-weight:700;}
-.opt-label-text { font-weight:700; color:var(--iq); margin-right:8px;}
+/* IQ / Matrix */
+.iq-q-text{font-size:20px;font-weight:700;margin-bottom:20px;line-height:1.5;text-align:center;}
+.stage-badge{display:inline-block;font-size:11px;font-weight:800;padding:5px 14px;border-radius:50px;background:rgba(0,229,160,0.12);color:var(--iq);margin-bottom:16px;letter-spacing:1px;text-transform:uppercase;}
+.matrix-container{display:flex;flex-direction:column;align-items:center;margin-bottom:36px;background:var(--surface2);padding:32px;border-radius:20px;border:1.5px solid var(--border);}
+.matrix-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;font-size:44px;line-height:1;}
+.matrix-cell{width:68px;height:68px;display:flex;align-items:center;justify-content:center;background:var(--surface);border-radius:12px;border:1.5px solid rgba(255,255,255,0.06);}
+.matrix-cell.q{background:rgba(0,229,160,0.06);border:2px dashed var(--iq);color:var(--iq);font-weight:900;font-family:'Fredoka One',cursive;}
+.iq-opts{display:grid;gap:14px;}
+.iq-opts.matrix-opts{grid-template-columns:repeat(4,1fr);}
+.iq-opts.text-opts{grid-template-columns:1fr 1fr;}
+.iq-opt{display:flex;align-items:center;gap:10px;padding:18px;border-radius:14px;border:1.5px solid var(--border);background:var(--surface2);cursor:pointer;transition:all .2s;position:relative;font-weight:600;}
+.iq-opt.opt-matrix{justify-content:center;font-size:34px;line-height:1;padding:22px 10px;}
+.iq-opt.opt-text{font-size:15px;justify-content:flex-start;}
+.iq-opt:hover{border-color:rgba(255,255,255,.25);background:var(--surface3);transform:translateY(-2px);}
+.iq-opt.selected{border-color:var(--c,var(--iq));background:rgba(0,229,160,0.06);color:var(--c,var(--iq));box-shadow:0 0 0 1px var(--c,var(--iq)) inset;}
+.opt-label{position:absolute;top:8px;left:12px;font-size:10px;color:var(--muted);font-weight:800;}
+.opt-label-text{font-weight:800;color:var(--iq);margin-right:8px;}
 
-/* LIKERT SCALES (MBTI, EQ, LL) */
-.scale-q-text{font-size:18px;font-weight:500;text-align:center;margin-bottom:24px; line-height:1.5;}
-.scale-container{display:flex;align-items:center;justify-content:center;gap:15px;margin-bottom:48px;}
-.scale-label{font-size:12px;color:var(--muted);text-transform:uppercase;font-weight:600;letter-spacing:1px; width:70px; text-align:center;}
-.scale-label.agree{color:var(--c, var(--mbti));} .scale-label.disagree{color:var(--c2, var(--zodiac));}
-.scale-dots{display:flex;gap:12px;align-items:center;}
+/* Likert scales */
+.scale-q-text{font-size:17px;font-weight:700;text-align:center;margin-bottom:24px;line-height:1.6;}
+.scale-container{display:flex;align-items:center;justify-content:center;gap:14px;margin-bottom:48px;}
+.scale-label{font-size:11px;color:var(--muted);text-transform:uppercase;font-weight:800;letter-spacing:1px;width:70px;text-align:center;}
+.scale-label.agree{color:var(--c,var(--mbti));}
+.scale-label.disagree{color:var(--c2,var(--zodiac));}
+.scale-dots{display:flex;gap:10px;align-items:center;}
 .scale-dot{border-radius:50%;border:2px solid var(--border);background:transparent;cursor:pointer;transition:all .2s;}
-.scale-dot:hover{background:var(--s3);}
-.scale-dot.d-1,.scale-dot.d-7{width:46px;height:46px;}
-.scale-dot.d-2,.scale-dot.d-6{width:36px;height:36px;}
-.scale-dot.d-3,.scale-dot.d-5{width:28px;height:28px;}
-.scale-dot.d-4{width:22px;height:22px;border-color:var(--muted);}
-.scale-dot.d-1.sel,.scale-dot.d-2.sel,.scale-dot.d-3.sel{background:var(--c, var(--mbti));border-color:var(--c, var(--mbti));}
-.scale-dot.d-5.sel,.scale-dot.d-6.sel,.scale-dot.d-7.sel{background:var(--c2, var(--zodiac));border-color:var(--c2, var(--zodiac));}
+.scale-dot:hover{background:var(--surface3);}
+.scale-dot.d-1,.scale-dot.d-7{width:44px;height:44px;}
+.scale-dot.d-2,.scale-dot.d-6{width:34px;height:34px;}
+.scale-dot.d-3,.scale-dot.d-5{width:26px;height:26px;}
+.scale-dot.d-4{width:20px;height:20px;border-color:var(--muted);}
+.scale-dot.d-1.sel,.scale-dot.d-2.sel,.scale-dot.d-3.sel{background:var(--c,var(--mbti));border-color:var(--c,var(--mbti));}
+.scale-dot.d-5.sel,.scale-dot.d-6.sel,.scale-dot.d-7.sel{background:var(--c2,var(--zodiac));border-color:var(--c2,var(--zodiac));}
 .scale-dot.d-4.sel{background:var(--muted);border-color:var(--text);}
 
 /* Controls */
 .test-controls{display:flex;justify-content:space-between;gap:16px;margin-top:40px;padding-top:24px;border-top:1px solid var(--border);}
-.btn{padding:16px 28px;border-radius:14px;border:none;font-family:'DM Sans',sans-serif;font-size:16px;font-weight:600;cursor:pointer;transition:all .15s;}
-.btn-outline{background:transparent;border:1px solid var(--border);color:var(--text);}
-.btn-outline:hover{background:var(--s2);}
-.btn-primary{background:linear-gradient(135deg,var(--c,var(--iq)),var(--c2,var(--iq2)));color:#0C0E14;flex:1;text-align:center;}
-.btn-primary:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,0.3);}
-.btn-primary:disabled{opacity:0.5;cursor:not-allowed;transform:none;}
+.btn{padding:15px 28px;border-radius:50px;border:none;font-family:'Nunito',sans-serif;font-size:15px;font-weight:800;cursor:pointer;transition:all .2s cubic-bezier(0.34,1.56,0.64,1);}
+.btn-outline{background:transparent;border:1.5px solid var(--border);color:var(--text);}
+.btn-outline:hover{background:var(--surface2);border-color:rgba(255,255,255,0.15);}
+.btn-primary{background:linear-gradient(135deg,var(--c,var(--iq)),var(--c2,#00C97E));color:#06201A;flex:1;text-align:center;}
+.btn-primary:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,0.3);}
+.btn-primary:disabled{opacity:.4;cursor:not-allowed;transform:none;}
 
-/* === RESULT SCREEN === */
-#result{max-width:800px;margin:0 auto;padding:60px 24px 100px;}
-.res-card{background:var(--s1);border:1px solid var(--border);border-radius:28px;padding:48px;text-align:center; box-shadow: 0 20px 40px rgba(0,0,0,0.3);}
-.res-icon{font-size:80px;margin-bottom:20px;display:block;line-height:1;}
-.res-name{font-family:'Fraunces',serif;font-size:44px;font-weight:900;letter-spacing:-1px;margin-bottom:12px; color:var(--text);}
-.res-desc{font-size:16px;color:var(--muted);line-height:1.7;max-width:600px;margin:0 auto 36px;}
-.res-blocks{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:36px;text-align:left;}
-.res-block{background:var(--s2);border-radius:16px;padding:24px; border:1px solid var(--border);}
-.res-block-label{font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--c, var(--mbti));margin-bottom:12px; display:flex; align-items:center; gap:8px;}
-.res-block-text{font-size:14px;line-height:1.6;color:var(--text);}
+/* ===== RESULT SCREEN ===== */
+#result{max-width:820px;margin:0 auto;padding:60px 24px 100px;}
+.res-card{background:var(--surface);border:1.5px solid var(--border);border-radius:28px;padding:52px;text-align:center;box-shadow:0 30px 60px rgba(0,0,0,0.4);}
+.res-icon{font-size:80px;margin-bottom:20px;display:block;animation:resIconBounce 0.8s cubic-bezier(0.34,1.56,0.64,1);}
+@keyframes resIconBounce{from{transform:scale(0) rotate(-20deg);}to{transform:scale(1) rotate(0deg);}}
+.res-name{font-family:'Fredoka One',cursive;font-size:42px;letter-spacing:-0.5px;margin-bottom:12px;color:var(--text);}
+.res-desc{font-size:15px;color:var(--muted);line-height:1.75;max-width:600px;margin:0 auto 36px;font-weight:600;}
+.res-blocks{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:36px;text-align:left;}
+.res-block{background:var(--surface2);border-radius:16px;padding:22px;border:1.5px solid var(--border);}
+.res-block-label{font-size:11px;font-weight:800;letter-spacing:1.2px;text-transform:uppercase;color:var(--c,var(--mbti));margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+.res-block-text{font-size:14px;line-height:1.7;color:var(--text);font-weight:600;}
 
 .trait-row{display:flex;align-items:center;gap:12px;margin-bottom:14px;}
-.trait-lbl{font-size:13px;color:var(--muted);width:140px;flex-shrink:0;font-weight:600;}
-.trait-bar-wrap{flex:1;height:10px;background:var(--s3);border-radius:5px;overflow:hidden;position:relative;}
-.trait-bar{height:100%;border-radius:5px;background:var(--c,var(--mbti));transition:width 1s cubic-bezier(0.4,0,0.2,1);width:0%;}
-.trait-pct{font-size:13px;color:var(--text);width:40px;text-align:right;flex-shrink:0;font-weight:600;}
+.trait-lbl{font-size:12px;color:var(--muted);width:140px;flex-shrink:0;font-weight:700;}
+.trait-bar-wrap{flex:1;height:8px;background:var(--surface3);border-radius:4px;overflow:hidden;}
+.trait-bar{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--c,var(--mbti)),var(--c2,#fff));transition:width 1s cubic-bezier(0.4,0,0.2,1);width:0%;}
+.trait-pct{font-size:12px;color:var(--text);width:38px;text-align:right;flex-shrink:0;font-weight:800;}
 
-.tags-container { display:flex; flex-wrap:wrap; gap:8px; margin-top:8px; }
-.tag { padding:4px 12px; border-radius:20px; font-size:12px; font-weight:600; }
-.tag.plus { background:rgba(110,231,183,0.1); border:1px solid var(--iq); color:var(--iq); }
-.tag.minus { background:rgba(219,39,119,0.1); border:1px solid var(--zodiac2); color:var(--zodiac); }
+.tags-container{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;}
+.tag{padding:4px 12px;border-radius:50px;font-size:12px;font-weight:700;}
+.tag.plus{background:rgba(0,229,160,0.1);border:1.5px solid var(--iq);color:var(--iq);}
+.tag.minus{background:rgba(255,107,157,0.1);border:1.5px solid var(--zodiac);color:var(--zodiac);}
 
-@media(max-width:768px){
-  .cards{grid-template-columns:1fr;}
+/* ===== RESPONSIVE ===== */
+@media(max-width:900px){
+  .hero-inner{grid-template-columns:1fr;text-align:center;padding-top:50px;min-height:auto;gap:40px;}
+  .hero-sub{margin-left:auto;margin-right:auto;}
+  .hero-ctas{justify-content:center;}
+  .hero-stats{justify-content:center;}
+  .hero-orbit{max-width:340px;}
+}
+@media(max-width:640px){
+  nav{padding:12px 20px;}
+  .cards-grid{grid-template-columns:1fr;}
   .res-blocks{grid-template-columns:1fr;}
-  .iq-opts.matrix-opts { grid-template-columns:repeat(2, 1fr); }
-  .iq-opts.text-opts { grid-template-columns:1fr; }
-  .scale-container{flex-direction:column;gap:12px;}
+  .iq-opts.matrix-opts{grid-template-columns:repeat(2,1fr);}
+  .iq-opts.text-opts{grid-template-columns:1fr;}
+  .scale-container{flex-direction:column;gap:10px;}
   .scale-label{display:none;}
-  .test-card, .res-card { padding: 32px 24px; }
-  .trait-lbl{width:110px; font-size:11px;}
+  .test-card,.res-card{padding:28px 22px;}
+  .trait-lbl{width:100px;font-size:11px;}
+  .hero-orbit{max-width:280px;}
 }
 </style>
 </head>
 <body>
 
+<!-- ===== NAV ===== -->
 <nav>
-  <div class="nav-logo">MindFun ✦</div>
-  <button class="nav-home" onclick="showScreen('home')">← Kembali ke Home</button>
+  <a class="nav-logo-wrap" href="#" onclick="showScreen('home');return false;">
+    <!-- Logo SVG -->
+    <svg class="nav-logo-icon" viewBox="0 0 38 38" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="19" cy="19" r="18" fill="url(#logoGrad)" opacity="0.15"/>
+      <circle cx="19" cy="19" r="18" stroke="url(#logoGrad)" stroke-width="1.5" fill="none"/>
+      <!-- Brain/M shape -->
+      <path d="M9 25 C9 25 10 14 13 12 C15 10.5 16 12 17 14 L19 19 L21 14 C22 12 23 10.5 25 12 C28 14 29 25 29 25" stroke="url(#logoGrad)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+      <!-- Brain bumps -->
+      <path d="M10 20 C8 20 7 18 8.5 17 C7 16 8 14 10 15" stroke="url(#logoGrad2)" stroke-width="1.8" stroke-linecap="round" fill="none"/>
+      <path d="M28 20 C30 20 31 18 29.5 17 C31 16 30 14 28 15" stroke="url(#logoGrad2)" stroke-width="1.8" stroke-linecap="round" fill="none"/>
+      <!-- Sparkle dots -->
+      <circle cx="19" cy="8" r="2" fill="#FFD166"/>
+      <circle cx="30" cy="13" r="1.5" fill="#FF6B9D"/>
+      <circle cx="8" cy="13" r="1.5" fill="#00E5A0"/>
+      <defs>
+        <linearGradient id="logoGrad" x1="0" y1="0" x2="38" y2="38">
+          <stop offset="0%" stop-color="#00E5A0"/>
+          <stop offset="50%" stop-color="#818CF8"/>
+          <stop offset="100%" stop-color="#FF6B9D"/>
+        </linearGradient>
+        <linearGradient id="logoGrad2" x1="0" y1="0" x2="38" y2="0">
+          <stop offset="0%" stop-color="#00E5A0"/>
+          <stop offset="100%" stop-color="#818CF8"/>
+        </linearGradient>
+      </defs>
+    </svg>
+    <span class="nav-logo-text">MindFun</span>
+  </a>
+  <button class="nav-home-btn" onclick="showScreen('home')">← Kembali ke Home</button>
 </nav>
 
+<!-- ===== MBTI MODAL ===== -->
 <div class="modal-overlay" id="mbti-modal">
   <div class="modal-box">
     <button class="close-modal" onclick="closeModal()">×</button>
     <div class="modal-title">Pilih Mode Analisa</div>
-    <div class="modal-desc">Seberapa detail Anda ingin membedah kepribadian Anda hari ini?</div>
+    <div class="modal-desc">Seberapa dalam kamu mau menyelami kepribadianmu hari ini?</div>
     <div class="modal-btn">
       <button class="m-btn" onclick="startTest('mbti_short')">
-        ⚡ Tes Singkat (12 Pertanyaan)
-        <span>5 - 10 Menit. Analisa cepat mengetahui tipe utama kepribadianmu.</span>
+        ⚡ Tes Singkat — 12 Pertanyaan
+        <span>5–10 Menit · Cepat tahu tipe utama kepribadianmu</span>
       </button>
-      <button class="m-btn" onclick="startTest('mbti_long')" style="border-color:var(--mbti); box-shadow:0 0 15px rgba(129,140,248,0.2);">
-        🧠 Tes Fungsi Kognitif (48 Pertanyaan)
-        <span>12 - 20 Menit. Analisis menyeluruh, akurasi tinggi.</span>
+      <button class="m-btn" onclick="startTest('mbti_long')" style="border-color:var(--mbti);box-shadow:0 0 20px var(--mbti-glow);">
+        🧠 Tes Fungsi Kognitif — 48 Pertanyaan
+        <span>12–20 Menit · Analisis menyeluruh & akurasi tinggi</span>
       </button>
     </div>
   </div>
 </div>
 
 <main>
-  <div id="home" class="screen active">
-    <div class="hero-tag">✦ Platform Asesmen Psikologi Terpadu</div>
-    <h1 class="hero-title"><span>Asesmen Kognitif</span><br>& Kepribadian</h1>
-    <p class="hero-sub">Pusat pengembangan diri terlengkap. Temukan kecerdasan, karakter, hingga bahasa cintamu di sini.</p>
-    
-    <div class="cards">
+<!-- ===================================================================== -->
+<!--  HOME SCREEN                                                           -->
+<!-- ===================================================================== -->
+<div id="home" class="screen active">
+
+  <!-- HERO -->
+  <section style="position:relative;overflow:hidden;">
+    <div class="hero-bg">
+      <div class="blob blob-1"></div>
+      <div class="blob blob-2"></div>
+      <div class="blob blob-3"></div>
+      <div class="blob blob-4"></div>
+      <div class="star-field" id="starField"></div>
+    </div>
+
+    <div class="hero-inner">
+      <!-- LEFT -->
+      <div class="hero-left">
+        <div class="hero-chip">
+          <span class="hero-chip-dot"></span>
+          Platform Asesmen Psikologi
+        </div>
+        <h1 class="hero-title">
+          <div class="hero-title-line1">Kenali Dirimu,</div>
+          <div class="hero-title-line2">Rayakan Pikiranmu ✦</div>
+        </h1>
+        <p class="hero-sub">Dari kecerdasan logika hingga bahasa cinta — eksplorasi 6 dimensi diri kamu dalam satu tempat yang menyenangkan dan akurat.</p>
+        <div class="hero-ctas">
+          <button class="btn-hero btn-hero-primary" onclick="document.querySelector('.section-cards').scrollIntoView({behavior:'smooth'})">
+            🚀 Mulai Eksplorasi
+          </button>
+          <button class="btn-hero btn-hero-secondary" onclick="startTest('iq')">
+            🧠 Langsung Tes IQ
+          </button>
+        </div>
+        <div class="hero-stats">
+          <div class="hero-stat">
+            <div class="hero-stat-num">6</div>
+            <div class="hero-stat-label">Jenis Tes</div>
+          </div>
+          <div class="hero-stat" style="padding-left:28px;border-left:1px solid var(--border);">
+            <div class="hero-stat-num">100%</div>
+            <div class="hero-stat-label">Gratis</div>
+          </div>
+          <div class="hero-stat" style="padding-left:28px;border-left:1px solid var(--border);">
+            <div class="hero-stat-num">5 Min</div>
+            <div class="hero-stat-label">Mulai dari</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT: ORBIT -->
+      <div class="hero-orbit" id="heroOrbit">
+        <!-- Rings -->
+        <div class="orbit-ring orbit-ring-1"></div>
+        <div class="orbit-ring orbit-ring-2"></div>
+        <div class="orbit-ring orbit-ring-3"></div>
+
+        <!-- Center Brain Logo -->
+        <div class="orbit-center">
+          <div class="brain-logo" onclick="showScreen('home')">
+            <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <!-- Large brain icon -->
+              <path d="M14 42 C14 42 15.5 22 20 18 C23 15.5 25 18 27 22 L32 32 L37 22 C39 18 41 15.5 44 18 C48.5 22 50 42 50 42" stroke="url(#brainGrad)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+              <path d="M16 34 C12.5 34 11 30 13.5 28 C11 26 13 22 16 24" stroke="url(#brainGrad2)" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+              <path d="M48 34 C51.5 34 53 30 50.5 28 C53 26 51 22 48 24" stroke="url(#brainGrad2)" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+              <!-- Sparkles -->
+              <circle cx="32" cy="10" r="3" fill="#FFD166"/>
+              <circle cx="52" cy="18" r="2" fill="#FF6B9D"/>
+              <circle cx="12" cy="18" r="2" fill="#00E5A0"/>
+              <circle cx="32" cy="52" r="2" fill="#818CF8"/>
+              <defs>
+                <linearGradient id="brainGrad" x1="14" y1="18" x2="50" y2="42">
+                  <stop offset="0%" stop-color="#00E5A0"/>
+                  <stop offset="50%" stop-color="#818CF8"/>
+                  <stop offset="100%" stop-color="#FF6B9D"/>
+                </linearGradient>
+                <linearGradient id="brainGrad2" x1="0" y1="0" x2="0" y2="40">
+                  <stop offset="0%" stop-color="#818CF8"/>
+                  <stop offset="100%" stop-color="#00E5A0"/>
+                </linearGradient>
+              </defs>
+            </svg>
+          </div>
+        </div>
+
+        <!-- Floating Test Cards -->
+        <div class="orbit-card oc-iq" onclick="startTest('iq')">
+          <div class="orbit-card-icon">🧠</div>
+          <div class="orbit-card-name">Tes IQ</div>
+          <div class="orbit-card-time">30 Menit</div>
+          <div class="orbit-card-accent"></div>
+        </div>
+        <div class="orbit-card oc-eq" onclick="startTest('eq')">
+          <div class="orbit-card-icon">❤️‍🔥</div>
+          <div class="orbit-card-name">Tes EQ</div>
+          <div class="orbit-card-time">5 Menit</div>
+          <div class="orbit-card-accent"></div>
+        </div>
+        <div class="orbit-card oc-mbti" onclick="openMBTIModal()">
+          <div class="orbit-card-icon">👤</div>
+          <div class="orbit-card-name">MBTI</div>
+          <div class="orbit-card-time">5–20 Min</div>
+          <div class="orbit-card-accent"></div>
+        </div>
+        <div class="orbit-card oc-ll" onclick="startTest('ll')">
+          <div class="orbit-card-icon">💌</div>
+          <div class="orbit-card-name">Love Language</div>
+          <div class="orbit-card-time">5 Menit</div>
+          <div class="orbit-card-accent"></div>
+        </div>
+        <div class="orbit-card oc-zodiac" onclick="startTest('zodiac')">
+          <div class="orbit-card-icon">✨</div>
+          <div class="orbit-card-name">Zodiak</div>
+          <div class="orbit-card-time">Instan</div>
+          <div class="orbit-card-accent"></div>
+        </div>
+        <div class="orbit-card oc-shio" onclick="startTest('shio')">
+          <div class="orbit-card-icon">🐉</div>
+          <div class="orbit-card-name">Shio</div>
+          <div class="orbit-card-time">Instan</div>
+          <div class="orbit-card-accent"></div>
+        </div>
+
+        <!-- Sparkle elements -->
+        <div class="sparkle" style="top:10%;left:60%;--sd:2.1s;font-size:14px;">✦</div>
+        <div class="sparkle" style="top:75%;left:15%;--sd:3.2s;font-size:10px;color:var(--zodiac);">★</div>
+        <div class="sparkle" style="top:45%;right:5%;--sd:2.7s;font-size:12px;color:var(--iq);">◆</div>
+        <div class="sparkle" style="top:85%;left:55%;--sd:1.9s;font-size:8px;color:var(--eq);">●</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CARDS SECTION -->
+  <section class="section-cards">
+    <div class="section-label">
+      <div class="section-eyebrow">✦ Pilih Tesmu</div>
+      <h2 class="section-title">Apa yang ingin kamu temukan hari ini?</h2>
+      <p class="section-sub">Setiap tes dirancang dengan metodologi psikologi yang valid dan disajikan dengan cara yang menyenangkan.</p>
+    </div>
+
+    <div class="cards-grid">
+      <!-- IQ -->
       <div class="t-card iq" onclick="startTest('iq')">
-        <span class="t-card-icon">🧠</span>
+        <div class="t-card-top">
+          <div class="t-card-icon-wrap">🧠</div>
+          <span class="t-card-badge">50 Soal · 30 Mnt</span>
+        </div>
         <div class="t-card-name">Tes IQ Ekstensif</div>
-        <div class="t-card-desc">Komprehensif: 15 Matriks Visual dicampur 35 Logika Verbal.</div>
-        <span class="t-card-badge">30 Menit • 50 Soal</span>
+        <div class="t-card-desc">Komprehensif: 15 Matriks Visual dicampur 35 Logika Verbal. Temukan angka IQ aktualmu.</div>
+        <div class="t-card-footer">
+          <span class="t-card-start">Mulai Tes →</span>
+          <div class="t-card-arrow">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7h8M8 4l3 3-3 3" stroke="#06201A" stroke-width="1.8" stroke-linecap="round"/></svg>
+          </div>
+        </div>
       </div>
+
+      <!-- EQ -->
       <div class="t-card eq" onclick="startTest('eq')">
-        <span class="t-card-icon">❤️‍🔥</span>
-        <div class="t-card-name">Kecerdasan Emosional (EQ)</div>
-        <div class="t-card-desc">Ukur tingkat empati, kesadaran diri, dan regulasi emosi Anda secara akurat.</div>
-        <span class="t-card-badge">~5 Menit • 15 Soal</span>
+        <div class="t-card-top">
+          <div class="t-card-icon-wrap">❤️‍🔥</div>
+          <span class="t-card-badge">15 Soal · ~5 Mnt</span>
+        </div>
+        <div class="t-card-name">Kecerdasan Emosional</div>
+        <div class="t-card-desc">Ukur empati, kesadaran diri, dan regulasi emosi kamu secara akurat dan mendalam.</div>
+        <div class="t-card-footer">
+          <span class="t-card-start">Mulai Tes →</span>
+          <div class="t-card-arrow" style="background:var(--eq);">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7h8M8 4l3 3-3 3" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/></svg>
+          </div>
+        </div>
       </div>
+
+      <!-- MBTI -->
       <div class="t-card mbti" onclick="openMBTIModal()">
-        <span class="t-card-icon">👤</span>
+        <div class="t-card-top">
+          <div class="t-card-icon-wrap">👤</div>
+          <span class="t-card-badge">Singkat / Lengkap</span>
+        </div>
         <div class="t-card-name">16 Kepribadian (MBTI)</div>
-        <div class="t-card-desc">Asesmen mendalam dengan laporan Karir, Asmara, Kelebihan & Kekurangan.</div>
-        <span class="t-card-badge">Pilihan Singkat / Lengkap</span>
+        <div class="t-card-desc">Asesmen mendalam dengan laporan Karir, Asmara, Kelebihan & Kekurangan tipe kepribadianmu.</div>
+        <div class="t-card-footer">
+          <span class="t-card-start">Mulai Tes →</span>
+          <div class="t-card-arrow" style="background:var(--mbti);">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7h8M8 4l3 3-3 3" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/></svg>
+          </div>
+        </div>
       </div>
+
+      <!-- Love Language -->
       <div class="t-card ll" onclick="startTest('ll')">
-        <span class="t-card-icon">💌</span>
+        <div class="t-card-top">
+          <div class="t-card-icon-wrap">💌</div>
+          <span class="t-card-badge">15 Soal · ~5 Mnt</span>
+        </div>
         <div class="t-card-name">Tes Love Language</div>
-        <div class="t-card-desc">Cari tahu bahasa cinta utamamu dan pelajari dinamika hubungan asmaramu.</div>
-        <span class="t-card-badge">~5 Menit • 15 Soal</span>
+        <div class="t-card-desc">Cari tahu bahasa cinta utamamu dan pelajari cara mencintai dan dicintai dengan lebih baik.</div>
+        <div class="t-card-footer">
+          <span class="t-card-start">Mulai Tes →</span>
+          <div class="t-card-arrow" style="background:var(--ll);">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7h8M8 4l3 3-3 3" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/></svg>
+          </div>
+        </div>
       </div>
+
+      <!-- Zodiak -->
       <div class="t-card zodiac" onclick="startTest('zodiac')">
-        <span class="t-card-icon">✨</span>
+        <div class="t-card-top">
+          <div class="t-card-icon-wrap">✨</div>
+          <span class="t-card-badge">Astrologi Tradisional</span>
+        </div>
         <div class="t-card-name">Ramalan Zodiak</div>
-        <div class="t-card-desc">Masukkan tanggal lahirmu untuk melihat prediksi karir, cinta, dan masa depan.</div>
-        <span class="t-card-badge">Astrologi Tradisional</span>
+        <div class="t-card-desc">Masukkan tanggal lahirmu dan temukan prediksi karir, cinta, serta masa depanmu.</div>
+        <div class="t-card-footer">
+          <span class="t-card-start">Mulai →</span>
+          <div class="t-card-arrow" style="background:var(--zodiac);">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7h8M8 4l3 3-3 3" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/></svg>
+          </div>
+        </div>
       </div>
+
+      <!-- Shio -->
       <div class="t-card shio" onclick="startTest('shio')">
-        <span class="t-card-icon">🐉</span>
+        <div class="t-card-top">
+          <div class="t-card-icon-wrap">🐉</div>
+          <span class="t-card-badge">Feng Shui Akurat</span>
+        </div>
         <div class="t-card-name">Profil Feng Shui Shio</div>
-        <div class="t-card-desc">Kalkulator otomatis Elemen, Angka Kua, dan penjabaran sifat karakter Tionghoa.</div>
-        <span class="t-card-badge">Akurasi Feng Shui</span>
+        <div class="t-card-desc">Kalkulator Elemen, Angka Kua, dan karakter Tionghoa berdasarkan tanggal lahirmu.</div>
+        <div class="t-card-footer">
+          <span class="t-card-start">Mulai →</span>
+          <div class="t-card-arrow" style="background:var(--shio);">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7h8M8 4l3 3-3 3" stroke="#06201A" stroke-width="1.8" stroke-linecap="round"/></svg>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
+  </section>
 
-  <div id="test" class="screen">
-    <div class="test-card" id="dynamic-theme-card">
-      <div class="test-head">
-        <div class="test-label" id="test-label">Tes</div>
-        <div class="test-timer" id="test-timer">30:00</div>
-      </div>
-      <div class="progress-container"><div class="progress-bar" id="progress-bar"></div></div>
-      <div class="form-body" id="form-body"></div>
-      <div class="test-controls" id="test-controls">
-        <button class="btn btn-outline" id="btn-prev" onclick="prevStep()">Kembali</button>
-        <button class="btn btn-primary" id="btn-next" onclick="nextStep()" disabled>Selanjutnya</button>
-      </div>
-    </div>
-  </div>
+</div><!-- /#home -->
 
-  <div id="result" class="screen">
-    <div class="res-card" id="res-dynamic-card">
-      <span class="res-icon" id="res-icon"></span>
-      <div class="res-name" id="res-name"></div>
-      <div class="res-desc" id="res-desc"></div>
-      <div class="res-blocks" id="res-blocks"></div>
-      <div style="margin-top:30px;display:flex;gap:12px;justify-content:center;">
-        <button class="btn btn-primary" onclick="showScreen('home')">Selesai & Kembali ke Home</button>
-      </div>
+<!-- ===================================================================== -->
+<!--  TEST SCREEN                                                           -->
+<!-- ===================================================================== -->
+<div id="test" class="screen">
+  <div class="test-card" id="dynamic-theme-card">
+    <div class="test-head">
+      <div class="test-label" id="test-label">Tes</div>
+      <div class="test-timer" id="test-timer">30:00</div>
+    </div>
+    <div class="progress-container"><div class="progress-bar" id="progress-bar"></div></div>
+    <div class="form-body" id="form-body"></div>
+    <div class="test-controls" id="test-controls">
+      <button class="btn btn-outline" id="btn-prev" onclick="prevStep()">← Kembali</button>
+      <button class="btn btn-primary" id="btn-next" onclick="nextStep()" disabled>Selanjutnya →</button>
     </div>
   </div>
+</div>
+
+<!-- ===================================================================== -->
+<!--  RESULT SCREEN                                                         -->
+<!-- ===================================================================== -->
+<div id="result" class="screen">
+  <div class="res-card" id="res-dynamic-card">
+    <span class="res-icon" id="res-icon"></span>
+    <div class="res-name" id="res-name"></div>
+    <div class="res-desc" id="res-desc"></div>
+    <div class="res-blocks" id="res-blocks"></div>
+    <div style="margin-top:30px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+      <button class="btn btn-primary" onclick="showScreen('home')" style="max-width:280px;">🏠 Kembali ke Home</button>
+    </div>
+  </div>
+</div>
+
 </main>
 
 <script>
-// ==========================================
-// 1. DATA BANK: SHIO, ZODIAK, MBTI, IQ, EQ, LL
-// ==========================================
+// =========================================
+// STAR FIELD GENERATOR
+// =========================================
+(function(){
+  const sf = document.getElementById('starField');
+  if(!sf) return;
+  for(let i=0;i<80;i++){
+    const s = document.createElement('div');
+    s.className='star';
+    const sz = Math.random()*2.5+0.5;
+    s.style.cssText = `width:${sz}px;height:${sz}px;top:${Math.random()*100}%;left:${Math.random()*100}%;--dur:${(Math.random()*4+2).toFixed(1)}s;animation-delay:${(Math.random()*5).toFixed(1)}s;`;
+    sf.appendChild(s);
+  }
+})();
+
+// =========================================
+// DATA BANK
+// =========================================
 const SHIO_PROFILES = [
-  {i:"🐀",n:"Tikus", z:"Sagitarius", m:"Musim Dingin", j:"23.00 - 01.00", et:"Air", makmur:"Naga & Monyet", penolong:"Kerbau", d:"Anda memiliki kecerdasan tajam dan kelincahan dalam beradaptasi. Sebagai perencana ulung, Anda selalu bisa menemukan celah dan peluang di situasi tersulit sekalipun. Insting bertahan hidup Anda sangat tinggi."},
-  {i:"🐂",n:"Kerbau", z:"Capricorn", m:"Musim Dingin", j:"01.00 - 03.00", et:"Tanah", makmur:"Ular & Ayam", penolong:"Tikus", d:"Tangguh, stabil, dan dapat diandalkan. Anda adalah tipe pekerja keras yang tidak banyak bicara namun selalu memberikan hasil nyata. Kesabaran Anda luar biasa."},
-  {i:"🐅",n:"Macan", z:"Aquarius", m:"Musim Semi", j:"03.00 - 05.00", et:"Kayu", makmur:"Kuda & Anjing", penolong:"Babi", d:"Penuh karisma, berani, dan berjiwa kepemimpinan. Anda benci rutinitas yang monoton dan selalu haus akan tantangan baru. Kehadiran Anda selalu membawa energi yang kuat."},
-  {i:"🐰",n:"Kelinci", z:"Pisces", m:"Musim Semi", j:"05.00 - 07.00", et:"Kayu", makmur:"Kambing & Babi", penolong:"Anjing", d:"Lambang harmoni dan kelembutan. Anda adalah diplomat ulung yang lihai bernegosiasi dan menghindari konflik dengan elegan. Di balik ketenangan Anda, terdapat kebijaksanaan tajam."},
-  {i:"🐉",n:"Naga", z:"Aries", m:"Musim Semi", j:"07.00 - 09.00", et:"Tanah", makmur:"Tikus & Monyet", penolong:"Ayam", d:"Visioner dan penuh pesona. Anda memiliki aura otoritas yang membuat orang lain segan sekaligus kagum. Standar Anda sangat tinggi, dan Anda dilahirkan untuk mencapai hal-hal besar."},
-  {i:"🐍",n:"Ular", z:"Taurus", m:"Musim Panas", j:"09.00 - 11.00", et:"Api", makmur:"Kerbau & Ayam", penolong:"Monyet", d:"Misterius, elegan, dan sangat analitis. Anda memiliki indera keenam yang kuat untuk membaca niat orang lain. Anda bertindak dengan perhitungan presisi yang matang."},
-  {i:"🐎",n:"Kuda", z:"Gemini", m:"Musim Panas", j:"11.00 - 13.00", et:"Api", makmur:"Macan & Anjing", penolong:"Kambing", d:"Jiwa petualang yang mandiri dan energik. Anda sangat mencintai kebebasan dan berekspresi tanpa batas. Anda mudah bergaul, hangat, namun tak suka dikekang."},
-  {i:"🐏",n:"Kambing", z:"Cancer", m:"Musim Panas", j:"13.00 - 15.00", et:"Tanah", makmur:"Kelinci & Babi", penolong:"Kuda", d:"Artistik, empatik, dan pencinta kedamaian. Anda memiliki selera estetika yang tinggi dan sifat yang sangat lembut. Lingkungan suportif memacu bakat kreatif Anda."},
-  {i:"🐒",n:"Monyet", z:"Leo", m:"Musim Gugur", j:"15.00 - 17.00", et:"Logam", makmur:"Tikus & Naga", penolong:"Ular", d:"Jenaka, multi-talenta, dan inovatif. Otak Anda bekerja dengan cepat untuk mencari jalan pintas atau solusi cerdas dari setiap masalah. Anda mudah beradaptasi."},
-  {i:"🐓",n:"Ayam", z:"Virgo", m:"Musim Gugur", j:"17.00 - 19.00", et:"Logam", makmur:"Kerbau & Ular", penolong:"Naga", d:"Perfeksionis, jujur, dan penuh percaya diri. Anda tidak segan mengutarakan kebenaran secara blak-blakan demi kebaikan bersama. Anda memiliki kemampuan organisasi yang luar biasa."},
-  {i:"🐕",n:"Anjing", z:"Libra", m:"Musim Gugur", j:"19.00 - 21.00", et:"Tanah", makmur:"Macan & Kuda", penolong:"Kelinci", d:"Simbol kesetiaan dan keadilan sejati. Anda adalah sahabat terbaik yang bisa diandalkan dalam kondisi terburuk. Intuisi Anda terhadap ketidakadilan sangat kuat."},
-  {i:"🐖",n:"Babi", z:"Scorpio", m:"Musim Dingin", j:"21.00 - 23.00", et:"Air", makmur:"Kelinci & Kambing", penolong:"Macan", d:"Dermawan, tulus, dan tahu cara menikmati hidup. Anda tidak suka menyimpan dendam dan lebih memilih mengejar kebahagiaan sederhana. Kebaikan hati Anda mendatangkan hoki."}
+  {i:"🐀",n:"Tikus",z:"Sagitarius",m:"Musim Dingin",j:"23.00 - 01.00",et:"Air",makmur:"Naga & Monyet",penolong:"Kerbau",d:"Anda memiliki kecerdasan tajam dan kelincahan dalam beradaptasi. Sebagai perencana ulung, Anda selalu bisa menemukan celah dan peluang di situasi tersulit sekalipun."},
+  {i:"🐂",n:"Kerbau",z:"Capricorn",m:"Musim Dingin",j:"01.00 - 03.00",et:"Tanah",makmur:"Ular & Ayam",penolong:"Tikus",d:"Tangguh, stabil, dan dapat diandalkan. Anda adalah tipe pekerja keras yang tidak banyak bicara namun selalu memberikan hasil nyata. Kesabaran Anda luar biasa."},
+  {i:"🐅",n:"Macan",z:"Aquarius",m:"Musim Semi",j:"03.00 - 05.00",et:"Kayu",makmur:"Kuda & Anjing",penolong:"Babi",d:"Penuh karisma, berani, dan berjiwa kepemimpinan. Anda benci rutinitas monoton dan selalu haus akan tantangan baru."},
+  {i:"🐰",n:"Kelinci",z:"Pisces",m:"Musim Semi",j:"05.00 - 07.00",et:"Kayu",makmur:"Kambing & Babi",penolong:"Anjing",d:"Lambang harmoni dan kelembutan. Anda adalah diplomat ulung yang lihai bernegosiasi. Di balik ketenangan Anda tersimpan kebijaksanaan tajam."},
+  {i:"🐉",n:"Naga",z:"Aries",m:"Musim Semi",j:"07.00 - 09.00",et:"Tanah",makmur:"Tikus & Monyet",penolong:"Ayam",d:"Visioner dan penuh pesona. Anda memiliki aura otoritas dan standar yang sangat tinggi. Anda dilahirkan untuk mencapai hal-hal besar."},
+  {i:"🐍",n:"Ular",z:"Taurus",m:"Musim Panas",j:"09.00 - 11.00",et:"Api",makmur:"Kerbau & Ayam",penolong:"Monyet",d:"Misterius, elegan, dan sangat analitis. Anda memiliki indera keenam yang kuat untuk membaca niat orang lain."},
+  {i:"🐎",n:"Kuda",z:"Gemini",m:"Musim Panas",j:"11.00 - 13.00",et:"Api",makmur:"Macan & Anjing",penolong:"Kambing",d:"Jiwa petualang yang mandiri dan energik. Anda mencintai kebebasan dan berekspresi tanpa batas. Mudah bergaul namun tak suka dikekang."},
+  {i:"🐏",n:"Kambing",z:"Cancer",m:"Musim Panas",j:"13.00 - 15.00",et:"Tanah",makmur:"Kelinci & Babi",penolong:"Kuda",d:"Artistik, empatik, dan pencinta kedamaian. Anda memiliki selera estetika tinggi dan sifat yang sangat lembut."},
+  {i:"🐒",n:"Monyet",z:"Leo",m:"Musim Gugur",j:"15.00 - 17.00",et:"Logam",makmur:"Tikus & Naga",penolong:"Ular",d:"Jenaka, multi-talenta, dan inovatif. Otak Anda bekerja cepat mencari solusi cerdas dari setiap masalah."},
+  {i:"🐓",n:"Ayam",z:"Virgo",m:"Musim Gugur",j:"17.00 - 19.00",et:"Logam",makmur:"Kerbau & Ular",penolong:"Naga",d:"Perfeksionis, jujur, dan penuh percaya diri. Tidak segan mengutarakan kebenaran. Kemampuan organisasi luar biasa."},
+  {i:"🐕",n:"Anjing",z:"Libra",m:"Musim Gugur",j:"19.00 - 21.00",et:"Tanah",makmur:"Macan & Kuda",penolong:"Kelinci",d:"Simbol kesetiaan dan keadilan sejati. Sahabat terbaik yang bisa diandalkan. Intuisi terhadap ketidakadilan sangat kuat."},
+  {i:"🐖",n:"Babi",z:"Scorpio",m:"Musim Dingin",j:"21.00 - 23.00",et:"Air",makmur:"Kelinci & Kambing",penolong:"Macan",d:"Dermawan, tulus, dan tahu cara menikmati hidup. Tidak suka menyimpan dendam. Kebaikan hati Anda mendatangkan hoki."}
 ];
 
 const ZODIAC_TRADISIONAL = {
-  aries: { i:"♈", n:"Aries", t:"21 Maret - 19 April", karir: "Sifat kepemimpinanmu sedang berada di puncaknya. Ada peluang besar untuk memimpin proyek atau memulai usaha baru.", cinta: "Kejutan spontan akan memercikkan kembali gairah cinta. Bagi yang lajang, keberanianmu akan mendatangkan seseorang yang spesial.", masa_depan: "Energi masa depanmu penuh dengan pergerakan. Kesuksesan finansial akan datang dari ide-ide inovatif." },
-  taurus: { i:"♉", n:"Taurus", t:"20 April - 20 Mei", karir: "Kerja keras dan kesabaranmu akhirnya akan membuahkan hasil. Ada potensi promosi atau kestabilan finansial jangka panjang.", cinta: "Hubungan membutuhkan fondasi yang stabil saat ini. Kesetiaan akan menjadi kunci kebahagiaan.", masa_depan: "Sebuah investasi yang kamu tanam belakangan ini akan mekar dan memberikan kenyamanan berlipat ganda." },
-  gemini: { i:"♊", n:"Gemini", t:"21 Mei - 20 Juni", karir: "Kemampuan komunikasimu adalah senjata utama. Akan ada banyak peluang networking yang membuka pintu emas.", cinta: "Kamu sedang mencari stimulasi intelektual. Jodohmu adalah seseorang yang bisa mengimbangi obrolan cerdasmu.", masa_depan: "Masa depanmu dipenuhi dengan banyak pilihan. Jangan takut untuk menjelajahi dua minat sekaligus." },
-  cancer: { i:"♋", n:"Cancer", t:"21 Juni - 22 Juli", karir: "Intuisi tajammu akan menyelamatkanmu dari keputusan bisnis yang buruk. Tetaplah bekerja dengan empati.", cinta: "Perasaanmu sedang sangat dalam. Waktu yang tepat untuk membangun ikatan emosional di rumah bersama pasangan.", masa_depan: "Rumah dan keluarga akan menjadi pusat kebahagiaan utamamu. Ada tanda-tanda keamanan yang kuat." },
-  leo: { i:"♌", n:"Leo", t:"23 Juli - 22 Agustus", karir: "Karisma alaminya tidak bisa disembunyikan. Bersiaplah untuk menjadi sorotan atas bakat kreatifmu di tempat kerja.", cinta: "Romansa yang menggebu-gebu ada di depan mata. Auramu akan menarik banyak penggemar.", masa_depan: "Bintangmu sedang bersinar terang. Kepercayaan diri akan membawamu mencapai posisi puncak." },
-  virgo: { i:"♍", n:"Virgo", t:"23 Agustus - 22 September", karir: "Ketelitianmu akan menemukan celah kesalahan yang krusial. Atasan akan sangat mengapresiasi dedikasi kerjamu.", cinta: "Jangan terlalu analitis dalam urusan hati. Terkadang cinta tidak butuh logika. Cobalah untuk memaafkan.", masa_depan: "Semua rencana yang kamu susun dengan rapi akan terwujud. Kedisiplinan adalah tiket emasmu menuju sejahtera." },
-  libra: { i:"♎", n:"Libra", t:"23 September - 22 Oktober", karir: "Kemampuan negosiasimu akan diuji. Kamu akan berhasil mendamaikan dua pihak dan membawa harmoni.", cinta: "Keseimbangan adalah kunci. Cinta sejati mungkin ada di dekatmu namun berwujud tak terduga.", masa_depan: "Menjanjikan kemitraan yang kuat, baik dalam bisnis maupun asmara. Keindahan akan mengisi hari-harimu." },
-  scorpio: { i:"♏", n:"Scorpio", t:"23 Oktober - 21 November", karir: "Fokusmu sedang sangat tajam bagaikan laser. Ini adalah saat yang tepat untuk menyelesaikan proyek mendalam.", cinta: "Gairah asmaramu memuncak. Hati-hati dengan rasa cemburu; cobalah untuk lebih mempercayai pasanganmu.", masa_depan: "Akan ada sebuah transformasi besar layaknya phoenix. Kamu akan bangkit dari masa sulit menjadi lebih kuat." },
-  sagittarius: { i:"♐", n:"Sagittarius", t:"22 November - 21 Desember", karir: "Pikiranmu terlalu luas untuk dikurung dalam rutinitas. Peluang karir yang melibatkan perjalanan menanti di depan.", cinta: "Kamu membutuhkan ruang dan kebebasan. Pasangan idealmu adalah seseorang yang mau diajak berpetualang.", masa_depan: "Cakrawala baru akan terbuka. Masa depanmu penuh dengan perjalanan panjang, baik spiritual maupun fisik." },
-  capricorn: { i:"♑", n:"Capricorn", t:"22 Desember - 19 Januari", karir: "Ambisi dan disiplinmu tak tertandingi. Segera, kamu akan memanjat anak tangga kesuksesan.", cinta: "Kamu memandang cinta sebagai komitmen serius. Ini saatnya untuk merencanakan masa depan bersama yang stabil.", masa_depan: "Sebuah kerajaan kecil sedang kamu bangun. Masa tuamu akan dipenuhi kemapanan dan warisan yang membanggakan." },
-  aquarius: { i:"♒", n:"Aquarius", t:"20 Januari - 18 Februari", karir: "Ide-ide eksentrikmu kini mulai terbukti brilian. Jangan takut mengusulkan inovasi tak lazim di tempat kerja.", cinta: "Kamu butuh pasangan yang juga sahabat terbaikmu. Pertahankan dia yang memahami jalan pikiran unikmu.", masa_depan: "Kamu akan membawa perubahan signifikan. Masa depan menjanjikan keterlibatan besar dalam proyek kemanusiaan." },
-  pisces: { i:"♓", n:"Pisces", t:"19 Februari - 20 Maret", karir: "Sisi kreatif dan empatimu sedang dominan. Karir di bidang seni atau penyembuhan akan mengalami lonjakan inspirasi.", cinta: "Hati-hati jangan terlalu banyak berkorban. Asmara yang sehat adalah tentang memberi dan menerima secara seimbang.", masa_depan: "Mimpi-mimpimu secara misterius akan bermanifestasi menjadi kenyataan. Intuisi adalah pemandu terbaikmu." }
+  aries:{i:"♈",n:"Aries",t:"21 Maret - 19 April",karir:"Sifat kepemimpinanmu sedang berada di puncaknya. Ada peluang besar untuk memimpin proyek atau memulai usaha baru.",cinta:"Kejutan spontan akan memercikkan kembali gairah cinta. Bagi yang lajang, keberanianmu akan mendatangkan seseorang yang spesial.",masa_depan:"Energi masa depanmu penuh dengan pergerakan. Kesuksesan finansial akan datang dari ide-ide inovatif."},
+  taurus:{i:"♉",n:"Taurus",t:"20 April - 20 Mei",karir:"Kerja keras dan kesabaranmu akhirnya akan membuahkan hasil. Ada potensi promosi atau kestabilan finansial jangka panjang.",cinta:"Hubungan membutuhkan fondasi yang stabil saat ini. Kesetiaan akan menjadi kunci kebahagiaan.",masa_depan:"Sebuah investasi yang kamu tanam akan mekar dan memberikan kenyamanan berlipat ganda."},
+  gemini:{i:"♊",n:"Gemini",t:"21 Mei - 20 Juni",karir:"Kemampuan komunikasimu adalah senjata utama. Akan ada banyak peluang networking yang membuka pintu emas.",cinta:"Kamu sedang mencari stimulasi intelektual. Jodohmu adalah seseorang yang bisa mengimbangi obrolan cerdasmu.",masa_depan:"Masa depanmu dipenuhi dengan banyak pilihan. Jangan takut menjelajahi dua minat sekaligus."},
+  cancer:{i:"♋",n:"Cancer",t:"21 Juni - 22 Juli",karir:"Intuisi tajammu akan menyelamatkanmu dari keputusan bisnis yang buruk. Tetaplah bekerja dengan empati.",cinta:"Perasaanmu sedang sangat dalam. Waktu yang tepat untuk membangun ikatan emosional di rumah bersama pasangan.",masa_depan:"Rumah dan keluarga akan menjadi pusat kebahagiaan utamamu."},
+  leo:{i:"♌",n:"Leo",t:"23 Juli - 22 Agustus",karir:"Karisma alaminya tidak bisa disembunyikan. Bersiaplah menjadi sorotan atas bakat kreatifmu di tempat kerja.",cinta:"Romansa yang menggebu ada di depan mata. Auramu akan menarik banyak penggemar.",masa_depan:"Bintangmu sedang bersinar terang. Kepercayaan diri akan membawamu mencapai posisi puncak."},
+  virgo:{i:"♍",n:"Virgo",t:"23 Agustus - 22 September",karir:"Ketelitianmu akan menemukan celah kesalahan yang krusial. Atasan akan sangat mengapresiasi dedikasi kerjamu.",cinta:"Jangan terlalu analitis dalam urusan hati. Terkadang cinta tidak butuh logika.",masa_depan:"Semua rencana yang kamu susun dengan rapi akan terwujud. Kedisiplinan adalah tiket emasmu."},
+  libra:{i:"♎",n:"Libra",t:"23 September - 22 Oktober",karir:"Kemampuan negosiasimu akan diuji. Kamu akan berhasil mendamaikan dua pihak dan membawa harmoni.",cinta:"Keseimbangan adalah kunci. Cinta sejati mungkin ada di dekatmu namun berwujud tak terduga.",masa_depan:"Menjanjikan kemitraan yang kuat, baik dalam bisnis maupun asmara."},
+  scorpio:{i:"♏",n:"Scorpio",t:"23 Oktober - 21 November",karir:"Fokusmu sedang sangat tajam bagaikan laser. Ini saat yang tepat untuk menyelesaikan proyek mendalam.",cinta:"Gairah asmaramu memuncak. Hati-hati dengan rasa cemburu; cobalah lebih mempercayai pasangan.",masa_depan:"Akan ada transformasi besar layaknya phoenix. Kamu akan bangkit dari masa sulit menjadi lebih kuat."},
+  sagittarius:{i:"♐",n:"Sagittarius",t:"22 November - 21 Desember",karir:"Pikiranmu terlalu luas untuk dikurung dalam rutinitas. Peluang karir yang melibatkan perjalanan menanti.",cinta:"Kamu membutuhkan ruang dan kebebasan. Pasangan idealmu adalah seseorang yang mau diajak berpetualang.",masa_depan:"Cakrawala baru akan terbuka. Masa depanmu penuh dengan perjalanan panjang, baik spiritual maupun fisik."},
+  capricorn:{i:"♑",n:"Capricorn",t:"22 Desember - 19 Januari",karir:"Ambisi dan disiplinmu tak tertandingi. Segera kamu akan memanjat anak tangga kesuksesan.",cinta:"Kamu memandang cinta sebagai komitmen serius. Saatnya merencanakan masa depan bersama yang stabil.",masa_depan:"Sebuah kerajaan kecil sedang kamu bangun. Masa tuamu akan dipenuhi kemapanan dan warisan yang membanggakan."},
+  aquarius:{i:"♒",n:"Aquarius",t:"20 Januari - 18 Februari",karir:"Ide-ide eksentrikmu kini mulai terbukti brilian. Jangan takut mengusulkan inovasi tak lazim di tempat kerja.",cinta:"Kamu butuh pasangan yang juga sahabat terbaikmu. Pertahankan dia yang memahami jalan pikiranmu.",masa_depan:"Kamu akan membawa perubahan signifikan. Masa depan menjanjikan keterlibatan besar dalam proyek kemanusiaan."},
+  pisces:{i:"♓",n:"Pisces",t:"19 Februari - 20 Maret",karir:"Sisi kreatif dan empatimu sedang dominan. Karir di bidang seni atau penyembuhan akan mengalami lonjakan inspirasi.",cinta:"Hati-hati jangan terlalu banyak berkorban. Asmara yang sehat adalah tentang memberi dan menerima secara seimbang.",masa_depan:"Mimpi-mimpimu secara misterius akan bermanifestasi menjadi kenyataan. Intuisi adalah pemandu terbaikmu."}
 };
 
 const MBTI_TYPES = {
-  ENTP: {i:"💡",n:"Si Pendebat",d:"Pemikir inovatif, suka tantangan, dan berdebat secara logis.",plus:["Kreatif","Karismatik"],minus:["Cepat Bosan","Argumentatif"],career:"Pengusaha, Pengacara",social:"Aktif berdebat",love:"Mandiri",match:"INFJ, INTJ"},
-  INTP: {i:"🔬",n:"Si Ahli Logika",d:"Pemikir abstrak, objektif, dan haus akan teori baru.",plus:["Analitis","Objektif"],minus:["Terlihat Dingin","Overthinking"],career:"Ilmuwan, Arsitek Software",social:"Pemilih dalam bergaul",love:"Ruang personal tinggi",match:"ENTJ, ESTJ"},
-  ENFP: {i:"🌟",n:"Si Inspirator",d:"Visioner, berempati tinggi, dan selalu optimis.",plus:["Optimis","Empati"],minus:["Terlalu Emosional","Gampang Stres"],career:"Jurnalis, Terapis",social:"Sangat populer",love:"Romantis totalitas",match:"INTJ, INFJ"},
-  INFP: {i:"🎨",n:"Si Mediator",d:"Idealis sejati, pencari makna, dan sangat loyal.",plus:["Setia","Artistik"],minus:["Terlalu Idealis","Hindari Konflik"],career:"Penulis, Desainer",social:"Pendengar yang baik",love:"Mencari soulmate",match:"ENFJ, ENTJ"},
-  INTJ: {i:"🏛️",n:"Si Arsitek",d:"Pemikir strategis, mandiri, dan berorientasi rencana panjang.",plus:["Strategis","Rasional"],minus:["Arogan","Benci Emosi"],career:"Insinyur, Manajer",social:"Sirkel kecil berkualitas",love:"Setia dan logis",match:"ENFP, ENTP"},
-  ENTJ: {i:"👑",n:"Si Komandan",d:"Pemimpin alami, tegas, dan fokus pada pencapaian target.",plus:["Pemimpin","Efisien"],minus:["Keras Kepala","Kurang Toleran"],career:"CEO, Eksekutif",social:"Mendominasi",love:"Butuh pasangan kuat",match:"INTP, INFP"},
-  INFJ: {i:"🌙",n:"Si Advokat",d:"Visioner idealis namun berorientasi pada tindakan altruis.",plus:["Berwawasan","Altruis"],minus:["Perfeksionis","Mudah Burnout"],career:"Konselor, Psikiater",social:"Misterius tapi ramah",love:"Koneksi batin sangat dalam",match:"ENFP, ENTP"},
-  ENFJ: {i:"🌟",n:"Si Protagonis",d:"Karismatik, dapat diandalkan, dan sangat menginspirasi massa.",plus:["Karismatik","Suportif"],minus:["Terlalu Idealis","Mudah Tersinggung"],career:"Politisi, HRD",social:"Pemersatu grup",love:"Sangat perhatian",match:"INFP, ISFP"},
-  ISTJ: {i:"📋",n:"Si Ahli Logistik",d:"Pekerja keras, logis, terorganisir, dan menghargai tradisi.",plus:["Terorganisir","Jujur"],minus:["Kaku","Kurang Peka"],career:"Akuntan, Militer",social:"Disiplin & tepat waktu",love:"Tanggung jawab tinggi",match:"ESTP, ESFP"},
-  ISFJ: {i:"🛡️",n:"Si Pembela",d:"Pelindung yang hangat, setia, dan berdedikasi tinggi pada orang tersayang.",plus:["Pekerja Keras","Setia"],minus:["Overload Kerja","Menahan Emosi"],career:"Perawat, Guru",social:"Mengingat detail teman",love:"Suka stabilitas tradisional",match:"ESFP, ESTP"},
-  ESTJ: {i:"⚖️",n:"Si Eksekutif",d:"Pengelola handal, logis, dan menjunjung tinggi ketertiban.",plus:["Dedikasi","Tegas"],minus:["Terlalu Kaku","Suka Menghakimi"],career:"Manajer, Polisi",social:"Aktif komunitas formal",love:"Melindungi keluarga",match:"ISFP, ISTP"},
-  ESFJ: {i:"🤝",n:"Si Konsul",d:"Populer, penuh semangat, dan sangat suka membantu orang lain.",plus:["Praktis","Hangat"],minus:["Haus Validasi","Takut Kritik"],career:"Resepsionis, Guru",social:"Bintang acara",love:"Butuh diapresiasi",match:"ISFP, ISTP"},
-  ISTP: {i:"🔧",n:"Si Pengrajin",d:"Praktis, logis, mekanikal, dan sangat tangguh dalam krisis.",plus:["Logis","Tenang"],minus:["Mudah Bosan","Keras Kepala"],career:"Mekanik, Atlet",social:"Sedikit bicara banyak aksi",love:"Benci drama dan aturan",match:"ESTJ, ENTJ"},
-  ISFP: {i:"🎨",n:"Si Petualang",d:"Artistik, hidup di momen saat ini, dan sangat damai.",plus:["Imajinatif","Hangat"],minus:["Mandiri Ekstrem","Fluktuatif"],career:"Seniman, Musisi",social:"Santai & anti konflik",love:"Romantis visual",match:"ESTJ, ESFJ"},
-  ESTP: {i:"⚡",n:"Si Pengusaha",d:"Enerjik, rasional, dan suka hidup dalam petualangan spontan.",plus:["Rasional","Sosial"],minus:["Tidak Sabar","Abai Aturan"],career:"Pengusaha, Sales",social:"Pusat perhatian aksi",love:"Petualangan asmara",match:"ISFJ, ISTJ"},
-  ESFP: {i:"🎉",n:"Si Penghibur",d:"Spontan, antusias, dan selalu membawa keseruan bagi semua orang.",plus:["Sosial Hebat","Enerjik"],minus:["Hindari Konflik","Fokus Jangka Pendek"],career:"Aktor, Entertainer",social:"Haus interaksi & perhatian",love:"Menyenangkan & dinamis",match:"ISFJ, ISTJ"}
+  ENTP:{i:"💡",n:"Si Pendebat",d:"Pemikir inovatif, suka tantangan, dan berdebat secara logis.",plus:["Kreatif","Karismatik","Cepat Belajar"],minus:["Cepat Bosan","Argumentatif"],career:"Pengusaha, Pengacara, Konsultan",social:"Aktif berdebat, suka diskusi mendalam",love:"Mandiri, butuh stimulasi intelektual",match:"INFJ, INTJ"},
+  INTP:{i:"🔬",n:"Si Ahli Logika",d:"Pemikir abstrak, objektif, dan haus akan teori baru.",plus:["Analitis","Objektif","Imajinatif"],minus:["Terlihat Dingin","Overthinking"],career:"Ilmuwan, Arsitek Software, Filosof",social:"Pemilih dalam bergaul, suka diskusi konseptual",love:"Ruang personal tinggi, loyal saat nyaman",match:"ENTJ, ESTJ"},
+  ENFP:{i:"🌟",n:"Si Inspirator",d:"Visioner, berempati tinggi, dan selalu optimis.",plus:["Optimis","Empati Tinggi","Kreatif"],minus:["Terlalu Emosional","Gampang Stres"],career:"Jurnalis, Terapis, Seniman",social:"Sangat populer, mudah berteman",love:"Romantis totalitas, mencari koneksi mendalam",match:"INTJ, INFJ"},
+  INFP:{i:"🎨",n:"Si Mediator",d:"Idealis sejati, pencari makna, dan sangat loyal.",plus:["Setia","Artistik","Empatik"],minus:["Terlalu Idealis","Hindari Konflik"],career:"Penulis, Desainer, Konselor",social:"Pendengar yang baik, sirkel kecil",love:"Mencari soulmate, cinta mendalam",match:"ENFJ, ENTJ"},
+  INTJ:{i:"🏛️",n:"Si Arsitek",d:"Pemikir strategis, mandiri, dan berorientasi rencana panjang.",plus:["Strategis","Rasional","Mandiri"],minus:["Arogan","Benci Emosi"],career:"Insinyur, Manajer, Ilmuwan",social:"Sirkel kecil berkualitas tinggi",love:"Setia dan logis, tidak suka drama",match:"ENFP, ENTP"},
+  ENTJ:{i:"👑",n:"Si Komandan",d:"Pemimpin alami, tegas, dan fokus pada pencapaian target.",plus:["Pemimpin","Efisien","Percaya Diri"],minus:["Keras Kepala","Kurang Toleran"],career:"CEO, Eksekutif, Pengacara",social:"Mendominasi, networker ulung",love:"Butuh pasangan yang kuat dan mandiri",match:"INTP, INFP"},
+  ENFJ:{i:"🌍",n:"Si Protagonis",d:"Karismatik, inspiratif, dan peduli pada perkembangan orang lain.",plus:["Karismatik","Altruistik"],minus:["Terlalu Idealis","Neglect Diri"],career:"Guru, Politisi, Pelatih",social:"Pusat perhatian yang positif",love:"Sangat setia dan perhatian",match:"INFP, ISFP"},
+  INFJ:{i:"🔮",n:"Si Advokat",d:"Tipe kepribadian paling langka. Idealis tapi pragmatis.",plus:["Visioner","Empati Dalam","Bertekad"],minus:["Perfeksionis","Burnout"],career:"Penulis, Dokter, Konselor",social:"Koneksi mendalam dengan sedikit orang",love:"Mencari hubungan yang bermakna",match:"ENTP, ENFP"},
+  ESTP:{i:"⚡",n:"Si Pengusaha",d:"Energik, pragmatis, dan suka aksi langsung.",plus:["Berani","Adaptif","Sosial"],minus:["Impulsif","Tidak Sabaran"],career:"Pengusaha, Sales, Atlet",social:"Jiwa pesta, populer",love:"Spontan dan penuh kejutan",match:"ISFJ, ISTJ"},
+  ISTP:{i:"🔧",n:"Si Virtuoso",d:"Pengamat pendiam namun ahli dalam memecahkan masalah.",plus:["Praktis","Tenang","Ahli Teknis"],minus:["Tertutup","Sulit Dibaca"],career:"Insinyur, Mekanik, Pilot",social:"Mandiri, sedikit teman dekat",love:"Butuh ruang, tapi setia",match:"ESTJ, ESFJ"},
+  ESFP:{i:"🎭",n:"Si Penghibur",d:"Spontan, energik, dan suka menjadi pusat perhatian.",plus:["Ceria","Generous","Adaptif"],minus:["Mudah Bosan","Sensitif"],career:"Artis, Performer, Guru TK",social:"Hidup dan jiwa pesta",love:"Penuh afeksi dan momen",match:"ISFJ, ISTJ"},
+  ISFP:{i:"🌸",n:"Si Petualang",d:"Fleksibel, penuh pesona, dan selalu siap menjelajahi hal baru.",plus:["Artistik","Spontan","Empati"],minus:["Kurang Fokus","Sulit Komitmen"],career:"Seniman, Chef, Dokter Hewan",social:"Ramah tapi butuh waktu sendiri",love:"Romantis dan penuh sensasi",match:"ESTJ, ESFJ"},
+  ESTJ:{i:"⚖️",n:"Si Eksekutif",d:"Terorganisir, berorientasi fakta, dan suka mengatur.",plus:["Terorganisir","Bertanggung Jawab","Jujur"],minus:["Kaku","Sulit Berempati"],career:"Manajer, Hakim, Militer",social:"Pemimpin komunitas",love:"Stabil dan berkomitmen",match:"ISTP, ISFP"},
+  ISTJ:{i:"📋",n:"Si Ahli Logistik",d:"Praktis, faktual, dan bertanggung jawab.",plus:["Dapat Diandalkan","Teliti","Sabar"],minus:["Kaku","Resisten Perubahan"],career:"Akuntan, Militer, Detektif",social:"Sirkel kecil dan setia",love:"Stabil, tapi kurang ekspresif",match:"ESTP, ESFP"},
+  ESFJ:{i:"🤝",n:"Si Konsul",d:"Peduli, sosial, dan suka membantu orang lain.",plus:["Hangat","Setia","Terorganisir"],minus:["Terlalu Sensitif","Butuh Validasi"],career:"Perawat, Guru, Event Organizer",social:"Sangat sosial dan perhatian",love:"Dedicated dan sangat suportif",match:"ISTP, ISFP"},
+  ISFJ:{i:"🛡️",n:"Si Pembela",d:"Pelindung sejati, sabar, dan selalu hadir untuk orang yang disayang.",plus:["Setia","Perhatian","Pekerja Keras"],minus:["Terlalu Rendah Hati","Sulit Berkata Tidak"],career:"Perawat, Guru, Admin",social:"Setia pada lingkaran kecil",love:"Penuh dedikasi dan perhatian",match:"ESTP, ESFP"}
 };
 
-const MBTI_QUESTIONS_FULL = [
-  {q:"Anda merasa lelah setelah berada di keramaian terlalu lama.", dim:"EI", r:true},
-  {q:"Anda lebih sering mengandalkan fakta objektif daripada ide abstrak.", dim:"SN", r:false},
-  {q:"Anda membuat keputusan berdasarkan perasaan orang lain dibanding logika murni.", dim:"TF", r:true},
-  {q:"Anda lebih suka jadwal yang fleksibel daripada rencana terstruktur.", dim:"JP", r:true},
-  {q:"Anda sangat mudah memulai percakapan dengan orang asing.", dim:"EI", r:false},
-  {q:"Anda sering melamun memikirkan kemungkinan masa depan atau fantasi.", dim:"SN", r:true},
-  {q:"Anda percaya kebenaran objektif lebih penting daripada menjaga perasaan orang.", dim:"TF", r:false},
-  {q:"Meja kerja atau kamar Anda biasanya tertata sangat rapi dan terorganisir.", dim:"JP", r:false},
-  {q:"Anda lebih suka bekerja sendirian daripada dalam tim besar.", dim:"EI", r:true},
-  {q:"Anda lebih tertarik pada konsep/teori daripada detail praktis sehari-hari.", dim:"SN", r:true},
-  {q:"Saat berdebat, Anda cenderung mempertimbangkan dampak emosional lawan.", dim:"TF", r:true},
-  {q:"Anda merasa nyaman dengan perubahan jadwal yang mendadak.", dim:"JP", r:true}
+const MBTI_SHORT_Q = [
+  {q:"Setelah hari yang panjang, Anda lebih suka…",opts:["Kumpul bersama banyak teman","Menyendiri untuk recharge"],dim:"EI",scores:[7,1]},
+  {q:"Saat belajar hal baru, Anda lebih suka…",opts:["Contoh dan fakta nyata","Teori dan konsep besar"],dim:"SN",scores:[1,7]},
+  {q:"Saat membuat keputusan penting, Anda lebih mengandalkan…",opts:["Logika dan analisa objektif","Perasaan dan dampak pada orang"],dim:"TF",scores:[1,7]},
+  {q:"Gaya kerja Anda lebih condong ke…",opts:["Jadwal terstruktur dan rencana jelas","Fleksibel dan improvisasi"],dim:"JP",scores:[1,7]},
+  {q:"Di pesta atau acara sosial, Anda biasanya…",opts:["Banyak kenalan baru & jadi perhatian","Lebih nyaman dengan teman lama"],dim:"EI",scores:[7,1]},
+  {q:"Dalam proyek, Anda lebih fokus pada…",opts:["Apa yang ada dan faktual","Kemungkinan dan inovasi baru"],dim:"SN",scores:[1,7]},
+  {q:"Anda lebih kesal jika seseorang…",opts:["Tidak logis dan inkonsisten","Tidak peka dan terlalu kaku"],dim:"TF",scores:[1,7]},
+  {q:"Anda merasa paling nyaman saat…",opts:["Rencana sudah ditetapkan","Membiarkan sesuatu mengalir"],dim:"JP",scores:[1,7]},
+  {q:"Anda lebih senang bekerja dalam…",opts:["Tim yang ramai dan interaktif","Tim kecil atau sendiri"],dim:"EI",scores:[7,1]},
+  {q:"Deskripsi mana yang lebih mencerminkan Anda?",opts:["Realistis dan membumi","Imajinatif dan penuh ide"],dim:"SN",scores:[1,7]},
+  {q:"Dalam perdebatan, Anda lebih mementingkan…",opts:["Kebenaran faktual meski menyakitkan","Menjaga perasaan semua pihak"],dim:"TF",scores:[1,7]},
+  {q:"Anda lebih suka proyek yang…",opts:["Selesai tepat waktu sesuai rencana","Terus berkembang dan beradaptasi"],dim:"JP",scores:[1,7]}
+];
+
+const MBTI_LONG_Q = [
+  {q:"Anda percaya kebenaran objektif lebih penting daripada menjaga perasaan orang.",dim:"TF",r:false},
+  {q:"Meja kerja atau kamar Anda biasanya tertata sangat rapi dan terorganisir.",dim:"JP",r:false},
+  {q:"Anda lebih suka bekerja sendirian daripada dalam tim besar.",dim:"EI",r:true},
+  {q:"Anda lebih tertarik pada konsep/teori daripada detail praktis sehari-hari.",dim:"SN",r:true},
+  {q:"Saat berdebat, Anda cenderung mempertimbangkan dampak emosional lawan.",dim:"TF",r:true},
+  {q:"Anda merasa nyaman dengan perubahan jadwal yang mendadak.",dim:"JP",r:true},
+  {q:"Anda merasa lebih berenergi setelah menghabiskan waktu sendirian.",dim:"EI",r:true},
+  {q:"Anda lebih percaya pada pengalaman langsung daripada intuisi atau firasat.",dim:"SN",r:false},
+  {q:"Anda lebih suka membuat keputusan berdasarkan perasaan daripada logika.",dim:"TF",r:true},
+  {q:"Anda sering menyelesaikan tugas jauh sebelum batas waktu.",dim:"JP",r:false},
+  {q:"Anda mudah memulai percakapan dengan orang yang baru dikenal.",dim:"EI",r:false},
+  {q:"Anda sering memikirkan pola, makna, dan koneksi antara berbagai hal.",dim:"SN",r:true},
+  {q:"Anda menganggap efisiensi lebih penting dari harmoni sosial di tempat kerja.",dim:"TF",r:false},
+  {q:"Anda lebih suka membuat rencana detail sebelum memulai sesuatu.",dim:"JP",r:false},
+  {q:"Anda merasa lelah setelah banyak berinteraksi sosial, bahkan jika menyenangkan.",dim:"EI",r:true},
+  {q:"Anda lebih tertarik pada apa yang bisa terjadi di masa depan daripada apa yang ada saat ini.",dim:"SN",r:true},
+  {q:"Anda merasa tidak nyaman saat harus mengkritik seseorang meski itu benar.",dim:"TF",r:true},
+  {q:"Anda lebih suka memiliki banyak pilihan terbuka daripada keputusan yang sudah final.",dim:"JP",r:true},
+  {q:"Anda secara alami mengambil peran pemimpin dalam situasi kelompok.",dim:"EI",r:false},
+  {q:"Anda lebih mempercayai data dan fakta daripada imajinasi saat memecahkan masalah.",dim:"SN",r:false},
+  {q:"Anda sering menganalisis argumen untuk menemukan kelemahannya.",dim:"TF",r:false},
+  {q:"Anda lebih suka menyelesaikan satu hal sebelum memulai yang lain.",dim:"JP",r:false},
+  {q:"Anda menikmati menjadi pusat perhatian di situasi sosial.",dim:"EI",r:false},
+  {q:"Anda lebih suka berimprovisasi daripada mengikuti script yang sudah disiapkan.",dim:"JP",r:true},
+  {q:"Anda sangat peduli dengan nilai-nilai moral dan etika dalam keputusan sehari-hari.",dim:"TF",r:true},
+  {q:"Anda sering merenungkan pertanyaan-pertanyaan filosofis yang mendalam.",dim:"SN",r:true},
+  {q:"Anda merasa tidak nyaman dengan situasi yang ambigu dan tidak jelas.",dim:"JP",r:false},
+  {q:"Anda lebih suka mengekspresikan perasaan melalui tindakan daripada kata-kata.",dim:"TF",r:false},
+  {q:"Anda cenderung menyimpan energi dan memilih kapan harus bersosialisasi.",dim:"EI",r:true},
+  {q:"Anda sering terinspirasi oleh metafora, analogi, dan simbolisme.",dim:"SN",r:true},
+  {q:"Dalam tim, Anda lebih suka menjadi pendengar yang mengamati daripada yang berbicara banyak.",dim:"EI",r:true},
+  {q:"Anda lebih nyaman dengan aturan dan prosedur yang jelas daripada panduan yang fleksibel.",dim:"JP",r:false},
+  {q:"Anda cenderung memberikan saran praktis daripada dukungan emosional saat teman bermasalah.",dim:"TF",r:false},
+  {q:"Anda sering membayangkan skenario yang belum tentu terjadi.",dim:"SN",r:true},
+  {q:"Anda merasa lebih nyaman dalam lingkungan yang familiar dan dapat diprediksi.",dim:"JP",r:false},
+  {q:"Anda lebih memilih untuk berbicara tatap muka daripada melalui pesan teks.",dim:"EI",r:false},
+  {q:"Anda lebih suka memahami mengapa sesuatu terjadi daripada sekedar mengetahui cara melakukannya.",dim:"SN",r:true},
+  {q:"Anda bisa dengan mudah melepaskan emosi pribadi saat membuat keputusan penting.",dim:"TF",r:false},
+  {q:"Anda cenderung memiliki banyak hobi atau minat yang berbeda-beda dan berubah-ubah.",dim:"JP",r:true},
+  {q:"Anda senang mendapat banyak masukan dari berbagai orang sebelum membuat keputusan.",dim:"EI",r:false},
+  {q:"Anda lebih tertarik pada detail spesifik daripada gambaran besar.",dim:"SN",r:false},
+  {q:"Anda merasa penting untuk jujur bahkan jika itu menyakitkan.",dim:"TF",r:false},
+  {q:"Anda lebih suka pendekatan yang sudah terbukti daripada mencoba metode baru.",dim:"SN",r:false},
+  {q:"Anda sering mempertimbangkan semua kemungkinan sebelum memutuskan.",dim:"JP",r:true},
+  {q:"Anda merasa lebih nyaman memimpin dari belakang daripada tampil di depan.",dim:"EI",r:true},
+  {q:"Anda sering membuat keputusan berdasarkan apa yang terasa benar, bukan apa yang logis.",dim:"TF",r:true},
+  {q:"Anda menyukai rutinitas harian yang konsisten dan dapat diprediksi.",dim:"JP",r:false},
+  {q:"Anda lebih menyukai percakapan satu lawan satu daripada diskusi kelompok besar.",dim:"EI",r:true},
+  {q:"Anda lebih percaya pada intuisi daripada pengalaman empiris saat membuat keputusan besar.",dim:"SN",r:true}
 ];
 
 const EQ_QUESTIONS = [
-  {q:"Saya tahu persis emosi apa yang sedang saya rasakan beserta alasannya.", r:false},
-  {q:"Saya sering bertindak impulsif dan menyesalinya saat sedang marah.", r:true},
-  {q:"Saya mampu menenangkan diri dengan cepat setelah mengalami kejadian yang membuat frustrasi.", r:false},
-  {q:"Saya kesulitan memahami sudut pandang orang lain jika saya tidak setuju dengannya.", r:true},
-  {q:"Saya bisa membaca suasana hati seseorang hanya dari bahasa tubuh dan nada bicaranya.", r:false},
-  {q:"Saya sering merasa kewalahan dan kehabisan tenaga oleh emosi saya sendiri.", r:true}, 
-  {q:"Saya mampu memotivasi diri sendiri untuk bangkit kembali setelah mengalami kegagalan.", r:false},
-  {q:"Saya sering mengatakan hal-hal kasar yang saya sesali saat sedang terbawa emosi.", r:true}, 
-  {q:"Saya merasa mudah untuk membangun hubungan dan kepercayaan dengan orang baru.", r:false},
-  {q:"Saya kesulitan menerima kritik membangun tanpa bersikap defensif (membela diri).", r:true}, 
-  {q:"Saya secara sadar meluangkan waktu untuk mendengarkan keluh kesah teman tanpa menghakimi.", r:false},
-  {q:"Saya sering merasa cemas dan tidak nyaman di situasi sosial yang baru.", r:true}, 
-  {q:"Saya tahu bagaimana cara mencairkan suasana yang tegang dalam sebuah diskusi.", r:false},
-  {q:"Saya kesulitan menolak permintaan orang lain (berkata 'tidak') meski saya sedang kewalahan.", r:true}, 
-  {q:"Saya selalu berusaha melihat sesuatu dari sudut pandang yang positif, terlepas dari seberapa buruk situasinya.", r:false}
+  {q:"Saya tahu persis emosi apa yang sedang saya rasakan beserta alasannya.",r:false},
+  {q:"Saya sering bertindak impulsif dan menyesalinya saat sedang marah.",r:true},
+  {q:"Saya mampu menenangkan diri dengan cepat setelah mengalami kejadian yang membuat frustrasi.",r:false},
+  {q:"Saya kesulitan memahami sudut pandang orang lain jika saya tidak setuju dengannya.",r:true},
+  {q:"Saya bisa membaca suasana hati seseorang hanya dari bahasa tubuh dan nada bicaranya.",r:false},
+  {q:"Saya sering merasa kewalahan dan kehabisan tenaga oleh emosi saya sendiri.",r:true},
+  {q:"Saya mampu memotivasi diri sendiri untuk bangkit kembali setelah mengalami kegagalan.",r:false},
+  {q:"Saya sering mengatakan hal-hal kasar yang saya sesali saat sedang terbawa emosi.",r:true},
+  {q:"Saya merasa mudah untuk membangun hubungan dan kepercayaan dengan orang baru.",r:false},
+  {q:"Saya kesulitan menerima kritik membangun tanpa bersikap defensif.",r:true},
+  {q:"Saya secara sadar meluangkan waktu untuk mendengarkan keluh kesah teman tanpa menghakimi.",r:false},
+  {q:"Saya sering merasa cemas dan tidak nyaman di situasi sosial yang baru.",r:true},
+  {q:"Saya tahu bagaimana cara mencairkan suasana yang tegang dalam sebuah diskusi.",r:false},
+  {q:"Saya kesulitan menolak permintaan orang lain meski saya sedang kewalahan.",r:true},
+  {q:"Saya selalu berusaha melihat sesuatu dari sudut pandang yang positif.",r:false}
 ];
 
-// BANK SOAL LOVE LANGUAGE (15 Soal)
 const LL_QUESTIONS = [
-  {q:"Saya merasa sangat dihargai ketika pasangan/teman secara spesifik memuji pencapaian saya.", dim:"WA"},
-  {q:"Pelukan, tepukan di bahu, atau sentuhan fisik dari orang tersayang membuat saya merasa aman.", dim:"PT"},
-  {q:"Saya merasa sangat spesial ketika seseorang memberikan kejutan hadiah, sekecil apapun itu.", dim:"RG"},
-  {q:"Saya merasa sangat dicintai ketika seseorang mengambil alih tugas/pekerjaan saya saat saya sibuk.", dim:"AS"},
-  {q:"Menghabiskan waktu berdua tanpa gangguan gawai (HP) adalah hal yang paling penting bagi saya.", dim:"QT"},
-  {q:"Mendengar kalimat 'Aku sayang kamu' atau 'Aku bangga padamu' sangat menenangkan hati saya.", dim:"WA"},
-  {q:"Saya merasa kehilangan koneksi emosional jika jarang ada keintiman fisik atau berpegangan tangan.", dim:"PT"},
-  {q:"Saya sangat menghargai usaha seseorang dalam mencari dan membelikan barang yang saya sukai.", dim:"RG"},
-  {q:"Bantuan tak terduga (seperti dibawakan makanan atau dibantu bersih-bersih) membuat hati saya meleleh.", dim:"AS"},
-  {q:"Saya merasa diabaikan jika lawan bicara saya tidak memberikan perhatian penuh saat kami sedang bersama.", dim:"QT"},
-  {q:"Kritik tajam jauh lebih menyakiti dan membekas di hati saya dibandingkan tindakan buruk lainnya.", dim:"WA"},
-  {q:"Duduk berdekatan atau bersandar pada pasangan memberi saya kenyamanan emosional yang dalam.", dim:"PT"},
-  {q:"Sebuah suvenir kecil dari perjalanan seseorang membuktikan bahwa mereka selalu memikirkan saya.", dim:"RG"},
-  {q:"Bagi saya, tindakan membantu pekerjaan jauh lebih membuktikan cinta daripada sekadar kata-kata manis.", dim:"AS"},
-  {q:"Jalan-jalan berdua atau ngobrol intim berjam-jam adalah cara terbaik mempererat hubungan.", dim:"QT"}
+  {q:"Saya merasa sangat dihargai ketika pasangan/teman secara spesifik memuji pencapaian saya.",dim:"WA"},
+  {q:"Pelukan, tepukan di bahu, atau sentuhan fisik dari orang tersayang membuat saya merasa aman.",dim:"PT"},
+  {q:"Saya merasa sangat spesial ketika seseorang memberikan kejutan hadiah, sekecil apapun itu.",dim:"RG"},
+  {q:"Saya merasa sangat dicintai ketika seseorang mengambil alih tugas saya saat saya sibuk.",dim:"AS"},
+  {q:"Menghabiskan waktu berdua tanpa gangguan gawai adalah hal yang paling penting bagi saya.",dim:"QT"},
+  {q:"Mendengar kalimat 'Aku sayang kamu' atau 'Aku bangga padamu' sangat menenangkan hati saya.",dim:"WA"},
+  {q:"Saya merasa kehilangan koneksi emosional jika jarang ada keintiman fisik atau berpegangan tangan.",dim:"PT"},
+  {q:"Saya sangat menghargai usaha seseorang dalam mencari dan membelikan barang yang saya sukai.",dim:"RG"},
+  {q:"Bantuan tak terduga seperti dibawakan makanan membuat hati saya meleleh.",dim:"AS"},
+  {q:"Saya merasa diabaikan jika lawan bicara tidak memberikan perhatian penuh saat kami bersama.",dim:"QT"},
+  {q:"Kritik tajam jauh lebih menyakiti dan membekas di hati saya dibandingkan tindakan buruk lainnya.",dim:"WA"},
+  {q:"Duduk berdekatan atau bersandar pada pasangan memberi saya kenyamanan emosional yang dalam.",dim:"PT"},
+  {q:"Sebuah suvenir kecil dari perjalanan membuktikan bahwa mereka selalu memikirkan saya.",dim:"RG"},
+  {q:"Bagi saya, tindakan membantu pekerjaan lebih membuktikan cinta daripada kata-kata manis.",dim:"AS"},
+  {q:"Jalan-jalan berdua atau ngobrol intim berjam-jam adalah cara terbaik mempererat hubungan.",dim:"QT"}
 ];
 
 const LL_PROFILES = {
-  AS: {
-    n: "Acts of Service",
-    desc: "Kamu merasa paling dicintai dan dihargai ketika seseorang mengambil inisiatif untuk meringankan tugas atau tanggung jawabmu. Bagi dirimu, perhatian tidak selalu harus diwujudkan lewat kata-kata manis, tetapi melalui tindakan nyata yang membuat hidup terasa sedikit lebih ringan. Saat seseorang dengan sadar membantu tanpa diminta, kamu melihatnya sebagai bentuk kepedulian yang tulus, sebuah pesan diam-diam yang berkata, 'Aku peduli dengan beban yang kamu pikul.'",
-    dinamika: "<strong>Mengatasi Rasa Bersalah Meminta Bantuan:</strong> Masalah utama tipe ini adalah rasa bersalah saat meminta bantuan. Akibatnya, kamu cenderung memendam kelelahan dan berharap orang lain mengerti dengan sendirinya.<br><br>Gunakan pernyataan berfokus pada diri sendiri. Alih-alih bilang 'Kamu tidak pernah bantu!', katakan 'Aku merasa kewalahan kalau harus mengerjakannya sendirian.' Ini membantu orang lain mengerti bebanmu tanpa merasa dipersalahkan. Orang lain sering tidak membantu bukan karena tidak sayang, tapi karena tidak tahu apa yang harus dilakukan. Memberikan instruksi spesifik jauh lebih efektif."
-  },
-  WA: {
-    n: "Words of Affirmation",
-    desc: "Kata-kata apresiasi, pujian, dan afirmasi positif adalah bahasa utamamu. Kamu merasa sangat dihargai saat usaha dan karaktermu diakui secara verbal. Kalimat sederhana seperti 'Aku bangga padamu' bisa membuat harimu jauh lebih cerah dan memberimu kekuatan.",
-    dinamika: "<strong>Menghadapi Kritik:</strong> Kelemahan utama tipe ini adalah sangat sensitif terhadap kritik tajam atau kata-kata kasar. Kata-kata buruk bisa terekam lama di ingatanmu.<br><br>Sampaikan secara terbuka kepada pasangan atau teman bahwa kamu membutuhkan komunikasi yang lembut. Jika ada masalah, minta mereka menyampaikannya secara konstruktif. Jangan ragu juga untuk secara aktif meminta validasi verbal saat kamu sedang merasa tidak percaya diri."
-  },
-  QT: {
-    n: "Quality Time",
-    desc: "Waktu yang dihabiskan bersama tanpa gangguan adalah segalanya bagimu. Perhatian penuh, kontak mata, dan kehadiran secara utuh membuatmu merasa benar-benar dicintai dan terhubung secara batin.",
-    dinamika: "<strong>Mengatasi Distraksi:</strong> Kamu paling mudah merasa diabaikan dan tersinggung jika pasangan atau teman sibuk dengan gadget (HP) atau memikirkan hal lain saat sedang bersamamu.<br><br>Solusinya, buatlah jadwal khusus 'bebas gangguan' secara rutin. Sepakati aturan seperti tidak membuka HP saat makan malam atau saat sedang mengobrol berdua agar koneksi emosional tetap terjaga."
-  },
-  PT: {
-    n: "Physical Touch",
-    desc: "Sentuhan fisik seperti pelukan, tepukan di bahu, berpegangan tangan, atau bersandar adalah cara utama kamu merasakan koneksi emosional. Keintiman fisik memberikan rasa aman dan nyaman yang tidak bisa digantikan oleh hal lain.",
-    dinamika: "<strong>Menghadapi Jarak:</strong> Jarak fisik atau kurangnya inisiatif sentuhan dari pasangan bisa membuatmu merasa cemas, tidak dicintai, atau terisolasi secara emosional.<br><br>Inisiasi keintiman fisik kecil setiap hari, seperti pelukan di pagi hari atau tepukan hangat. Jika sedang LDR (Long Distance), diskusikan cara lain untuk merasa dekat, seperti barang kenangan yang bisa dipeluk atau obrolan video rutin."
-  },
-  RG: {
-    n: "Receiving Gifts",
-    desc: "Bagi kamu, hadiah bukanlah soal materialisme, melainkan simbol visual bahwa seseorang memikirkanmu saat kalian tidak sedang bersama. Usaha, waktu, dan perhatian di balik pemilihan hadiah tersebut adalah hal yang paling berharga.",
-    dinamika: "<strong>Menghargai Makna, Bukan Harga:</strong> Kamu mungkin akan merasa sangat kecewa jika momen penting (seperti ulang tahun atau *anniversary*) dilupakan oleh orang terdekat.<br><br>Komunikasikan bahwa kamu menghargai nilai sentimental. Ajarkan pasangan bahwa hadiah tidak harus mahal; sebuah catatan kecil, bunga petikan, atau jajanan kesukaan sudah cukup untuk membuatmu merasa sangat spesial."
-  }
+  AS:{n:"Acts of Service",desc:"Kamu merasa paling dicintai ketika seseorang mengambil inisiatif meringankan tugas atau tanggung jawabmu. Tindakan nyata adalah bentuk kasih sayang tertinggi bagimu.",dinamika:"<strong>Mengatasi Rasa Bersalah:</strong> Masalah utama tipe ini adalah rasa bersalah saat meminta bantuan. Gunakan pernyataan berfokus diri sendiri: 'Aku merasa kewalahan kalau harus mengerjakannya sendirian.' Ini jauh lebih efektif."},
+  WA:{n:"Words of Affirmation",desc:"Kata-kata apresiasi, pujian, dan afirmasi positif adalah bahasa utamamu. Kalimat sederhana 'Aku bangga padamu' bisa membuat harimu jauh lebih cerah.",dinamika:"<strong>Menghadapi Kritik:</strong> Kamu sangat sensitif terhadap kritik tajam. Sampaikan kepada pasangan bahwa kamu membutuhkan komunikasi yang lembut dan konstruktif."},
+  QT:{n:"Quality Time",desc:"Waktu yang dihabiskan bersama tanpa gangguan adalah segalanya bagimu. Perhatian penuh dan kehadiran utuh membuatmu merasa benar-benar dicintai.",dinamika:"<strong>Mengatasi Distraksi:</strong> Buatlah jadwal 'bebas gangguan' secara rutin. Sepakati aturan seperti tidak membuka HP saat makan malam agar koneksi emosional tetap terjaga."},
+  PT:{n:"Physical Touch",desc:"Sentuhan fisik seperti pelukan atau berpegangan tangan adalah cara utamamu merasakan koneksi emosional. Keintiman fisik memberikan rasa aman yang tak tergantikan.",dinamika:"<strong>Menghadapi Jarak:</strong> Inisiasi keintiman fisik kecil setiap hari. Jika sedang LDR, diskusikan cara lain untuk merasa dekat secara emosional."},
+  RG:{n:"Receiving Gifts",desc:"Hadiah bagimu bukanlah soal materialisme, melainkan simbol bahwa seseorang memikirkanmu. Usaha dan perhatian di balik pemilihan hadiah adalah yang paling berharga.",dinamika:"<strong>Menghargai Makna:</strong> Komunikasikan bahwa kamu menghargai nilai sentimental. Hadiah tidak harus mahal — catatan kecil atau bunga sudah cukup membuat kamu merasa spesial."}
 };
 
-const IQ_QUESTIONS = [{ type: 'matrix', lvl: 1, grid: ["◼","◻","◼", "◻","◼","◻", "◼","◻","?"], opts: ["◼","◻","▲","◯"], ans: 0 }];
+const IQ_QUESTIONS = [
+  {type:'matrix',lvl:1,grid:["◼","◻","◼","◻","◼","◻","◼","◻","?"],opts:["◼","◻","▲","◯"],ans:0},
+  {type:'text',lvl:1,q:"Apel : Buah, Mawar : ?",opts:["Duri","Taman","Bunga","Merah"],ans:2},
+  {type:'matrix',lvl:2,grid:["🔴","🔵","🔴","🔵","🔴","🔵","🔴","🔵","?"],opts:["🔴","🟡","🔵","🟢"],ans:0},
+  {type:'text',lvl:2,q:"Nomor berikutnya: 2, 4, 8, 16, ?",opts:["24","28","32","36"],ans:2},
+  {type:'text',lvl:2,q:"Jika KUCING = GXEHKM, maka ANJING = ?",opts:["CPLJKM","CPLKJM","CPLJMK","CPLKMJ"],ans:0},
+  {type:'matrix',lvl:3,grid:["⬛","⬜","⬛","⬜","⬛","⬜","⬛","⬜","?"],opts:["⬛","⬜","🔲","◻"],ans:0},
+  {type:'text',lvl:3,q:"Pola: 1, 1, 2, 3, 5, 8, 13, ?",opts:["18","19","20","21"],ans:3},
+  {type:'text',lvl:3,q:"Kata mana yang tidak sekelompok? Merah, Biru, Hijau, Besar",opts:["Merah","Biru","Hijau","Besar"],ans:3},
+  {type:'matrix',lvl:4,grid:["▲","▲","▲","◆","◆","◆","●","●","?"],opts:["▲","◆","●","■"],ans:2},
+  {type:'text',lvl:4,q:"3, 7, 13, 21, 31, ?",opts:["41","43","44","45"],ans:1},
+  {type:'text',lvl:4,q:"Semua A adalah B. Semua B adalah C. Maka semua A adalah…",opts:["Bukan C","Mungkin C","Pasti C","Tidak diketahui"],ans:2},
+  {type:'matrix',lvl:5,grid:["🌑","🌒","🌓","🌔","🌕","🌖","🌗","🌘","?"],opts:["🌑","🌒","🌓","🌙"],ans:0},
+  {type:'text',lvl:5,q:"Pola: 2, 6, 12, 20, 30, ?",opts:["40","42","44","46"],ans:1},
+  {type:'text',lvl:5,q:"Buku ada di rak. Rak ada di ruangan. Ruangan ada di gedung. Buku ada di…",opts:["Rak saja","Ruangan saja","Gedung","Semua benar"],ans:2}
+];
 
+// =========================================
 // STATE
-let currentTest = '';
-let currentStep = 0;
-let totalSteps = 0;
-let answers = {};
-let timerInterval = null;
-let activeQuestions = [];
+// =========================================
+let currentTest='',currentStep=0,totalSteps=0,answers={},timerInterval=null,activeQuestions=[];
 
-function showScreen(id) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-  window.scrollTo(0,0);
-  if(id === 'home') clearInterval(timerInterval);
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  const el=document.getElementById(id);
+  if(el)el.classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+  if(id==='home')clearInterval(timerInterval);
 }
 
-function openMBTIModal() { document.getElementById('mbti-modal').classList.add('active'); }
-function closeModal() { document.getElementById('mbti-modal').classList.remove('active'); }
+function openMBTIModal(){document.getElementById('mbti-modal').classList.add('active');}
+function closeModal(){document.getElementById('mbti-modal').classList.remove('active');}
 
-function startTest(type) {
-  if(type === 'mbti_short' || type === 'mbti_long') closeModal();
-  
-  currentTest = type; currentStep = 0; answers = {};
-  
-  const labels = {iq:"🧠 Tes IQ", eq:"❤️‍🔥 Tes Kecerdasan Emosional", ll:"💌 Tes Love Language", mbti_short:"⚡ MBTI Singkat", mbti_long:"🧠 MBTI Lengkap", zodiac:"✨ Ramalan Bintang", shio:"🐉 Profil Shio"};
-  document.getElementById('test-label').textContent = labels[type] || "Asesmen";
-  document.getElementById('test-timer').style.display = 'none';
-  document.getElementById('progress-bar').style.width = '0%';
-  
-  const body = document.getElementById('form-body');
-  let html = '';
-  
-  // ==============================
-  // RENDER LOVE LANGUAGE TEST
-  // ==============================
-  if (type === 'll') {
-    activeQuestions = LL_QUESTIONS; 
-    const qPerPage = 5; 
-    totalSteps = Math.ceil(activeQuestions.length / qPerPage);
-    
-    for(let page=0; page<totalSteps; page++) {
-      html += `<div class="question-container ${page===0?'active':''}" id="step-${page}">`;
-      for(let i=page*qPerPage; i<(page+1)*qPerPage && i<activeQuestions.length; i++) {
-        const q = activeQuestions[i];
-        let dotsHtml = '';
-        for(let v=1; v<=7; v++) {
-          dotsHtml += `<button class="scale-dot d-${v}" id="m-${i}-${v}" onclick="selectScale(${i},${v},'${q.dim}',false)"></button>`;
-        }
-        html += `
-          <div style="margin-bottom:48px; border-bottom:1px solid var(--border); padding-bottom:32px;">
-            <div class="scale-q-text">${i+1}. ${q.q}</div>
-            <div class="scale-container">
-              <span class="scale-label agree" style="color:var(--ll);">Sangat Setuju</span>
-              <div class="scale-dots">${dotsHtml}</div>
-              <span class="scale-label disagree" style="color:var(--ll2);">Sangat Menolak</span>
-            </div>
-          </div>`;
-      }
-      html += `</div>`;
-    }
-    body.innerHTML = html;
+// =========================================
+// START TEST
+// =========================================
+function startTest(type){
+  if(type==='mbti_short'||type==='mbti_long')closeModal();
+  currentTest=type;currentStep=0;answers={};
+  const themeCard=document.getElementById('dynamic-theme-card');
+  const labels={iq:"🧠 Tes IQ",eq:"❤️‍🔥 Kecerdasan Emosional",ll:"💌 Love Language",mbti_short:"⚡ MBTI Singkat",mbti_long:"🧠 MBTI Lengkap",zodiac:"✨ Ramalan Zodiak",shio:"🐉 Profil Shio"};
+  const colors={iq:"var(--iq)","iq2":"var(--iq)",eq:"var(--eq)",ll:"var(--ll)",mbti_short:"var(--mbti)",mbti_long:"var(--mbti)",zodiac:"var(--zodiac)",shio:"var(--shio)"};
+  document.getElementById('test-label').textContent=labels[type]||'Asesmen';
+  document.getElementById('test-timer').style.display='none';
+  document.getElementById('progress-bar').style.width='0%';
+  if(themeCard){
+    const c=type.startsWith('mbti')?'--mbti':type==='zodiac'?'--zodiac':type==='shio'?'--shio':type==='eq'?'--eq':type==='ll'?'--ll':'--iq';
+    themeCard.style.setProperty('--c',`var(${c})`);
+    themeCard.style.setProperty('--c2',`var(${c}2, var(${c}))`);
   }
-  // ==============================
-  // RENDER EQ TEST
-  // ==============================
-  else if (type === 'eq') {
-    activeQuestions = EQ_QUESTIONS; 
-    const qPerPage = 5; 
-    totalSteps = Math.ceil(activeQuestions.length / qPerPage);
-    
-    for(let page=0; page<totalSteps; page++) {
-      html += `<div class="question-container ${page===0?'active':''}" id="step-${page}">`;
-      for(let i=page*qPerPage; i<(page+1)*qPerPage && i<activeQuestions.length; i++) {
-        const q = activeQuestions[i];
-        let dotsHtml = '';
-        for(let v=1; v<=7; v++) {
-          dotsHtml += `<button class="scale-dot d-${v}" id="m-${i}-${v}" onclick="selectScale(${i},${v},'EQ',${q.r})"></button>`;
+
+  const body=document.getElementById('form-body');
+  let html='';
+
+  if(type==='ll'||type==='eq'){
+    const qArr=type==='ll'?LL_QUESTIONS:EQ_QUESTIONS;
+    activeQuestions=qArr;
+    const qPerPage=5;
+    totalSteps=Math.ceil(qArr.length/qPerPage);
+    const c=type==='ll'?'--ll':'--eq';
+    const c2=type==='ll'?'--ll':'--eq';
+    for(let p=0;p<totalSteps;p++){
+      html+=`<div class="question-container ${p===0?'active':''}" id="step-${p}">`;
+      for(let i=p*qPerPage;i<(p+1)*qPerPage&&i<qArr.length;i++){
+        const q=qArr[i];
+        let dots='';
+        for(let v=1;v<=7;v++){
+          const dim=type==='ll'?q.dim:'EQ';
+          const isR=type==='ll'?false:q.r;
+          dots+=`<button class="scale-dot d-${v}" id="m-${i}-${v}" onclick="selectScale(${i},${v},'${dim}',${isR})"></button>`;
         }
-        html += `
-          <div style="margin-bottom:48px; border-bottom:1px solid var(--border); padding-bottom:32px;">
-            <div class="scale-q-text">${i+1}. ${q.q}</div>
-            <div class="scale-container">
-              <span class="scale-label agree" style="color:var(--eq);">Sangat Setuju</span>
-              <div class="scale-dots">${dotsHtml}</div>
-              <span class="scale-label disagree" style="color:var(--eq2);">Sangat Menolak</span>
-            </div>
-          </div>`;
+        html+=`<div style="margin-bottom:44px;border-bottom:1px solid var(--border);padding-bottom:28px;">
+          <div class="scale-q-text">${i+1}. ${q.q}</div>
+          <div class="scale-container" style="--c:var(${c});--c2:var(${c2});">
+            <span class="scale-label agree">Sangat Setuju</span>
+            <div class="scale-dots">${dots}</div>
+            <span class="scale-label disagree">Sangat Menolak</span>
+          </div></div>`;
       }
-      html += `</div>`;
+      html+=`</div>`;
     }
-    body.innerHTML = html;
-  }
-  // ==============================
-  // RENDER SHIO
-  // ==============================
-  else if (type === 'shio') {
-    totalSteps = 1;
-    body.innerHTML = `<div class="question-container active" id="step-0">
-      <div style="text-align:center; margin-bottom:30px;">
-        <div class="iq-q-text" style="font-size:24px;">Data Kelahiran Feng Shui</div>
-        <p style="color:var(--muted); font-size:14px;">Masukkan tanggal lahir dan jenis kelamin Anda untuk menghitung Elemen, Angka Kua, dan Profil Shio yang akurat.</p>
+    body.innerHTML=html;
+  } else if(type==='shio'){
+    totalSteps=1;
+    body.innerHTML=`<div class="question-container active" id="step-0">
+      <div style="text-align:center;margin-bottom:30px;">
+        <div class="iq-q-text">Data Kelahiran Feng Shui</div>
+        <p style="color:var(--muted);font-size:14px;font-weight:600;">Masukkan tanggal lahir dan jenis kelamin untuk menghitung Elemen, Angka Kua, dan Profil Shio.</p>
       </div>
-      <div style="display:flex; gap:16px; margin-bottom:20px;">
-        <input type="date" id="shio-date" class="field-input" style="flex:2;" onchange="checkInput()">
-        <select id="shio-gender" class="field-input" style="flex:1;" onchange="checkInput()">
+      <div style="display:flex;gap:16px;margin-bottom:20px;flex-wrap:wrap;">
+        <input type="date" id="shio-date" class="field-input" style="flex:2;min-width:160px;" onchange="checkInput()">
+        <select id="shio-gender" class="field-input" style="flex:1;min-width:120px;" onchange="checkInput()">
           <option value="" disabled selected>Gender</option>
           <option value="pria">Pria</option>
           <option value="wanita">Wanita</option>
         </select>
+      </div></div>`;
+  } else if(type==='zodiac'){
+    totalSteps=1;
+    body.innerHTML=`<div class="question-container active" id="step-0">
+      <div style="text-align:center;margin-bottom:30px;">
+        <div class="iq-q-text">✨ Masukkan Tanggal Lahirmu</div>
+        <p style="color:var(--muted);font-size:14px;font-weight:600;">Kami akan membacakan bintang-bintang untukmu berdasarkan tanggal kelahiran.</p>
       </div>
+      <input type="date" id="zodiac-input" class="field-input" onchange="checkInput()">
     </div>`;
-  }
-  // ==============================
-  // RENDER ZODIAK TRADISIONAL
-  // ==============================
-  else if (type === 'zodiac') {
-    totalSteps = 1;
-    body.innerHTML = `<div class="question-container active" id="step-0">
-      <div style="text-align:center; margin-bottom:30px;">
-        <div class="iq-q-text" style="font-size:24px;">Masukkan Tanggal Lahir Anda</div>
-        <p style="color:var(--muted); font-size:14px;">Kami akan menganalisa posisi bintang saat Anda lahir untuk meramalkan nasib karir, cinta, dan masa depan Anda.</p>
-      </div>
-      <input type="date" id="zodiac-input" class="field-input" style="font-size:18px; padding:20px; text-align:center; font-weight:bold;" onchange="checkInput()">
-    </div>`;
-  }
-  // ==============================
-  // RENDER MBTI
-  // ==============================
-  else if (type.startsWith('mbti')) {
-    activeQuestions = MBTI_QUESTIONS_FULL; 
-    const qPerPage = 4;
-    totalSteps = Math.ceil(activeQuestions.length / qPerPage);
-    
-    for(let page=0; page<totalSteps; page++) {
-      html += `<div class="question-container ${page===0?'active':''}" id="step-${page}">`;
-      for(let i=page*qPerPage; i<(page+1)*qPerPage && i<activeQuestions.length; i++) {
-        const q = activeQuestions[i];
-        let dotsHtml = '';
-        for(let v=1; v<=7; v++) {
-          dotsHtml += `<button class="scale-dot d-${v}" id="m-${i}-${v}" onclick="selectScale(${i},${v},'${q.dim}',${q.r})"></button>`;
-        }
-        html += `
-          <div style="margin-bottom:48px; border-bottom:1px solid var(--border); padding-bottom:32px;">
-            <div class="scale-q-text">${i+1}. ${q.q}</div>
-            <div class="scale-container">
-              <span class="scale-label agree">Sangat Setuju</span>
-              <div class="scale-dots">${dotsHtml}</div>
-              <span class="scale-label disagree">Sangat Menolak</span>
-            </div>
+  } else if(type==='mbti_short'){
+    activeQuestions=MBTI_SHORT_Q;
+    totalSteps=MBTI_SHORT_Q.length;
+    for(let i=0;i<MBTI_SHORT_Q.length;i++){
+      const q=MBTI_SHORT_Q[i];
+      html+=`<div class="question-container ${i===0?'active':''}" id="step-${i}">
+        <div class="iq-q-text" style="text-align:left;margin-bottom:24px;">${i+1}. ${q.q}</div>
+        <div class="iq-opts text-opts" style="--c:var(--mbti);">
+          ${q.opts.map((o,oi)=>`<div class="iq-opt opt-text" onclick="selectIQOpt(${i},${oi})"><span class="opt-label-text">${String.fromCharCode(65+oi)}.</span>${o}</div>`).join('')}
+        </div></div>`;
+    }
+    body.innerHTML=html;
+  } else if(type==='mbti_long'){
+    activeQuestions=MBTI_LONG_Q;
+    totalSteps=MBTI_LONG_Q.length;
+    for(let i=0;i<MBTI_LONG_Q.length;i++){
+      const q=MBTI_LONG_Q[i];
+      let dots='';
+      for(let v=1;v<=7;v++) dots+=`<button class="scale-dot d-${v}" id="ml-${i}-${v}" onclick="selectScale(${i},${v},'${q.dim}',${q.r},'ml-')"></button>`;
+      html+=`<div class="question-container ${i===0?'active':''}" id="step-${i}">
+        <div class="scale-q-text">${i+1}. ${q.q}</div>
+        <div class="scale-container" style="--c:var(--mbti);--c2:var(--zodiac);">
+          <span class="scale-label agree">Sangat Setuju</span>
+          <div class="scale-dots">${dots}</div>
+          <span class="scale-label disagree">Sangat Menolak</span>
+        </div></div>`;
+    }
+    body.innerHTML=html;
+  } else if(type==='iq'){
+    activeQuestions=IQ_QUESTIONS;
+    totalSteps=IQ_QUESTIONS.length;
+    for(let i=0;i<IQ_QUESTIONS.length;i++){
+      const q=IQ_QUESTIONS[i];
+      let qHtml='';
+      if(q.type==='matrix'){
+        const cells=q.grid.map(c=>`<div class="matrix-cell ${c==='?'?'q':''}">${c}</div>`).join('');
+        qHtml=`<div class="matrix-container"><div class="matrix-grid">${cells}</div></div>
+          <div class="iq-opts matrix-opts" style="--c:var(--iq);">
+            ${q.opts.map((o,oi)=>`<div class="iq-opt opt-matrix" onclick="selectIQOpt(${i},${oi})"><span class="opt-label">${String.fromCharCode(65+oi)}</span>${o}</div>`).join('')}
+          </div>`;
+      } else {
+        qHtml=`<div class="iq-q-text">${q.q}</div>
+          <div class="iq-opts text-opts" style="--c:var(--iq);">
+            ${q.opts.map((o,oi)=>`<div class="iq-opt opt-text" onclick="selectIQOpt(${i},${oi})"><span class="opt-label-text">${String.fromCharCode(65+oi)}.</span>${o}</div>`).join('')}
           </div>`;
       }
-      html += `</div>`;
+      html+=`<div class="question-container ${i===0?'active':''}" id="step-${i}">
+        <div class="stage-badge">Soal ${i+1} / ${IQ_QUESTIONS.length}</div>
+        ${qHtml}</div>`;
     }
-    body.innerHTML = html;
+    body.innerHTML=html;
+    // start timer
+    let secs=30*60;
+    const timerEl=document.getElementById('test-timer');
+    timerEl.style.display='block';
+    clearInterval(timerInterval);
+    timerInterval=setInterval(()=>{
+      secs--;
+      if(secs<=0){clearInterval(timerInterval);processIQ();}
+      const m=Math.floor(secs/60).toString().padStart(2,'0');
+      const s=(secs%60).toString().padStart(2,'0');
+      timerEl.textContent=`${m}:${s}`;
+    },1000);
   }
-  else {
-    totalSteps = 1;
-    body.innerHTML = `<div class="question-container active" id="step-0"><div class="iq-q-text">Mode ini dinonaktifkan untuk run ini. Klik Selanjutnya.</div></div>`;
-    answers = 0;
-  }
-  
-  updateControls();
+
+  updateProgress();
+  checkInput();
   showScreen('test');
 }
 
-function selectScale(qIndex, val, targetAttr, reversed=false) {
-  document.querySelectorAll(`[id^="m-${qIndex}-"]`).forEach(el => el.classList.remove('sel'));
-  
-  const btn = document.getElementById(`m-${qIndex}-${val}`);
-  btn.classList.add('sel');
-  
-  if(currentTest === 'eq') {
-    btn.style.backgroundColor = val <= 3 ? 'var(--eq)' : (val >= 5 ? 'var(--eq2)' : 'var(--muted)');
-    btn.style.borderColor = val <= 3 ? 'var(--eq)' : (val >= 5 ? 'var(--eq2)' : 'var(--muted)');
-  } else if(currentTest === 'll') {
-    btn.style.backgroundColor = val <= 3 ? 'var(--ll)' : (val >= 5 ? 'var(--ll2)' : 'var(--muted)');
-    btn.style.borderColor = val <= 3 ? 'var(--ll)' : (val >= 5 ? 'var(--ll2)' : 'var(--muted)');
-  }
-  
-  let score = 0;
-  if(reversed) {
-    score = val; 
-  } else {
-    score = 8 - val;
-  }
-  
-  answers[qIndex] = {target: targetAttr, score: score, rawVal: val};
-  checkInput();
-}
-
-function checkInput() {
-  const btn = document.getElementById('btn-next');
-  if (currentTest.startsWith('mbti') || currentTest === 'eq' || currentTest === 'll') {
-    const qPerPage = currentTest.startsWith('mbti') ? 4 : 5;
-    let allAnswered = true;
-    for(let i=currentStep*qPerPage; i<(currentStep+1)*qPerPage && i<activeQuestions.length; i++) {
-      if(answers[i] === undefined) allAnswered = false;
-    }
-    btn.disabled = !allAnswered;
-  } else if (currentTest === 'shio') {
-    const dateVal = document.getElementById('shio-date').value;
-    const genVal = document.getElementById('shio-gender').value;
-    btn.disabled = !(dateVal && genVal);
-  } else if (currentTest === 'zodiac') {
-    btn.disabled = !document.getElementById('zodiac-input').value;
-  } else {
-    btn.disabled = false;
-  }
-}
-
-function updateControls() {
-  document.querySelectorAll('.question-container').forEach(el => el.classList.remove('active'));
-  const currentStepEl = document.getElementById(`step-${currentStep}`);
-  if(currentStepEl) currentStepEl.classList.add('active');
-  
-  document.getElementById('btn-prev').style.display = currentStep === 0 ? 'none' : 'block';
-  const btnNext = document.getElementById('btn-next');
-  
-  if(currentTest === 'shio' || currentTest === 'zodiac') btnNext.textContent = "Buka Ramalan";
-  else btnNext.textContent = currentStep === totalSteps - 1 ? "Analisa Hasil Tes" : "Selanjutnya";
-  
-  const pct = ((currentStep + 1) / totalSteps) * 100;
-  document.getElementById('progress-bar').style.width = `${pct}%`;
-  
-  checkInput();
-  window.scrollTo(0,0);
-}
-
-function nextStep() {
-  if (currentStep < totalSteps - 1) {
+// =========================================
+// NAVIGATION
+// =========================================
+function nextStep(){
+  if(currentTest==='zodiac'){processZodiac();return;}
+  if(currentTest==='shio'){processShio();return;}
+  if(currentStep<totalSteps-1){
+    document.getElementById(`step-${currentStep}`)?.classList.remove('active');
     currentStep++;
-    updateControls();
+    document.getElementById(`step-${currentStep}`)?.classList.add('active');
+    updateProgress();checkInput();
   } else {
-    finishTest();
+    if(currentTest==='iq')processIQ();
+    else if(currentTest==='eq')processEQ();
+    else if(currentTest==='ll')processLL();
+    else if(currentTest==='mbti_short')processMBTIShort();
+    else if(currentTest==='mbti_long')processMBTILong();
   }
 }
 
-function prevStep() {
-  if (currentStep > 0) {
+function prevStep(){
+  if(currentStep>0){
+    document.getElementById(`step-${currentStep}`)?.classList.remove('active');
     currentStep--;
-    updateControls();
-  }
+    document.getElementById(`step-${currentStep}`)?.classList.add('active');
+    updateProgress();checkInput();
+  } else showScreen('home');
 }
 
-function finishTest() {
+function updateProgress(){
+  const pct=totalSteps>1?((currentStep)/(totalSteps-1))*100:0;
+  document.getElementById('progress-bar').style.width=pct+'%';
+  document.getElementById('btn-prev').style.display=currentStep===0?'none':'block';
+}
+
+function checkInput(){
+  const btn=document.getElementById('btn-next');
+  if(!btn)return;
+  let ok=false;
+  if(currentTest==='zodiac'){ok=!!document.getElementById('zodiac-input')?.value;}
+  else if(currentTest==='shio'){ok=!!(document.getElementById('shio-date')?.value&&document.getElementById('shio-gender')?.value);}
+  else {
+    if(currentTest==='ll'||currentTest==='eq'){
+      const qPerPage=5;
+      const start=currentStep*qPerPage;
+      const end=Math.min(start+qPerPage,activeQuestions.length);
+      ok=true;
+      for(let i=start;i<end;i++)if(!answers[i])ok=false;
+    } else {
+      ok=answers[currentStep]!==undefined;
+    }
+  }
+  btn.disabled=!ok;
+}
+
+// =========================================
+// ANSWER SELECTION
+// =========================================
+function selectIQOpt(qIdx,optIdx){
+  const q=activeQuestions[qIdx];
+  const c=currentTest==='mbti_short'?'var(--mbti)':'var(--iq)';
+  document.querySelectorAll(`#step-${qIdx} .iq-opt`).forEach(el=>{
+    el.classList.remove('selected');
+    el.style.borderColor='';el.style.color='';
+  });
+  const sel=document.querySelectorAll(`#step-${qIdx} .iq-opt`)[optIdx];
+  if(sel)sel.classList.add('selected');
+  if(currentTest==='iq'){
+    answers[qIdx]={selected:optIdx,correct:q.ans};
+  } else if(currentTest==='mbti_short'){
+    answers[qIdx]={dim:q.dim,score:q.scores[optIdx]};
+  }
+  checkInput();
+}
+
+function selectScale(qIdx,val,dim,reversed,prefix='m-'){
+  for(let v=1;v<=7;v++)document.getElementById(`${prefix}${qIdx}-${v}`)?.classList.remove('sel');
+  document.getElementById(`${prefix}${qIdx}-${val}`)?.classList.add('sel');
+  let score=reversed?(8-val):val;
+  answers[qIdx]={score,dim,target:dim};
+  checkInput();
+}
+
+// =========================================
+// PROCESS RESULTS
+// =========================================
+function processIQ(){
   clearInterval(timerInterval);
-  document.getElementById('progress-bar').style.width = `100%`;
-  
-  setTimeout(() => {
-    if(currentTest.startsWith('mbti')) processMBTI();
-    else if(currentTest === 'eq') processEQ();
-    else if(currentTest === 'll') processLL();
-    else if(currentTest === 'zodiac') processZodiac();
-    else if(currentTest === 'shio') processShio();
-    else showScreen('home');
-  }, 400);
+  let correct=0;
+  Object.values(answers).forEach(a=>{if(a&&a.selected===a.correct)correct++;});
+  const pct=(correct/IQ_QUESTIONS.length)*100;
+  let iqScore=70;
+  if(pct>=93)iqScore=145;else if(pct>=86)iqScore=135;else if(pct>=79)iqScore=125;else if(pct>=71)iqScore=115;else if(pct>=57)iqScore=105;else if(pct>=43)iqScore=95;else if(pct>=29)iqScore=85;else if(pct>=14)iqScore=75;
+  let level='',desc='',color='var(--iq)';
+  if(iqScore>=130){level='Sangat Superior';desc='Kecerdasan Anda berada di level tertinggi. Anda memiliki kemampuan analitis dan logika yang luar biasa.';}
+  else if(iqScore>=120){level='Superior';desc='Kapasitas kognitif Anda jauh di atas rata-rata. Anda mampu memecahkan masalah kompleks dengan mudah.';}
+  else if(iqScore>=110){level='Di Atas Rata-Rata';desc='Anda memiliki kemampuan berpikir yang kuat dan cepat memahami konsep-konsep baru.';}
+  else if(iqScore>=90){level='Rata-Rata';desc='Anda memiliki kecerdasan yang seimbang dan stabil. Terus asah kemampuanmu!';}
+  else{level='Di Bawah Rata-Rata';desc='Dengan latihan konsisten, kemampuan kognitifmu pasti akan meningkat.';}
+  const html=`
+    <div class="res-block" style="grid-column:1/-1;text-align:center;padding:40px;">
+      <div style="font-family:'Fredoka One',cursive;font-size:80px;color:var(--iq);margin-bottom:8px;">${iqScore}</div>
+      <div style="font-size:20px;font-weight:800;color:var(--text);margin-bottom:8px;">${level}</div>
+      <div style="font-size:14px;color:var(--muted);font-weight:600;">${desc}</div>
+    </div>
+    <div class="res-block">
+      <div class="res-block-label">📊 Skor Akurasi</div>
+      <div class="res-block-text">${correct} dari ${IQ_QUESTIONS.length} soal benar (${Math.round(pct)}%)</div>
+    </div>
+    <div class="res-block">
+      <div class="res-block-label">🎯 Estimasi Persentil</div>
+      <div class="res-block-text">Kamu berada di atas ~${iqScore>=130?'98':iqScore>=120?'91':iqScore>=110?'75':iqScore>=90?'50':'25'}% populasi umum</div>
+    </div>`;
+  renderResult('🧠','Hasil Tes IQ',`Skor IQ kamu berdasarkan ${IQ_QUESTIONS.length} soal komprehensif.`,html,'iq');
 }
 
-// ==========================================
-// 3. KALKULASI HASIL LOVE LANGUAGE
-// ==========================================
-function processLL() {
-  // Akumulasi skor per dimensi
-  let scores = {AS:0, WA:0, QT:0, PT:0, RG:0};
-  let totalScore = 0;
-  
-  Object.values(answers).forEach(ans => { 
-    scores[ans.target] += ans.score; 
-    totalScore += ans.score;
-  });
-  
-  // Konversi ke persentase & Urutkan
-  let resultsArr = [];
-  for (let key in scores) {
-    let pct = Math.round((scores[key] / totalScore) * 100) || 0;
-    resultsArr.push({ key: key, pct: pct, profile: LL_PROFILES[key] });
-  }
-  
-  // Sort descending by percentage
-  resultsArr.sort((a, b) => b.pct - a.pct);
-  const primary = resultsArr;
-
-  let barsHtml = '';
-  resultsArr.forEach(item => {
-    barsHtml += `
-      <div class="trait-row" style="margin-bottom:12px;">
-        <div class="trait-lbl" style="width:160px; font-weight:700;">${item.profile.n}</div>
-        <div class="trait-bar-wrap" style="height:12px; background:rgba(255,255,255,0.05);"><div class="trait-bar" style="width:0%; background:var(--ll);" data-w="${item.pct}%"></div></div>
-        <div class="trait-pct" style="width:40px; color:var(--ll);">${item.pct}%</div>
-      </div>
-    `;
-  });
-
-  let html = `
-    <div class="res-block" style="grid-column:1/-1; text-align:center; background:rgba(244, 63, 94, 0.05); border-color:var(--ll);">
-      <div style="color:var(--muted); font-size:12px; letter-spacing:2px; text-transform:uppercase; margin-bottom:8px; font-weight:700;">Your Primary Love Language is:</div>
-      <div style="font-size:36px; font-weight:900; color:var(--ll); font-family:'Fraunces', serif;">${primary.profile.n}</div>
+function processEQ(){
+  let total=0;
+  Object.values(answers).forEach(a=>{if(a)total+=a.score;});
+  const max=15*7,pct=Math.round((total/max)*100);
+  let level='',desc='',icon='';
+  if(pct>=80){icon='🌟';level='Kecerdasan Emosional Tinggi';desc='Anda sangat mampu mengelola emosi diri dan berempati kepada orang lain. Anda adalah aset besar dalam hubungan dan lingkungan kerja.';}
+  else if(pct>=60){icon='💛';level='Kecerdasan Emosional Baik';desc='Anda memiliki fondasi EQ yang kuat. Ada beberapa area yang masih bisa diasah untuk menjadi lebih matang secara emosional.';}
+  else if(pct>=40){icon='🔶';level='Kecerdasan Emosional Berkembang';desc='Anda sedang dalam proses memahami diri. Latih kesadaran diri dan empati secara konsisten untuk hasil terbaik.';}
+  else{icon='🔵';level='Kecerdasan Emosional Perlu Perhatian';desc='Emosi seringkali mengendalikanmu. Ini bukan kelemahan — ini adalah undangan untuk tumbuh dan berkembang lebih jauh.';}
+  const html=`
+    <div class="res-block" style="grid-column:1/-1;text-align:center;padding:40px;">
+      <div style="font-family:'Fredoka One',cursive;font-size:70px;color:var(--eq);margin-bottom:8px;">${pct}%</div>
+      <div style="font-size:18px;font-weight:800;margin-bottom:8px;">${level}</div>
+      <div style="font-size:14px;color:var(--muted);font-weight:600;">${desc}</div>
     </div>
-
-    <div class="res-block" style="grid-column:1/-1; background:transparent; padding:0; border:none; margin-top:10px;">
-      <div class="res-block-label" style="margin-bottom:16px; color:var(--text); font-size:14px;">Distribusi Bahasa Cinta Anda</div>
-      <div>${barsHtml}</div>
+    <div class="res-block">
+      <div class="res-block-label">💡 Skor Raw</div>
+      <div class="res-block-text">${total} dari ${max} poin maksimum</div>
     </div>
-
-    <div class="res-block" style="grid-column:1/-1; margin-top:20px;">
-      <div class="res-block-label" style="color:var(--ll);"><span style="font-size:16px;">💌</span> Karakteristik Personal: ${primary.profile.n}</div>
-      <div class="res-block-text" style="line-height:1.7; text-align:justify;">
-        ${primary.profile.desc}
-      </div>
-    </div>
-
-    <div class="res-block" style="grid-column:1/-1; background:rgba(190, 18, 60, 0.05); border-color:rgba(190, 18, 60, 0.2);">
-      <div class="res-block-label" style="color:var(--ll2);"><span style="font-size:16px;">🤝</span> Dinamika Sosial & Asmara</div>
-      <div class="res-block-text" style="line-height:1.7; text-align:justify;">
-        ${primary.profile.dinamika}
-      </div>
-    </div>
-  `;
-  
-  renderResult("💌", "Profil Love Language", "Tinjau hasil tes Love Language Anda dan pelajari lebih lanjut tentang dinamika hubungan Anda.", html, 'll');
+    <div class="res-block">
+      <div class="res-block-label">🎯 Fokus Pengembangan</div>
+      <div class="res-block-text">${pct<60?'Regulasi emosi dan empati adalah area utama yang perlu dikembangkan.':'Pertahankan konsistensi empati dan kesadaran dirimu!'}</div>
+    </div>`;
+  renderResult(icon,level,'Hasil Kecerdasan Emosional (EQ) kamu berdasarkan 15 pertanyaan.',html,'eq');
 }
 
-// ==========================================
-// KALKULASI HASIL EQ TEST
-// ==========================================
-function processEQ() {
-  let rawScore = 0;
-  const numQuestions = EQ_QUESTIONS.length;
-  
-  Object.values(answers).forEach(ans => { rawScore += ans.score; });
-  
-  const maxRaw = numQuestions * 7;
-  const minRaw = numQuestions * 1;
-  let eqScore = Math.round(((rawScore - minRaw) / (maxRaw - minRaw)) * 100);
-  
-  let category = "";
-  let subText = "";
-  if(eqScore <= 16) {
-    category = "Kecerdasan Emosional Sangat Rendah";
-    subText = "Anda mungkin sering merasa kewalahan oleh emosi Anda dan kesulitan memahami perasaan orang lain.";
-  } else if(eqScore <= 36) {
-    category = "Kecerdasan Emosional Rendah";
-    subText = "Anda berada di bawah rata-rata. Interaksi sosial dan regulasi emosi mungkin sering menjadi tantangan besar bagi Anda.";
-  } else if(eqScore <= 63) {
-    category = "Menengah (Rata-rata)";
-    subText = "Anda berada di tengah. Anda cukup baik dalam mengelola emosi harian, namun terkadang masih kesulitan di situasi yang penuh tekanan.";
-  } else if(eqScore <= 83) {
-    category = "Kecerdasan Emosional Tinggi";
-    subText = "Anda memiliki kesadaran emosional yang baik, empati yang tinggi, dan mampu menyelesaikan konflik dengan cara yang sehat.";
-  } else {
-    category = "Kecerdasan Emosional Sangat Tinggi";
-    subText = "Anda sangat unggul dalam membaca situasi sosial, mengelola stres, dan membangun hubungan yang mendalam dengan orang lain.";
-  }
-
-  let html = `
-    <div class="res-block" style="grid-column:1/-1; text-align:center; background:rgba(251, 191, 36, 0.05); border-color:var(--eq);">
-      <div style="font-size:80px; font-weight:900; color:var(--eq); line-height:1; margin-bottom:10px;">${eqScore}<span style="font-size:30px; color:var(--muted)">/100</span></div>
-      <div style="font-size:20px; font-weight:700; color:var(--text); margin-bottom:8px;">${category}</div>
-      <div style="color:var(--muted); font-size:14px; max-width:400px; margin:0 auto;">Skor rata-rata tes ini adalah 71. ${subText}</div>
-    </div>
-
+function processLL(){
+  const scores={WA:0,PT:0,RG:0,AS:0,QT:0};
+  Object.values(answers).forEach(a=>{if(a&&a.dim)scores[a.dim]+=(a.score||0);});
+  const top=Object.entries(scores).sort((a,b)=>b[1]-a[1])[0][0];
+  const p=LL_PROFILES[top];
+  const html=`
     <div class="res-block" style="grid-column:1/-1;">
-      <div class="res-block-label" style="color:var(--iq);"><span style="font-size:16px;">🧠</span> 1. Apa yang Perlu Anda Ketahui</div>
-      <div class="res-block-text" style="margin-bottom:16px;">
-        Jika seseorang ingin sukses di lingkungan kerja, kecerdasan emosional yang lebih tinggi sangat membantu. Orang dengan EQ yang sehat mengambil keputusan dengan baik, berkomunikasi secara efektif, dan lebih mudah dipromosikan.
-      </div>
-      <div class="res-block-text" style="margin-bottom:16px;">
-        EQ berhubungan dengan kesuksesan akademik dan manajemen waktu. Hubungan yang sehat juga memiliki fondasi EQ yang kuat, membantu orang mengomunikasikan kebutuhannya sekaligus mendengarkan kebutuhan orang lain.
-      </div>
+      <div class="res-block-label">💬 Tentang Bahasa Cintamu</div>
+      <div class="res-block-text">${p.desc}</div>
+    </div>
+    <div class="res-block" style="grid-column:1/-1;background:rgba(239,71,111,0.05);border-color:rgba(239,71,111,0.2);">
+      <div class="res-block-label" style="color:var(--ll);">🔑 Dinamika & Tips</div>
+      <div class="res-block-text">${p.dinamika}</div>
+    </div>
+    <div class="res-block" style="grid-column:1/-1;">
+      <div class="res-block-label">📊 Skor per Dimensi</div>
       <div class="res-block-text">
-        Selama konflik, orang dengan EQ sehat dapat mengelola emosinya dengan menurunkan tensi ketegangan, mendengarkan secara aktif, serta menyelesaikan perselisihan secara konstruktif. Hal ini juga melindungi dari gangguan kesehatan mental seperti kecemasan.
+        ${Object.entries(scores).map(([k,v])=>`
+          <div class="trait-row">
+            <div class="trait-lbl">${LL_PROFILES[k].n.split(' ')[0]}</div>
+            <div class="trait-bar-wrap"><div class="trait-bar" style="width:0%;--c:var(--ll);background:var(--ll);" data-w="${Math.round((v/105)*100)}%"></div></div>
+            <div class="trait-pct">${Math.round((v/105)*100)}%</div>
+          </div>`).join('')}
       </div>
-    </div>
-
-    <div class="res-block" style="grid-column:1/-1; background:rgba(219,39,119,0.05); border-color:rgba(219,39,119,0.2);">
-      <div class="res-block-label" style="color:var(--zodiac2);"><span style="font-size:16px;">🌱</span> 2. Langkah Perubahan</div>
-      <ul style="color:var(--text); font-size:14px; line-height:1.6; margin-left:20px;">
-        <li style="margin-bottom:12px;"><strong>Bingkai ulang perasaan Anda (Reframe).</strong> Perspektif yang berbeda dan lebih positif dapat membantu. Emosi negatif bersifat sementara, dan makna yang Anda berikan pada emosi tersebut bisa diubah. Kita sering kali cenderung memikirkan hal terburuk tentang suatu situasi.</li>
-        <li style="margin-bottom:12px;"><strong>Lebih berkesadaran (Mindful).</strong> Mindfulness dapat meningkatkan kesadaran diri Anda. Hadir sepenuhnya di momen saat ini dapat membantu seseorang melepaskan diri dari hal-hal negatif yang mengelilingi emosi yang memuncak.</li>
-        <li><strong>Tumbuhkan empati dan kasih sayang.</strong> Bersikaplah baik kepada diri sendiri dan orang lain. Lihatlah berbagai situasi dari sudut pandang yang berbeda, dan terimalah emosi Anda maupun emosi orang lain tanpa menghakimi.</li>
-      </ul>
-    </div>
-  `;
-  
-  renderResult("❤️‍🔥", "Hasil Kecerdasan Emosional", "Asesmen ini mengukur kesadaran diri, regulasi emosi, motivasi, empati, dan keterampilan sosial Anda.", html, 'eq');
+    </div>`;
+  renderResult('💌',p.n,'Bahasa Cinta utama kamu telah ditemukan!',html,'ll');
 }
 
-// ==========================================
-// KALKULASI HASIL LAINNYA
-// ==========================================
-function processShio() {
-  const dateStr = document.getElementById('shio-date').value;
-  const gender = document.getElementById('shio-gender').value;
-  if(!dateStr || !gender) return;
-  
-  const dateObj = new Date(dateStr);
-  let year = dateObj.getFullYear();
-  const month = dateObj.getMonth() + 1;
-  
-  if (month === 1 || (month === 2 && dateObj.getDate() <= 4)) year -= 1;
-  
-  const idx = ((year - 4) % 12 + 12) % 12;
-  const s = SHIO_PROFILES[idx];
-  
-  const lastDigit = parseInt(year.toString().slice(-1));
-  let unsur = "";
-  if(lastDigit === 0 || lastDigit === 1) unsur = "Logam";
-  else if(lastDigit === 2 || lastDigit === 3) unsur = "Air";
-  else if(lastDigit === 4 || lastDigit === 5) unsur = "Kayu";
-  else if(lastDigit === 6 || lastDigit === 7) unsur = "Api";
-  else if(lastDigit === 8 || lastDigit === 9) unsur = "Tanah";
-  
-  let sum = 0;
-  for(let char of year.toString()) sum += parseInt(char);
-  while(sum > 9) {
-    let temp = 0;
-    for(let char of sum.toString()) temp += parseInt(char);
-    sum = temp;
-  }
-  
-  let kua = 0;
-  if(gender === 'pria') {
-    kua = 11 - sum;
-    if(kua > 9) kua -= 9;
-    if(kua === 5) kua = 2;
-  } else {
-    kua = 4 + sum;
-    if(kua > 9) kua -= 9;
-    if(kua === 5) kua = 8;
-  }
-
-  let html = `
-    <div class="res-block" style="grid-column:1/-1; display:flex; justify-content:space-around; background:var(--s3); border:none;">
-      <div style="text-align:center;">
-        <div class="res-block-label" style="color:var(--muted); margin-bottom:4px;">Unsur Lahir</div>
-        <div style="font-size:20px; font-weight:700; color:var(--text);">${unsur}</div>
-      </div>
-      <div style="text-align:center; border-left:1px solid var(--border); padding-left:20px;">
-        <div class="res-block-label" style="color:var(--muted); margin-bottom:4px;">Angka Kua</div>
-        <div style="font-size:20px; font-weight:700; color:var(--text);">${kua}</div>
-      </div>
-    </div>
-    <div class="res-block" style="grid-column:1/-1;">
-      <div class="res-block-label" style="color:var(--shio);">Pribadi Shio ${s.n}</div>
-      <div class="res-block-text" style="font-size:15px; text-align:justify;">${s.d}</div>
-    </div>
-    <div class="res-block" style="grid-column:1/-1;">
-      <div class="res-block-label" style="margin-bottom:12px;">Karakteristik Dasar</div>
-      <div class="shio-grid">
-        <div class="shio-info"><span class="s-label">Musim</span><span class="s-val" style="color:var(--text);">${s.m}</span></div>
-        <div class="shio-info"><span class="s-label">Ekuivalen Barat</span><span class="s-val" style="color:var(--text);">${s.z}</span></div>
-        <div class="shio-info"><span class="s-label">Elemen Tetap</span><span class="s-val" style="color:var(--text);">${s.et}</span></div>
-        <div class="shio-info"><span class="s-label">Jam Kekuasaan</span><span class="s-val" style="color:var(--text);">${s.j}</span></div>
-      </div>
-    </div>
-    <div class="res-block" style="background:rgba(110,231,183,0.05); border-color:var(--iq);">
-      <div class="res-block-label" style="color:var(--iq);">Simbol Kemakmuran</div>
-      <div class="res-block-text">Shio <strong>${s.makmur}</strong>. Simpan pajangan hewan ini untuk menarik rezeki.</div>
-    </div>
-    <div class="res-block" style="background:rgba(219,39,119,0.05); border-color:var(--zodiac2);">
-      <div class="res-block-label" style="color:var(--zodiac2);">Shio Penolong</div>
-      <div class="res-block-text">Shio <strong>${s.penolong}</strong>. Mereka akan datang membantu saat Anda didera kesulitan.</div>
-    </div>
-  `;
-  renderResult(s.i, `Shio ${s.n}`, `Tahun kelahiran Anda (${year}) beresonansi dengan karakteristik ini.`, html, 'shio');
+function processMBTIShort(){
+  const scores={EI:0,SN:0,TF:0,JP:0};
+  Object.values(answers).forEach(a=>{if(a?.dim&&scores[a.dim]!==undefined)scores[a.dim]+=a.score;});
+  const type=`${scores.EI>10?'E':'I'}${scores.SN>10?'N':'S'}${scores.TF>10?'F':'T'}${scores.JP>10?'P':'J'}`;
+  renderMBTIResult(type,scores,3);
 }
 
-function processZodiac() {
-  const dateStr = document.getElementById('zodiac-input').value;
-  if(!dateStr) return;
-  const dateObj = new Date(dateStr);
-  const d = dateObj.getDate();
-  const m = dateObj.getMonth() + 1;
-  let sign = "";
-  if((m==3 && d>=21) || (m==4 && d<=19)) sign = "aries";
-  else if((m==4 && d>=20) || (m==5 && d<=20)) sign = "taurus";
-  else if((m==5 && d>=21) || (m==6 && d<=20)) sign = "gemini";
-  else if((m==6 && d>=21) || (m==7 && d<=22)) sign = "cancer";
-  else if((m==7 && d>=23) || (m==8 && d<=22)) sign = "leo";
-  else if((m==8 && d>=23) || (m==9 && d<=22)) sign = "virgo";
-  else if((m==9 && d>=23) || (m==10 && d<=22)) sign = "libra";
-  else if((m==10 && d>=23) || (m==11 && d<=21)) sign = "scorpio";
-  else if((m==11 && d>=22) || (m==12 && d<=21)) sign = "sagittarius";
-  else if((m==12 && d>=22) || (m==1 && d<=19)) sign = "capricorn";
-  else if((m==1 && d>=20) || (m==2 && d<=18)) sign = "aquarius";
-  else if((m==2 && d>=19) || (m==3 && d<=20)) sign = "pisces";
-  
-  const z = ZODIAC_TRADISIONAL[sign];
-  let html = `
-    <div class="res-block" style="grid-column:1/-1;">
-      <div class="res-block-label" style="color:var(--zodiac);">Rentang Waktu</div>
-      <div class="res-block-text" style="font-size:18px; font-weight:700;">${z.t}</div>
-    </div>
-    <div class="res-block" style="grid-column:1/-1; background:rgba(255,255,255,0.02);">
-      <div class="res-block-label"><span style="font-size:16px;">💼</span> Karir & Pekerjaan</div>
-      <div class="res-block-text">${z.karir}</div>
-    </div>
-    <div class="res-block" style="grid-column:1/-1; background:rgba(219,39,119,0.05); border-color:rgba(219,39,119,0.2);">
-      <div class="res-block-label" style="color:var(--zodiac2);"><span style="font-size:16px;">❤️</span> Percintaan & Asmara</div>
-      <div class="res-block-text">${z.cinta}</div>
-    </div>
-    <div class="res-block" style="grid-column:1/-1; background:rgba(110,231,183,0.05); border-color:rgba(110,231,183,0.2);">
-      <div class="res-block-label" style="color:var(--iq);"><span style="font-size:16px;">🔮</span> Ramalan Masa Depan</div>
-      <div class="res-block-text">${z.masa_depan}</div>
-    </div>
-  `;
-  renderResult(z.i, `Zodiak ${z.n}`, `Ini adalah hasil bacaan astrologi mengenai nasib dan peruntunganmu.`, html, 'zodiac');
+function processMBTILong(){
+  const scores={EI:0,SN:0,TF:0,JP:0};
+  Object.values(answers).forEach(a=>{if(a?.target&&scores[a.target]!==undefined)scores[a.target]+=a.score;});
+  const type=`${scores.EI>60?'E':'I'}${scores.SN>60?'N':'S'}${scores.TF>60?'F':'T'}${scores.JP>60?'P':'J'}`;
+  renderMBTIResult(type,scores,12);
 }
 
-function processMBTI() {
-  let scores = {EI:0, SN:0, TF:0, JP:0};
-  Object.values(answers).forEach(ans => {
-    if(ans.target && scores[ans.target] !== undefined) scores[ans.target] += ans.score; 
-  });
-  
-  const type = `${scores.EI>20?'E':'I'}${scores.SN>20?'N':'S'}${scores.TF>20?'F':'T'}${scores.JP>20?'P':'J'}`;
-  const m = MBTI_TYPES[type] || MBTI_TYPES['INFP']; 
-  const pct = (val) => Math.min(100, Math.max(50, 50 + Math.abs(val-20)*2)); 
-  
-  let html = `
-    <div class="res-block" style="grid-column:1/-1; background:transparent; padding:0; border:none;">
-      <div class="res-block-label" style="margin-bottom:16px; color:var(--text);">Dimensi Kognitif (Spektrum)</div>
-      <div>
-        ${buildTraitBar(type==='E'?'Ekstrovert':'Introvert', pct(scores.EI))}
-        ${buildTraitBar(type==='N'?'Intuitif':'Sensing', pct(scores.SN))}
-        ${buildTraitBar(type==='T'?'Pemikir':'Perasa', pct(scores.TF))}
-        ${buildTraitBar(type==='P'?'Fleksibel':'Terstruktur', pct(scores.JP))}
+function renderMBTIResult(type,scores,qPerDim){
+  const m=MBTI_TYPES[type]||MBTI_TYPES['INFP'];
+  const maxScore=qPerDim*7;
+  const pct=(val)=>Math.min(100,Math.max(50,50+Math.abs(val-(maxScore/2))*2));
+  const typeLetters=type.split('');
+  const html=`
+    <div class="res-block" style="grid-column:1/-1;background:rgba(129,140,248,0.05);border-color:rgba(129,140,248,0.2);">
+      <div class="res-block-label">🧬 Dimensi Kognitif</div>
+      <div class="res-block-text">
+        ${buildTraitBar(typeLetters[0]==='E'?'Ekstrovert':'Introvert',pct(scores.EI))}
+        ${buildTraitBar(typeLetters[1]==='N'?'Intuitif':'Sensing',pct(scores.SN))}
+        ${buildTraitBar(typeLetters[2]==='F'?'Feeling':'Thinking',pct(scores.TF))}
+        ${buildTraitBar(typeLetters[3]==='P'?'Perceiving':'Judging',pct(scores.JP))}
       </div>
     </div>
-    <div class="res-block" style="grid-column:1/-1;">
-      <div class="res-block-label"><span style="font-size:16px;">📈</span> Kekuatan Utama</div>
-      <div class="tags-container">${m.plus.map(p => `<span class="tag plus">${p}</span>`).join('')}</div>
+    <div class="res-block">
+      <div class="res-block-label">📈 Kekuatan Utama</div>
+      <div class="tags-container">${m.plus.map(p=>`<span class="tag plus">${p}</span>`).join('')}</div>
     </div>
-    <div class="res-block" style="grid-column:1/-1;">
-      <div class="res-block-label" style="color:var(--zodiac2);"><span style="font-size:16px;">📉</span> Titik Lemah</div>
-      <div class="tags-container">${m.minus.map(p => `<span class="tag minus">${p}</span>`).join('')}</div>
+    <div class="res-block">
+      <div class="res-block-label">📉 Titik Lemah</div>
+      <div class="tags-container">${m.minus.map(p=>`<span class="tag minus">${p}</span>`).join('')}</div>
     </div>
     <div class="res-block">
       <div class="res-block-label">💼 Rekomendasi Karir</div>
@@ -937,14 +1179,13 @@ function processMBTI() {
       <div class="res-block-text">${m.social}</div>
     </div>
     <div class="res-block" style="grid-column:1/-1;">
-      <div class="res-block-label">❤️ Kehidupan Asmara & Pasangan</div>
+      <div class="res-block-label">❤️ Kehidupan Asmara</div>
       <div class="res-block-text">${m.love}<br><br><strong>Cocok dengan:</strong> ${m.match}</div>
-    </div>
-  `;
-  renderResult(m.i, `${type} - ${m.n}`, m.d, html, 'mbti');
+    </div>`;
+  renderResult(m.i,`${type} — ${m.n}`,m.d,html,'mbti');
 }
 
-function buildTraitBar(lbl, p) {
+function buildTraitBar(lbl,p){
   return `<div class="trait-row">
     <div class="trait-lbl">${lbl}</div>
     <div class="trait-bar-wrap"><div class="trait-bar" style="width:0%" data-w="${p}%"></div></div>
@@ -952,18 +1193,99 @@ function buildTraitBar(lbl, p) {
   </div>`;
 }
 
-function renderResult(icon, title, desc, blocksHtml, themeType) {
-  const card = document.getElementById('res-dynamic-card');
-  if(card) {
-    card.style.setProperty('--c', `var(--${themeType})`);
-    card.style.setProperty('--c2', `var(--${themeType}2)`);
+function processShio(){
+  const dateStr=document.getElementById('shio-date')?.value;
+  const gender=document.getElementById('shio-gender')?.value;
+  if(!dateStr||!gender)return;
+  const year=new Date(dateStr).getFullYear();
+  const shioBase=[(year-4)%12];
+  const idx=((year-4)%12+12)%12;
+  const s=SHIO_PROFILES[idx];
+  const sumsDigits=(n)=>{let s=Math.abs(n).toString().split('').reduce((a,b)=>a+parseInt(b),0);return s>9?sumsDigits(s):s;};
+  let kua=0;
+  if(gender==='pria'){kua=(11-sumsDigits(year))%9||9;}
+  else{kua=(sumsDigits(year)+4)%9||9;}
+  const elemen=['Logam','Air','Kayu','Api','Tanah'];
+  const el=elemen[Math.floor(idx/2)%5];
+  const html=`
+    <div class="res-block" style="grid-column:1/-1;">
+      <div class="res-block-label" style="color:var(--shio);">🌏 Elemen & Musim</div>
+      <div class="res-block-text"><strong>Elemen:</strong> ${el} &nbsp;|&nbsp; <strong>Musim:</strong> ${s.m} &nbsp;|&nbsp; <strong>Jam:</strong> ${s.j}</div>
+    </div>
+    <div class="res-block">
+      <div class="res-block-label">🔢 Angka Kua</div>
+      <div class="res-block-text" style="font-size:48px;font-family:'Fredoka One',cursive;color:var(--shio);">${kua}</div>
+    </div>
+    <div class="res-block">
+      <div class="res-block-label">⭐ Zodiak Barat</div>
+      <div class="res-block-text">${s.z}</div>
+    </div>
+    <div class="res-block" style="grid-column:1/-1;">
+      <div class="res-block-label">📖 Profil Karakter</div>
+      <div class="res-block-text">${s.d}</div>
+    </div>
+    <div class="res-block">
+      <div class="res-block-label">🤝 Paling Makmur Bersama</div>
+      <div class="res-block-text">${s.makmur}</div>
+    </div>
+    <div class="res-block">
+      <div class="res-block-label">🙏 Shio Penolong</div>
+      <div class="res-block-text">${s.penolong}</div>
+    </div>`;
+  renderResult(s.i,`Shio ${s.n}`,`Tahun kelahiran ${year} beresonansi dengan karakteristik ini.`,html,'shio');
+}
+
+function processZodiac(){
+  const dateStr=document.getElementById('zodiac-input')?.value;
+  if(!dateStr)return;
+  const d=new Date(dateStr).getDate();
+  const m=new Date(dateStr).getMonth()+1;
+  let sign='aries';
+  if((m==3&&d>=21)||(m==4&&d<=19))sign='aries';
+  else if((m==4&&d>=20)||(m==5&&d<=20))sign='taurus';
+  else if((m==5&&d>=21)||(m==6&&d<=20))sign='gemini';
+  else if((m==6&&d>=21)||(m==7&&d<=22))sign='cancer';
+  else if((m==7&&d>=23)||(m==8&&d<=22))sign='leo';
+  else if((m==8&&d>=23)||(m==9&&d<=22))sign='virgo';
+  else if((m==9&&d>=23)||(m==10&&d<=22))sign='libra';
+  else if((m==10&&d>=23)||(m==11&&d<=21))sign='scorpio';
+  else if((m==11&&d>=22)||(m==12&&d<=21))sign='sagittarius';
+  else if((m==12&&d>=22)||(m==1&&d<=19))sign='capricorn';
+  else if((m==1&&d>=20)||(m==2&&d<=18))sign='aquarius';
+  else if((m==2&&d>=19)||(m==3&&d<=20))sign='pisces';
+  const z=ZODIAC_TRADISIONAL[sign];
+  const html=`
+    <div class="res-block" style="grid-column:1/-1;">
+      <div class="res-block-label">📅 Rentang Waktu</div>
+      <div class="res-block-text" style="font-size:17px;font-weight:700;">${z.t}</div>
+    </div>
+    <div class="res-block" style="grid-column:1/-1;">
+      <div class="res-block-label">💼 Karir & Pekerjaan</div>
+      <div class="res-block-text">${z.karir}</div>
+    </div>
+    <div class="res-block" style="grid-column:1/-1;background:rgba(255,107,157,0.05);border-color:rgba(255,107,157,0.2);">
+      <div class="res-block-label" style="color:var(--zodiac);">❤️ Percintaan & Asmara</div>
+      <div class="res-block-text">${z.cinta}</div>
+    </div>
+    <div class="res-block" style="grid-column:1/-1;background:rgba(0,229,160,0.05);border-color:rgba(0,229,160,0.2);">
+      <div class="res-block-label" style="color:var(--iq);">🔮 Ramalan Masa Depan</div>
+      <div class="res-block-text">${z.masa_depan}</div>
+    </div>`;
+  renderResult(z.i,`Zodiak ${z.n}`,'Bacaan astrologi untukmu berdasarkan tanggal lahir.',html,'zodiac');
+}
+
+function renderResult(icon,title,desc,blocksHtml,themeType){
+  const card=document.getElementById('res-dynamic-card');
+  if(card){
+    card.style.setProperty('--c',`var(--${themeType})`);
+    card.style.setProperty('--c2',`var(--${themeType}2, var(--${themeType}))`);
   }
-  document.getElementById('res-icon').textContent = icon;
-  document.getElementById('res-name').textContent = title;
-  document.getElementById('res-desc').textContent = desc;
-  document.getElementById('res-blocks').innerHTML = blocksHtml;
+  document.getElementById('res-icon').textContent=icon;
+  document.getElementById('res-name').textContent=title;
+  document.getElementById('res-desc').textContent=desc;
+  document.getElementById('res-blocks').innerHTML=blocksHtml;
   showScreen('result');
-  setTimeout(() => document.querySelectorAll('.trait-bar').forEach(b => b.style.width = b.getAttribute('data-w')), 150);
+  setTimeout(()=>document.querySelectorAll('.trait-bar').forEach(b=>b.style.width=b.getAttribute('data-w')||'0%'),200);
 }
 </script>
 </body>
