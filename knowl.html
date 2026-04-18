@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Knowly — Asesmen Kognitif & Kepribadian</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,700;0,900;1,700&family=Fredoka+One&family=DM+Sans:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+<style>
+/* ===== RESET & ROOT ===== */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#08061A;
+  --surface:#110E2A;
+  --surface2:#1A1640;
+  --surface3:#231E55;
+  --border:rgba(255,255,255,0.08);
+  --text:#F5F0FF;
+  --muted:#9B8FC2;
+  --r:24px;
+
+  /* Theme Colors for Cards */
+  --iq:#00E5A0;        --iq-glow:rgba(0,229,160,0.35);
+  --mbti:#818CF8;      --mbti-glow:rgba(129,140,248,0.35);
+  --zodiac:#FF6B9D;    --zodiac-glow:rgba(255,107,157,0.35);
+  --shio:#FFD166;      --shio-glow:rgba(255,209,102,0.35);
+  --eq:#FF8C42;        --eq-glow:rgba(255,140,66,0.35);
+  --ll:#EF476F;        --ll-glow:rgba(239,71,111,0.35);
+  
+  /* Brand Colors Knowly */
+  --knowly-blue:#38BDF8;
+  --knowly-yellow:#FDE047;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;display:flex;flex-direction:column;overflow-x:hidden;}
+
+/* ===== NOISE LAYER ===== */
+body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");opacity:.5;}
+
+/* ===== NAVIGATION ===== */
+nav{position:sticky;top:0;z-index:200;background:rgba(8,6,26,0.8);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:14px 32px;display:flex;align-items:center;justify-content:space-between;}
+.nav-brand { display:flex; align-items:center; gap:12px; text-decoration:none; cursor:pointer; }
+.brand-text { font-family:'Fraunces',serif; font-size:26px; font-weight:900; color:var(--text); letter-spacing:-0.5px; }
+.brand-vector { transition: transform 0.4s cubic-bezier(0.4,0,0.2,1); }
+.nav-brand:hover .brand-vector { transform: rotate(15deg) scale(1.1); }
+.nav-home-btn{padding:9px 22px;border-radius:50px;border:1.5px solid var(--border);background:var(--surface);color:var(--muted);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s;}
+.nav-home-btn:hover{border-color:var(--knowly-blue);color:var(--text);background:var(--surface2);}
+
+/* ===== SCREENS ===== */
+main{flex:1;position:relative;z-index:10;}
+.screen{display:none;animation:screenIn 0.45s cubic-bezier(0.34,1.56,0.64,1);}
+.screen.active{display:block;}
+@keyframes screenIn{from{opacity:0;transform:translateY(20px) scale(0.98);}to{opacity:1;transform:translateY(0) scale(1);}}
+
+/* ===== HERO SECTION (KNOWLY SOLID THEME) ===== */
+#home{position:relative;overflow:hidden;}
+.hero-bg{position:absolute;inset:0;z-index:0;overflow:hidden;pointer-events:none;}
+.blob{position:absolute;border-radius:50%;filter:blur(90px);opacity:0.15;animation:blobFloat 8s ease-in-out infinite;}
+
+/* Blobs Solid Blue & Yellow */
+.blob-1{width:500px;height:500px;background:var(--knowly-blue);top:-100px;left:-100px;animation-delay:0s;}
+.blob-2{width:400px;height:400px;background:var(--knowly-yellow);top:100px;right:-80px;animation-delay:2s;}
+.blob-3{width:350px;height:350px;background:var(--knowly-blue);bottom:0;left:30%;animation-delay:4s;}
+.blob-4{width:280px;height:280px;background:var(--knowly-yellow);bottom:80px;right:10%;animation-delay:1s;}
+
+@keyframes blobFloat{0%,100%{transform:translate(0,0) scale(1);}33%{transform:translate(20px,-30px) scale(1.05);}66%{transform:translate(-15px,20px) scale(0.95);}}
+.star-field{position:absolute;inset:0;z-index:0;pointer-events:none;}
+.star{position:absolute;background:#fff;border-radius:50%;animation:twinkle var(--dur) ease-in-out infinite;}
+@keyframes twinkle{0%,100%{opacity:0.1;transform:scale(1);}50%{opacity:0.8;transform:scale(1.5);}}
+
+.hero-inner{position:relative;z-index:10;max-width:1200px;margin:0 auto;padding:80px 24px 60px;display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;min-height:calc(100vh - 67px);}
+
+/* Solid Colors no gradients for text */
+.hero-chip{display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--knowly-yellow);border:1.5px solid rgba(253,224,71,0.4);background:rgba(253,224,71,0.05);padding:7px 16px;border-radius:50px;margin-bottom:28px;}
+.hero-chip-dot{width:8px;height:8px;background:var(--knowly-yellow);border-radius:50%;animation:pulseDot 1.5s ease-in-out infinite;}
+@keyframes pulseDot{0%,100%{transform:scale(1);opacity:1;}50%{transform:scale(1.6);opacity:0.6;}}
+
+.hero-title{font-family:'Fredoka One',cursive;font-size:clamp(40px,5.5vw,72px);line-height:1.1;margin-bottom:18px;letter-spacing:-0.5px;}
+.hero-title-line1{color:var(--text);}
+.hero-title-line2{color:var(--knowly-blue);} /* Solid Sky Blue */
+
+.hero-sub{font-size:16px;color:var(--muted);line-height:1.7;max-width:460px;margin-bottom:36px;font-weight:600;}
+.hero-ctas{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:48px;}
+.btn-hero{padding:16px 32px;border-radius:50px;font-family:'DM Sans',sans-serif;font-size:16px;font-weight:800;cursor:pointer;border:none;transition:all .25s cubic-bezier(0.34,1.56,0.64,1);}
+
+/* Solid Buttons */
+.btn-hero-primary{background:var(--knowly-blue);color:#08061A;box-shadow:0 8px 32px rgba(56,189,248,0.25);}
+.btn-hero-primary:hover{transform:translateY(-3px) scale(1.05); background:var(--knowly-yellow); box-shadow:0 12px 40px rgba(253,224,71,0.3);}
+.btn-hero-secondary{background:transparent;border:2px solid var(--knowly-yellow);color:var(--knowly-yellow);}
+.btn-hero-secondary:hover{transform:translateY(-3px);background:var(--knowly-yellow);color:#08061A;}
+
+/* Hero ORBIT */
+.hero-orbit{position:relative;width:100%;aspect-ratio:1/1;max-width:520px;margin:0 auto;}
+.orbit-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:10;}
+
+/* Solid Orbit Logo */
+.brain-logo{width:120px;height:120px;background:var(--surface2);border:2px solid var(--knowly-blue);border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 0 60px rgba(56,189,248,0.2),inset 0 0 20px rgba(253,224,71,0.1);animation:brainPulse 3s ease-in-out infinite;}
+@keyframes brainPulse{0%,100%{box-shadow:0 0 60px rgba(56,189,248,0.2),inset 0 0 20px rgba(253,224,71,0.1);}50%{box-shadow:0 0 80px rgba(56,189,248,0.4),inset 0 0 40px rgba(253,224,71,0.2);}}
+
+/* Solid Rings */
+.orbit-ring{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);border-radius:50%;border:1px solid;pointer-events:none;}
+.orbit-ring-1{width:180px;height:180px;border-color:rgba(56,189,248,0.2);animation:spin 40s linear infinite;}
+.orbit-ring-2{width:300px;height:300px;border-color:rgba(253,224,71,0.15);animation:spin 60s linear infinite reverse;}
+.orbit-ring-3{width:440px;height:440px;border-color:rgba(56,189,248,0.1);animation:spin 90s linear infinite;}
+@keyframes spin{from{transform:translate(-50%,-50%) rotate(0deg);}to{transform:translate(-50%,-50%) rotate(360deg);}}
+
+.orbit-card{position:absolute;background:var(--surface);border:1.5px solid var(--border);border-radius:18px;padding:14px 16px;cursor:pointer;transition:all .3s cubic-bezier(0.34,1.56,0.64,1);display:flex;flex-direction:column;gap:5px;z-index:5;box-shadow:0 8px 24px rgba(0,0,0,0.4);animation:cardFloat var(--fdur) ease-in-out infinite;}
+@keyframes cardFloat{0%,100%{transform:translate(0,0);}50%{transform:translate(0,var(--fy));}}
+.orbit-card:hover{transform:scale(1.08) translateY(-4px)!important;box-shadow:0 16px 40px rgba(0,0,0,0.5);z-index:20;border-color:var(--c);}
+.orbit-card-icon{font-size:22px;line-height:1;}
+.orbit-card-name{font-family:'Fredoka One',cursive;font-size:13px;color:var(--text);line-height:1.2;white-space:nowrap;}
+.orbit-card-time{font-size:10px;color:var(--muted);font-weight:700;}
+.orbit-card-accent{width:30px;height:3px;border-radius:2px;background:var(--c);margin-top:2px;}
+.oc-iq{--c:var(--iq);--fdur:4.2s;--fy:-10px;top:2%;left:32%;}
+.oc-eq{--c:var(--eq);--fdur:5.1s;--fy:8px;top:22%;right:2%;}
+.oc-mbti{--c:var(--mbti);--fdur:3.8s;--fy:-12px;top:60%;right:0%;}
+.oc-ll{--c:var(--ll);--fdur:4.7s;--fy:10px;bottom:5%;left:28%;}
+.oc-zodiac{--c:var(--zodiac);--fdur:4.4s;--fy:-8px;top:60%;left:0%;}
+.oc-shio{--c:var(--shio);--fdur:5.5s;--fy:12px;top:20%;left:0%;}
+
+/* =========================================
+   BENTO GRID CARD DESIGN (LOCKED)
+   ========================================= */
+.section-cards{max-width:1200px;margin:0 auto;padding:0 24px 100px;}
+.section-label{text-align:center;margin-bottom:56px;}
+.section-eyebrow{display:inline-block;font-size:12px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--knowly-blue);margin-bottom:14px;}
+.section-title{font-family:'Fredoka One',cursive;font-size:clamp(30px,4vw,48px);margin-bottom:12px;}
+
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; text-align: left; }
+.k-card {
+  position: relative; border-radius: 24px; padding: 32px 28px;
+  cursor: pointer; overflow: hidden; color: #fff;
+  transition: transform 0.3s cubic-bezier(0.4,0,0.2,1), box-shadow 0.3s ease;
+  min-height: 220px; display: flex; align-items: stretch;
+}
+.k-card:hover { transform: translateY(-6px) scale(1.01); box-shadow: 0 20px 40px rgba(0,0,0,0.4); }
+
+.k-card.mbti { background: radial-gradient(circle at top right, rgba(255,255,255,0.15), transparent 50%), linear-gradient(135deg, #0ea5e9, #1d4ed8); }
+.k-card.iq { background: radial-gradient(circle at top right, rgba(255,255,255,0.1), transparent 50%), linear-gradient(135deg, #4f46e5, #1e3a8a); }
+.k-card.zodiac { background: radial-gradient(circle at top right, rgba(255,255,255,0.15), transparent 50%), linear-gradient(135deg, #a855f7, #6d28d9); }
+.k-card.shio { background: radial-gradient(circle at top right, rgba(255,255,255,0.1), transparent 50%), linear-gradient(135deg, #ef4444, #9f1239); }
+.k-card.ll { background: radial-gradient(circle at top right, rgba(255,255,255,0.15), transparent 50%), linear-gradient(135deg, #14b8a6, #0f766e); }
+.k-card.eq { background: radial-gradient(circle at top right, rgba(255,255,255,0.2), transparent 50%), linear-gradient(135deg, #f59e0b, #b45309); }
+
+.k-content { position: relative; z-index: 2; width: 60%; display: flex; flex-direction: column; }
+.k-tag { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; opacity: 0.85; }
+.k-title { font-family: 'DM Sans', sans-serif; font-size: 26px; font-weight: 900; line-height: 1.1; margin-bottom: 10px; text-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+.k-desc { font-size: 14px; opacity: 0.9; line-height: 1.4; margin-bottom: 24px; text-shadow: 0 1px 2px rgba(0,0,0,0.1); font-weight:500;}
+.k-btn {
+  margin-top: auto; width: 38px; height: 38px; border-radius: 50%; background: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; font-weight: 800; transition: transform 0.3s;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+.k-card:hover .k-btn { transform: translateX(6px); }
+
+.k-card.mbti .k-btn { color: #1d4ed8; }
+.k-card.iq .k-btn { color: #1e3a8a; }
+.k-card.zodiac .k-btn { color: #6d28d9; }
+.k-card.shio .k-btn { color: #9f1239; }
+.k-card.ll .k-btn { color: #0f766e; }
+.k-card.eq .k-btn { color: #b45309; }
+
+/* Background Fx */
+.mbti-marquee { position: absolute; top: -30px; right: -60px; bottom: -30px; left: -60px; display: flex; flex-direction: column; gap: 14px; transform: rotate(-15deg); opacity: 0.06; z-index: 0; pointer-events: none; transition: opacity 0.5s ease, transform 0.8s ease; }
+.k-card.mbti:hover .mbti-marquee { opacity: 0.25; transform: rotate(-12deg) scale(1.05); }
+.mbti-row { display: flex; white-space: nowrap; font-family: 'DM Sans', monospace; font-weight: 900; font-size: 26px; color: #fff; animation: scrollX 20s linear infinite; letter-spacing: 2px; }
+.mbti-row.reverse { animation-direction: reverse; animation-duration: 25s; color: #fff; }
+@keyframes scrollX { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+
+.iq-nodes { position:absolute; inset:0; opacity:0; transition:opacity 0.4s; pointer-events:none; }
+.k-card.iq:hover .iq-nodes { opacity:1; }
+.iq-node { position:absolute; width:8px; height:8px; background:#fff; border-radius:50%; box-shadow:0 0 15px #fff; opacity:0;}
+.k-card.iq:hover .iq-node:nth-child(1) { top:15%; right:20%; animation:pulseNode 1.5s infinite alternate; }
+.k-card.iq:hover .iq-node:nth-child(2) { top:40%; right:10%; animation:pulseNode 1.5s infinite alternate 0.5s; }
+.k-card.iq:hover .iq-node:nth-child(3) { top:25%; right:45%; animation:pulseNode 1.5s infinite alternate 1s; }
+@keyframes pulseNode { 0% { transform:scale(0.8); opacity:0.3; } 100% { transform:scale(1.8); opacity:0.8; } }
+
+.eq-aura { position:absolute; top:-50px; right:-50px; width:200px; height:200px; background:radial-gradient(circle, #fff 0%, transparent 60%); opacity:0; border-radius:50%; filter:blur(20px); transition:all 0.4s; pointer-events:none;}
+.k-card.eq:hover .eq-aura { opacity:0.15; animation:heartbeat 1.5s infinite ease-in-out; }
+@keyframes heartbeat { 0%, 100% { transform:scale(1); } 20% { transform:scale(1.15); } 40% { transform:scale(1); } 60% { transform:scale(1.15); } }
+
+.ll-hearts { position:absolute; inset:0; overflow:hidden; pointer-events:none; }
+.ll-heart { position:absolute; color:#fff; font-size:24px; opacity:0; bottom:-30px; right:20px; filter:drop-shadow(0 0 5px rgba(255,255,255,0.5));}
+.k-card.ll:hover .ll-heart:nth-child(1) { animation:floatUp 2s infinite ease-in; right:30px; }
+.k-card.ll:hover .ll-heart:nth-child(2) { animation:floatUp 2.5s infinite ease-in 0.4s; right:70px; font-size:16px; }
+.k-card.ll:hover .ll-heart:nth-child(3) { animation:floatUp 2.2s infinite ease-in 0.8s; right:110px; font-size:20px; }
+@keyframes floatUp { 0% { transform:translateY(0) scale(0.8); opacity:0; } 30% { opacity:0.3; } 100% { transform:translateY(-120px) scale(1.2); opacity:0; } }
+
+.zodiac-astrolabe { position:absolute; top:-80px; right:-60px; width:250px; height:250px; opacity:0; transition:opacity 0.5s; pointer-events:none;
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='50' cy='50' r='45' fill='none' stroke='white' stroke-width='1' stroke-dasharray='4 4'/%3E%3Ccircle cx='50' cy='50' r='35' fill='none' stroke='white' stroke-width='0.5'/%3E%3Cpath d='M50 5 L50 95 M5 50 L95 50 M18 18 L82 82 M18 82 L82 18' stroke='white' stroke-width='0.5'/%3E%3Ccircle cx='50' cy='50' r='10' fill='none' stroke='white' stroke-width='2'/%3E%3C/svg%3E");
+  background: #fff; }
+.k-card.zodiac:hover .zodiac-astrolabe { opacity:0.15; animation:spinAstrolabe 15s linear infinite; }
+@keyframes spinAstrolabe { 100% { transform:rotate(360deg); } }
+
+.shio-oriental { position:absolute; bottom:-30px; right:-20px; font-size:160px; line-height:1; color:#fff; opacity:0; transition:all 0.5s ease; transform:rotate(-45deg); pointer-events:none;}
+.k-card.shio:hover .shio-oriental { opacity:0.08; transform:rotate(0deg) scale(1.1); }
+
+/* MULTIPLE VECTORS GROUPING */
+.k-illus-group { position: absolute; right: -10px; bottom: -10px; width: 170px; height: 170px; pointer-events: none; z-index: 1;}
+.vec-main { position: absolute; right: 10px; bottom: 10px; font-size: 110px; line-height: 1; filter: drop-shadow(0 15px 15px rgba(0,0,0,0.3)); transition: transform 0.6s cubic-bezier(0.4,0,0.2,1); }
+.vec-float1 { position: absolute; top: 10px; left: 10px; font-size: 45px; opacity: 0.8; filter: drop-shadow(0 5px 10px rgba(0,0,0,0.2)); transition: transform 0.8s cubic-bezier(0.4,0,0.2,1); }
+.vec-float2 { position: absolute; bottom: 40px; left: -10px; font-size: 35px; opacity: 0.6; filter: drop-shadow(0 5px 10px rgba(0,0,0,0.2)); transition: transform 0.7s cubic-bezier(0.4,0,0.2,1); }
+.k-card:hover .vec-main { transform: scale(1.1) rotate(-5deg) translateY(-5px); }
+.k-card:hover .vec-float1 { transform: scale(1.2) translateY(-15px) rotate(15deg); }
+.k-card:hover .vec-float2 { transform: scale(1.1) translateX(-15px) rotate(-20deg); }
+.k-card.iq .vec-main { font-size: 100px; right: 20px; }
+.k-card.zodiac .vec-main { font-size: 120px; right: -5px; bottom: 0px;}
+.k-card.ll .vec-main { font-size: 100px; right: 15px; }
+
+/* MODAL MBTI */
+.modal-overlay { display:none; position:fixed; inset:0; background:rgba(15,23,42,0.8); backdrop-filter:blur(5px); z-index:999; align-items:center; justify-content:center; padding:20px;}
+.modal-overlay.active { display:flex; animation:fadeIn .2s;}
+.modal-box { background:var(--s1); border:1px solid var(--mbti); border-radius:24px; padding:40px; max-width:500px; width:100%; text-align:center; position:relative;}
+.modal-title { font-family:'Fraunces',serif; font-size:28px; margin-bottom:12px; color:var(--mbti);}
+.modal-desc { font-size:15px; color:var(--muted); margin-bottom:30px; line-height:1.6;}
+.modal-btn { display:flex; flex-direction:column; gap:12px;}
+.m-btn { padding:16px; border-radius:16px; border:1px solid var(--border); background:var(--s2); color:var(--text); font-size:16px; font-weight:600; cursor:pointer; transition:all .2s; display:flex; flex-direction:column; align-items:center; gap:4px;}
+.m-btn:hover { border-color:var(--mbti); background:rgba(129,140,248,0.1);}
+.m-btn span { font-size:12px; color:var(--muted); font-weight:400;}
+.close-modal { position:absolute; top:20px; right:24px; background:none; border:none; color:var(--muted); font-size:24px; cursor:pointer;}
+
+/* === TEST SCREEN === */
+#test{max-width:760px;margin:0 auto;padding:60px 24px 100px;}
+.test-card{background:var(--s1);border:1px solid var(--border);border-radius:28px;padding:48px;position:relative; box-shadow: 0 20px 40px rgba(0,0,0,0.3);}
+.test-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;}
+.test-label{font-family:'Fraunces',serif;font-size:24px;font-weight:700;}
+.test-timer{font-family:'DM Sans',monospace;font-size:18px;color:var(--iq);font-weight:700;display:none;background:rgba(110,231,183,0.1);padding:6px 14px;border-radius:8px;}
+.progress-container{width:100%;height:6px;background:var(--s3);border-radius:3px;margin-bottom:36px;overflow:hidden;}
+.progress-bar{height:100%;background:linear-gradient(90deg,var(--c,var(--iq)),#fff);width:0%;transition:width 0.4s ease;}
+.form-body{min-height:280px;}
+
+.field-input{width:100%;background:var(--s2);border:1px solid var(--border);border-radius:12px;color:var(--text);font-size:16px;padding:16px 20px;outline:none;transition:border-color .18s; color-scheme:dark;}
+.field-input:focus{border-color:var(--c,var(--iq));}
+
+.question-container{display:none;animation:fadeIn 0.3s ease;}
+.question-container.active{display:block;}
+
+/* MATRIX & IQ STYLES */
+.iq-q-text{font-size:20px;font-weight:500;margin-bottom:20px;line-height:1.5;text-align:center;}
+.stage-badge { display:inline-block; font-size:12px; font-weight:700; padding:4px 12px; border-radius:20px; background:rgba(110,231,183,0.15); color:var(--iq); margin-bottom:16px; letter-spacing:1px; text-transform:uppercase;}
+.matrix-container { display:flex; flex-direction:column; align-items:center; margin-bottom:36px; background:var(--s2); padding:32px; border-radius:20px; border:1px solid var(--border); box-shadow:inset 0 4px 20px rgba(0,0,0,0.2);}
+.matrix-grid { display:grid; grid-template-columns:repeat(3, 1fr); gap:16px; font-size:48px; line-height:1; }
+.matrix-cell { width:70px; height:70px; display:flex; align-items:center; justify-content:center; background:var(--s1); border-radius:12px; border:1px solid rgba(255,255,255,0.05); box-shadow:0 4px 10px rgba(0,0,0,0.2); }
+.matrix-cell.q { background:rgba(110,231,183,0.05); border:2px dashed var(--iq); color:var(--iq); font-weight:900; font-family:'Fraunces',serif; }
+.iq-opts{display:grid;gap:16px;}
+.iq-opts.matrix-opts { grid-template-columns:repeat(4, 1fr); }
+.iq-opts.text-opts { grid-template-columns:1fr 1fr; } 
+.iq-opt{display:flex;align-items:center;gap:12px;padding:20px;border-radius:16px;border:1px solid var(--border);background:var(--s2);cursor:pointer;transition:all .2s; position:relative;}
+.iq-opt.opt-matrix { justify-content:center; font-size:36px; line-height:1; padding:24px 10px;}
+.iq-opt.opt-text { font-size:16px; justify-content:flex-start; }
+.iq-opt:hover{border-color:rgba(255,255,255,.3);background:var(--s3); transform:translateY(-2px);}
+.iq-opt.selected{border-color:var(--c,var(--iq));background:rgba(110,231,183,0.05);color:var(--c,var(--iq));font-weight:600;box-shadow:0 0 0 2px var(--c,var(--iq)) inset;}
+.opt-label { position:absolute; top:8px; left:12px; font-size:11px; color:var(--muted); font-family:'DM Sans'; font-weight:700;}
+.opt-label-text { font-weight:700; color:var(--iq); margin-right:8px;}
+
+/* LIKERT SCALES (MBTI, EQ, LL) */
+.scale-q-text{font-size:18px;font-weight:500;text-align:center;margin-bottom:24px; line-height:1.5;}
+.scale-container{display:flex;align-items:center;justify-content:center;gap:15px;margin-bottom:48px;}
+.scale-label{font-size:12px;color:var(--muted);text-transform:uppercase;font-weight:600;letter-spacing:1px; width:70px; text-align:center;}
+.scale-label.agree{color:var(--c, var(--mbti));} .scale-label.disagree{color:var(--c2, var(--zodiac));}
+.scale-dots{display:flex;gap:12px;align-items:center;}
+.scale-dot{border-radius:50%;border:2px solid var(--border);background:transparent;cursor:pointer;transition:all .2s;}
+.scale-dot:hover{background:var(--s3);}
+.scale-dot.d-1,.scale-dot.d-7{width:46px;height:46px;}
+.scale-dot.d-2,.scale-dot.d-6{width:36px;height:36px;}
+.scale-dot.d-3,.scale-dot.d-5{width:28px;height:28px;}
+.scale-dot.d-4{width:22px;height:22px;border-color:var(--muted);}
+.scale-dot.d-1.sel,.scale-dot.d-2.sel,.scale-dot.d-3.sel{background:var(--c, var(--mbti));border-color:var(--c, var(--mbti));}
+.scale-dot.d-5.sel,.scale-dot.d-6.sel,.scale-dot.d-7.sel{background:var(--c2, var(--zodiac));border-color:var(--c2, var(--zodiac));}
+.scale-dot.d-4.sel{background:var(--muted);border-color:var(--text);}
+
+/* Controls */
+.test-controls{display:flex;justify-content:space-between;gap:16px;margin-top:40px;padding-top:24px;border-top:1px solid var(--border);}
+.btn{padding:16px 28px;border-radius:14px;border:none;font-family:'DM Sans',sans-serif;font-size:16px;font-weight:600;cursor:pointer;transition:all .15s;}
+.btn-outline{background:transparent;border:1px solid var(--border);color:var(--text);}
+.btn-outline:hover{background:var(--s2);}
+.btn-primary{background:var(--c,var(--iq));color:#0C0E14;flex:1;text-align:center;}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,0.3);}
+.btn-primary:disabled{opacity:0.5;cursor:not-allowed;transform:none;}
+
+/* === RESULT SCREEN === */
+#result{max-width:800px;margin:0 auto;padding:60px 24px 100px;}
+.res-card{background:var(--s1);border:1px solid var(--border);border-radius:28px;padding:48px;text-align:center; box-shadow: 0 20px 40px rgba(0,0,0,0.3);}
+.res-icon{font-size:80px;margin-bottom:20px;display:block;line-height:1;}
+.res-name{font-family:'Fraunces',serif;font-size:44px;font-weight:900;letter-spacing:-1px;margin-bottom:12px; color:var(--text);}
+.res-desc{font-size:16px;color:var(--muted);line-height:1.7;max-width:600px;margin:0 auto 36px;}
+.res-blocks{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:36px;text-align:left;}
+.res-block{background:var(--s2);border-radius:16px;padding:24px; border:1px solid var(--border);}
+.res-block-label{font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--c, var(--mbti));margin-bottom:12px; display:flex; align-items:center; gap:8px;}
+.res-block-text{font-size:14px;line-height:1.6;color:var(--text);}
+
+.trait-row{display:flex;align-items:center;gap:12px;margin-bottom:14px;}
+.trait-lbl{font-size:13px;color:var(--muted);width:140px;flex-shrink:0;font-weight:600;}
+.trait-bar-wrap{flex:1;height:10px;background:var(--s3);border-radius:5px;overflow:hidden;position:relative;}
+.trait-bar{height:100%;border-radius:5px;background:var(--c,var(--mbti));transition:width 1s cubic-bezier(0.4,0,0.2,1);width:0%;}
+.trait-pct{font-size:13px;color:var(--text);width:40px;text-align:right;flex-shrink:0;font-weight:600;}
+
+.tags-container { display:flex; flex-wrap:wrap; gap:8px; margin-top:8px; }
+.tag { padding:4px 12px; border-radius:20px; font-size:12px; font-weight:600; }
+.tag.plus { background:rgba(110,231,183,0.1); border:1px solid var(--iq); color:var(--iq); }
+.tag.minus { background:rgba(219,39,119,0.1); border:1px solid var(--zodiac2); color:var(--zodiac); }
+
+/* Shio Specific Styling */
+.shio-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; background:rgba(255,255,255,0.02); padding:16px; border-radius:12px; border:1px solid rgba(255,255,255,0.05); margin-bottom:16px;}
+.shio-info { display:flex; flex-direction:column; gap:4px; }
+.s-label { font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:1px; font-weight:700;}
+.s-val { font-size:16px; font-weight:600; color:var(--shio);}
+
+@media(max-width:900px){
+  .hero-inner{grid-template-columns:1fr;text-align:center;padding-top:50px;min-height:auto;gap:40px;}
+  .hero-sub{margin-left:auto;margin-right:auto;}
+  .hero-ctas{justify-content:center;}
+  .hero-orbit{max-width:340px;}
+}
+@media(max-width:768px){
+  .cards{grid-template-columns:1fr;}
+  .res-blocks{grid-template-columns:1fr;}
+  .iq-opts.matrix-opts { grid-template-columns:repeat(2, 1fr); }
+  .iq-opts.text-opts { grid-template-columns:1fr; }
+  .scale-container{flex-direction:column;gap:12px;}
+  .scale-label{display:none;}
+  .test-card, .res-card { padding: 32px 24px; }
+  .trait-lbl{width:110px; font-size:11px;}
+  .k-content { width: 70%; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-brand" onclick="showScreen('home')">
+    <svg class="brand-vector" width="36" height="36" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+      <polygon points="50,5 90,25 90,75 50,95 10,75 10,25" fill="#1E293B" stroke="#38BDF8" stroke-width="5"/>
+      <polygon points="50,5 90,25 50,50" fill="#38BDF8"/>
+      <polygon points="10,25 10,75 50,50" fill="#0284C7"/>
+      <polygon points="90,75 50,95 50,50" fill="#38BDF8" opacity="0.2"/>
+      <circle cx="50" cy="50" r="14" fill="#FDE047"/>
+    </svg>
+    <span class="brand-text">Knowly</span>
+  </a>
+  <button class="nav-home-btn" onclick="showScreen('home')">← Kembali ke Awal</button>
+</nav>
+
+<div class="modal-overlay" id="mbti-modal">
+  <div class="modal-box">
+    <button class="close-modal" onclick="closeModal()">×</button>
+    <div class="modal-title">Pilih Mode Analisa</div>
+    <div class="modal-desc">Seberapa detail Anda ingin membedah kepribadian Anda hari ini?</div>
+    <div class="modal-btn">
+      <button class="m-btn" onclick="startTest('mbti_short')">
+        ⚡ Tes Singkat (12 Pertanyaan)
+        <span>5 - 10 Menit. Analisa cepat mengetahui tipe utama.</span>
+      </button>
+      <button class="m-btn" onclick="startTest('mbti_long')" style="border-color:var(--mbti); box-shadow:0 0 15px rgba(129,140,248,0.2);">
+        🧠 Tes Kognitif Lengkap (48 Pertanyaan)
+        <span>12 - 20 Menit. Analisis menyeluruh, akurasi tinggi.</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<main>
+  <div id="home" class="screen active">
+    <section style="position:relative;overflow:hidden;">
+      <div class="hero-bg">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+        <div class="blob blob-4"></div>
+        <div class="star-field" id="starField"></div>
+      </div>
+
+      <div class="hero-inner">
+        <div class="hero-left">
+          <div class="hero-chip">
+            <span class="hero-chip-dot"></span>
+            Platform Asesmen Knowly
+          </div>
+          <h1 class="hero-title">
+            <div class="hero-title-line1">Temukan Stats</div>
+            <div class="hero-title-line2">Tersembunyimu ✦</div>
+          </h1>
+          <p class="hero-sub">Platform paling legit buat nge-track potensi asli kamu. Validasi kepribadianmu, ukur kapasitas otak & emosi, sampai cek peruntungan kosmikmu di sini.</p>
+          <div class="hero-ctas">
+            <button class="btn-hero btn-hero-primary" onclick="document.querySelector('.section-cards').scrollIntoView({behavior:'smooth'})">
+              🚀 Mulai Eksplorasi
+            </button>
+            <button class="btn-hero btn-hero-secondary" onclick="startTest('iq')">
+              🧠 Langsung Tes IQ
+            </button>
+          </div>
+        </div>
+
+        <div class="hero-orbit" id="heroOrbit">
+          <div class="orbit-ring orbit-ring-1"></div>
+          <div class="orbit-ring orbit-ring-2"></div>
+          <div class="orbit-ring orbit-ring-3"></div>
+
+          <div class="orbit-center">
+            <div class="brain-logo" onclick="showScreen('home')">
+              <svg width="64" height="64" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                <polygon points="50,5 90,25 90,75 50,95 10,75 10,25" fill="#1E293B" stroke="#38BDF8" stroke-width="5"/>
+                <polygon points="50,5 90,25 50,50" fill="#38BDF8"/>
+                <polygon points="10,25 10,75 50,50" fill="#0284C7"/>
+                <polygon points="90,75 50,95 50,50" fill="#38BDF8" opacity="0.2"/>
+                <circle cx="50" cy="50" r="14" fill="#FDE047"/>
+              </svg>
+            </div>
+          </div>
+
+          <div class="orbit-card oc-iq" onclick="startTest('iq')">
+            <div class="orbit-card-icon">🧠</div>
+            <div class="orbit-card-name">Tes IQ</div>
+            <div class="orbit-card-time">30 Menit</div>
+            <div class="orbit-card-accent"></div>
+          </div>
+          <div class="orbit-card oc-eq" onclick="startTest('eq')">
+            <div class="orbit-card-icon">❤️‍🔥</div>
+            <div class="orbit-card-name">Tes EQ</div>
+            <div class="orbit-card-time">5 Menit</div>
+            <div class="orbit-card-accent"></div>
+          </div>
+          <div class="orbit-card oc-mbti" onclick="openMBTIModal()">
+            <div class="orbit-card-icon">👤</div>
+            <div class="orbit-card-name">MBTI</div>
+            <div class="orbit-card-time">5–20 Min</div>
+            <div class="orbit-card-accent"></div>
+          </div>
+          <div class="orbit-card oc-ll" onclick="startTest('ll')">
+            <div class="orbit-card-icon">💌</div>
+            <div class="orbit-card-name">Love Lang</div>
+            <div class="orbit-card-time">5 Menit</div>
+            <div class="orbit-card-accent"></div>
+          </div>
+          <div class="orbit-card oc-zodiac" onclick="startTest('zodiac')">
+            <div class="orbit-card-icon">✨</div>
+            <div class="orbit-card-name">Zodiak</div>
+            <div class="orbit-card-time">Instan</div>
+            <div class="orbit-card-accent"></div>
+          </div>
+          <div class="orbit-card oc-shio" onclick="startTest('shio')">
+            <div class="orbit-card-icon">🐉</div>
+            <div class="orbit-card-name">Shio</div>
+            <div class="orbit-card-time">Instan</div>
+            <div class="orbit-card-accent"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section-cards">
+      <div class="section-label">
+        <div class="section-eyebrow">✦ Pilih Tesmu</div>
+        <h2 class="section-title" style="color:var(--text);">Apa yang ingin kamu temukan hari ini?</h2>
+        <p class="section-sub">Setiap tes dirancang dengan metodologi psikologi yang valid dan disajikan dengan cara interaktif.</p>
+      </div>
+
+      <div class="cards">
+        <div class="k-card iq" onclick="startTest('iq')">
+          <div class="iq-nodes"><div class="iq-node"></div><div class="iq-node"></div><div class="iq-node"></div></div>
+          <div class="k-content">
+            <div class="k-tag">INTELLIGENCE</div>
+            <div class="k-title">IQ Test</div>
+            <div class="k-desc">Ukur kekuatan kognitif dan spasial matriks otak Anda. (50 Soal)</div>
+            <div class="k-btn">❯</div>
+          </div>
+          <div class="k-illus-group"><div class="vec-main">🧠</div><div class="vec-float1">💡</div><div class="vec-float2">⚙️</div></div>
+        </div>
+        
+        <div class="k-card eq" onclick="startTest('eq')">
+          <div class="eq-aura"></div>
+          <div class="k-content">
+            <div class="k-tag">EMOTION</div>
+            <div class="k-title">EQ Test</div>
+            <div class="k-desc">Ukur empati, kesadaran diri, dan regulasi emosi Anda. (15 Soal)</div>
+            <div class="k-btn">❯</div>
+          </div>
+          <div class="k-illus-group"><div class="vec-main">❤️‍🔥</div><div class="vec-float1">🤲</div><div class="vec-float2">✨</div></div>
+        </div>
+        
+        <div class="k-card mbti" onclick="openMBTIModal()">
+          <div class="mbti-marquee">
+            <div class="mbti-row">INTJ 🏛️ INTP 🔬 ENTJ 👑 ENTP 💡 INFJ 🌙 INFP 🎨 ENFJ 🌟 ENFP 🎭</div>
+            <div class="mbti-row reverse">ISTJ 📋 ISFJ 🛡️ ESTJ ⚖️ ESFJ 🤝 ISTP 🔧 ISFP 🎨 ESTP ⚡ ESFP 🎉</div>
+            <div class="mbti-row">ENTP 💡 INFJ 🌙 INFP 🎨 ENFJ 🌟 ENFP 🎭 INTJ 🏛️ INTP 🔬 ENTJ 👑</div>
+          </div>
+          <div class="k-content">
+            <div class="k-tag">PERSONALITY</div>
+            <div class="k-title">MBTI Test</div>
+            <div class="k-desc">Cari tahu siapa diri Anda dengan akurasi 16 sifat kepribadian.</div>
+            <div class="k-btn">❯</div>
+          </div>
+          <div class="k-illus-group"><div class="vec-main">🎭</div><div class="vec-float1">🧩</div><div class="vec-float2">👥</div></div>
+        </div>
+        
+        <div class="k-card ll" onclick="startTest('ll')">
+          <div class="ll-hearts"><div class="ll-heart">❤️</div><div class="ll-heart">💌</div><div class="ll-heart">💖</div></div>
+          <div class="k-content">
+            <div class="k-tag">RELATIONSHIP</div>
+            <div class="k-title">Love Test</div>
+            <div class="k-desc">Lihat profil bahasa cinta yang membuat hubungan Anda sempurna.</div>
+            <div class="k-btn">❯</div>
+          </div>
+          <div class="k-illus-group"><div class="vec-main">💌</div><div class="vec-float1">💍</div><div class="vec-float2">🍷</div></div>
+        </div>
+        
+        <div class="k-card zodiac" onclick="startTest('zodiac')">
+          <div class="zodiac-astrolabe"></div>
+          <div class="k-content">
+            <div class="k-tag">ASTROLOGY</div>
+            <div class="k-title">Zodiac Sign</div>
+            <div class="k-desc">Ungkap jalur kosmik, karir, dan masa depan asmara Anda.</div>
+            <div class="k-btn">❯</div>
+          </div>
+          <div class="k-illus-group"><div class="vec-main">🔮</div><div class="vec-float1">🌙</div><div class="vec-float2">⭐</div></div>
+        </div>
+
+        <div class="k-card shio" onclick="startTest('shio')">
+          <div class="shio-oriental">☯</div>
+          <div class="k-content">
+            <div class="k-tag">CULTURE</div>
+            <div class="k-title">Chinese Zodiac</div>
+            <div class="k-desc">Temukan elemen, angka Kua, dan profil Feng Shui dari tahun lahir.</div>
+            <div class="k-btn">❯</div>
+          </div>
+          <div class="k-illus-group"><div class="vec-main">🐉</div><div class="vec-float1">🏮</div><div class="vec-float2">🧧</div></div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div id="test" class="screen">
+    <div class="test-card" id="dynamic-theme-card">
+      <div class="test-head">
+        <div class="test-label" id="test-label">Tes</div>
+        <div class="test-timer" id="test-timer">30:00</div>
+      </div>
+      <div class="progress-container"><div class="progress-bar" id="progress-bar"></div></div>
+      <div class="form-body" id="form-body"></div>
+      <div class="test-controls" id="test-controls">
+        <button class="btn btn-outline" id="btn-prev" onclick="prevStep()">Kembali</button>
+        <button class="btn btn-primary" id="btn-next" onclick="nextStep()" disabled>Selanjutnya</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="result" class="screen">
+    <div class="res-card" id="res-dynamic-card">
+      <span class="res-icon" id="res-icon"></span>
+      <div class="res-name" id="res-name"></div>
+      <div class="res-desc" id="res-desc"></div>
+      <div class="res-blocks" id="res-blocks"></div>
+      <div style="margin-top:30px;display:flex;gap:12px;justify-content:center;">
+        <button class="btn btn-primary" onclick="showScreen('home')">Selesai & Kembali ke Menu</button>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script>
+// =========================================
+// STAR FIELD GENERATOR
+// =========================================
+(function(){
+  const sf = document.getElementById('starField');
+  if(!sf) return;
+  for(let i=0;i<80;i++){
+    const s = document.createElement('div');
+    s.className='star';
+    const sz = Math.random()*2.5+0.5;
+    s.style.cssText = `width:${sz}px;height:${sz}px;top:${Math.random()*100}%;left:${Math.random()*100}%;--dur:${(Math.random()*4+2).toFixed(1)}s;animation-delay:${(Math.random()*5).toFixed(1)}s;`;
+    sf.appendChild(s);
+  }
+})();
+
+// ==========================================
+// 1. DATA BANK: SHIO, ZODIAK, MBTI, IQ, EQ, LL
+// ==========================================
+const SHIO_PROFILES = [
+  {i:"🐀",n:"Tikus", z:"Sagitarius", m:"Musim Dingin", j:"23.00 - 01.00", et:"Air", makmur:"Naga & Monyet", penolong:"Kerbau", d:"Anda memiliki kecerdasan tajam dan kelincahan dalam beradaptasi. Sebagai perencana ulung, Anda selalu bisa menemukan celah dan peluang di situasi tersulit sekalipun. Insting bertahan hidup Anda sangat tinggi."},
+  {i:"🐂",n:"Kerbau", z:"Capricorn", m:"Musim Dingin", j:"01.00 - 03.00", et:"Tanah", makmur:"Ular & Ayam", penolong:"Tikus", d:"Tangguh, stabil, dan dapat diandalkan. Anda adalah tipe pekerja keras yang tidak banyak bicara namun selalu memberikan hasil nyata. Kesabaran Anda luar biasa."},
+  {i:"🐅",n:"Macan", z:"Aquarius", m:"Musim Semi", j:"03.00 - 05.00", et:"Kayu", makmur:"Kuda & Anjing", penolong:"Babi", d:"Penuh karisma, berani, dan berjiwa kepemimpinan. Anda benci rutinitas yang monoton dan selalu haus akan tantangan baru. Kehadiran Anda selalu membawa energi yang kuat."},
+  {i:"🐰",n:"Kelinci", z:"Pisces", m:"Musim Semi", j:"05.00 - 07.00", et:"Kayu", makmur:"Kambing & Babi", penolong:"Anjing", d:"Lambang harmoni dan kelembutan. Anda adalah diplomat ulung yang lihai bernegosiasi dan menghindari konflik dengan elegan. Di balik ketenangan Anda, terdapat kebijaksanaan tajam."},
+  {i:"🐉",n:"Naga", z:"Aries", m:"Musim Semi", j:"07.00 - 09.00", et:"Tanah", makmur:"Tikus & Monyet", penolong:"Ayam", d:"Visioner dan penuh pesona. Anda memiliki aura otoritas yang membuat orang lain segan sekaligus kagum. Standar Anda sangat tinggi, dan Anda dilahirkan untuk mencapai hal-hal besar."},
+  {i:"🐍",n:"Ular", z:"Taurus", m:"Musim Panas", j:"09.00 - 11.00", et:"Api", makmur:"Kerbau & Ayam", penolong:"Monyet", d:"Misterius, elegan, dan sangat analitis. Anda memiliki indera keenam yang kuat untuk membaca niat orang lain. Anda bertindak dengan perhitungan presisi yang matang."},
+  {i:"🐎",n:"Kuda", z:"Gemini", m:"Musim Panas", j:"11.00 - 13.00", et:"Api", makmur:"Macan & Anjing", penolong:"Kambing", d:"Jiwa petualang yang mandiri dan energik. Anda sangat mencintai kebebasan dan berekspresi tanpa batas. Anda mudah bergaul, hangat, namun tak suka dikekang."},
+  {i:"🐏",n:"Kambing", z:"Cancer", m:"Musim Panas", j:"13.00 - 15.00", et:"Tanah", makmur:"Kelinci & Babi", penolong:"Kuda", d:"Artistik, empatik, dan pencinta kedamaian. Anda memiliki selera estetika yang tinggi dan sifat yang sangat lembut. Lingkungan suportif memacu bakat kreatif Anda."},
+  {i:"🐒",n:"Monyet", z:"Leo", m:"Musim Gugur", j:"15.00 - 17.00", et:"Logam", makmur:"Tikus & Naga", penolong:"Ular", d:"Jenaka, multi-talenta, dan inovatif. Otak Anda bekerja dengan cepat untuk mencari jalan pintas atau solusi cerdas dari setiap masalah. Anda mudah beradaptasi."},
+  {i:"🐓",n:"Ayam", z:"Virgo", m:"Musim Gugur", j:"17.00 - 19.00", et:"Logam", makmur:"Kerbau & Ular", penolong:"Naga", d:"Perfeksionis, jujur, dan penuh percaya diri. Anda tidak segan mengutarakan kebenaran secara blak-blakan demi kebaikan bersama. Anda memiliki kemampuan organisasi yang luar biasa."},
+  {i:"🐕",n:"Anjing", z:"Libra", m:"Musim Gugur", j:"19.00 - 21.00", et:"Tanah", makmur:"Macan & Kuda", penolong:"Kelinci", d:"Simbol kesetiaan dan keadilan sejati. Anda adalah sahabat terbaik yang bisa diandalkan dalam kondisi terburuk. Intuisi Anda terhadap ketidakadilan sangat kuat."},
+  {i:"🐖",n:"Babi", z:"Scorpio", m:"Musim Dingin", j:"21.00 - 23.00", et:"Air", makmur:"Kelinci & Kambing", penolong:"Macan", d:"Dermawan, tulus, dan tahu cara menikmati hidup. Anda tidak suka menyimpan dendam dan lebih memilih mengejar kebahagiaan sederhana. Kebaikan hati Anda mendatangkan hoki."}
+];
+
+const ZODIAC_TRADISIONAL = {
+  aries: { i:"♈", n:"Aries", t:"21 Maret - 19 April", karir: "Sifat kepemimpinanmu sedang berada di puncaknya. Ada peluang besar untuk memimpin proyek atau memulai usaha baru.", cinta: "Kejutan spontan akan memercikkan kembali gairah cinta. Bagi yang lajang, keberanianmu akan mendatangkan seseorang yang spesial.", masa_depan: "Energi masa depanmu penuh dengan pergerakan. Kesuksesan finansial akan datang dari ide-ide inovatif." },
+  taurus: { i:"♉", n:"Taurus", t:"20 April - 20 Mei", karir: "Kerja keras dan kesabaranmu akhirnya akan membuahkan hasil. Ada potensi promosi atau kestabilan finansial jangka panjang.", cinta: "Hubungan membutuhkan fondasi yang stabil saat ini. Kesetiaan akan menjadi kunci kebahagiaan.", masa_depan: "Sebuah investasi yang kamu tanam belakangan ini akan mekar dan memberikan kenyamanan berlipat ganda." },
+  gemini: { i:"♊", n:"Gemini", t:"21 Mei - 20 Juni", karir: "Kemampuan komunikasimu adalah senjata utama. Akan ada banyak peluang networking yang membuka pintu emas.", cinta: "Kamu sedang mencari stimulasi intelektual. Jodohmu adalah seseorang yang bisa mengimbangi obrolan cerdasmu.", masa_depan: "Masa depanmu dipenuhi dengan banyak pilihan. Jangan takut untuk menjelajahi dua minat sekaligus." },
+  cancer: { i:"♋", n:"Cancer", t:"21 Juni - 22 Juli", karir: "Intuisi tajammu akan menyelamatkanmu dari keputusan bisnis yang buruk. Tetaplah bekerja dengan empati.", cinta: "Perasaanmu sedang sangat dalam. Waktu yang tepat untuk membangun ikatan emosional di rumah bersama pasangan.", masa_depan: "Rumah dan keluarga akan menjadi pusat kebahagiaan utamamu. Ada tanda-tanda keamanan yang kuat." },
+  leo: { i:"♌", n:"Leo", t:"23 Juli - 22 Agustus", karir: "Karisma alaminya tidak bisa disembunyikan. Bersiaplah untuk menjadi sorotan atas bakat kreatifmu di tempat kerja.", cinta: "Romansa yang menggebu-gebu ada di depan mata. Auramu akan menarik banyak penggemar.", masa_depan: "Bintangmu sedang bersinar terang. Kepercayaan diri akan membawamu mencapai posisi puncak." },
+  virgo: { i:"♍", n:"Virgo", t:"23 Agustus - 22 September", karir: "Ketelitianmu akan menemukan celah kesalahan yang krusial. Atasan akan sangat mengapresiasi dedikasi kerjamu.", cinta: "Jangan terlalu analitis dalam urusan hati. Terkadang cinta tidak butuh logika. Cobalah untuk memaafkan.", masa_depan: "Semua rencana yang kamu susun dengan rapi akan terwujud. Kedisiplinan adalah tiket emasmu menuju sejahtera." },
+  libra: { i:"♎", n:"Libra", t:"23 September - 22 Oktober", karir: "Kemampuan negosiasimu akan diuji. Kamu akan berhasil mendamaikan dua pihak dan membawa harmoni.", cinta: "Keseimbangan adalah kunci. Cinta sejati mungkin ada di dekatmu namun berwujud tak terduga.", masa_depan: "Menjanjikan kemitraan yang kuat, baik dalam bisnis maupun asmara. Keindahan akan mengisi hari-harimu." },
+  scorpio: { i:"♏", n:"Scorpio", t:"23 Oktober - 21 November", karir: "Fokusmu sedang sangat tajam bagaikan laser. Ini adalah saat yang tepat untuk menyelesaikan proyek mendalam.", cinta: "Gairah asmaramu memuncak. Hati-hati dengan rasa cemburu; cobalah untuk lebih mempercayai pasanganmu.", masa_depan: "Akan ada sebuah transformasi besar layaknya phoenix. Kamu akan bangkit dari masa sulit menjadi lebih kuat." },
+  sagittarius: { i:"♐", n:"Sagittarius", t:"22 November - 21 Desember", karir: "Pikiranmu terlalu luas untuk dikurung dalam rutinitas. Peluang karir yang melibatkan perjalanan menanti di depan.", cinta: "Kamu membutuhkan ruang dan kebebasan. Pasangan idealmu adalah seseorang yang mau diajak berpetualang.", masa_depan: "Cakrawala baru akan terbuka. Masa depanmu penuh dengan perjalanan panjang, baik spiritual maupun fisik." },
+  capricorn: { i:"♑", n:"Capricorn", t:"22 Desember - 19 Januari", karir: "Ambisi dan disiplinmu tak tertandingi. Segera, kamu akan memanjat anak tangga kesuksesan.", cinta: "Kamu memandang cinta sebagai komitmen serius. Ini saatnya untuk merencanakan masa depan bersama yang stabil.", masa_depan: "Sebuah kerajaan kecil sedang kamu bangun. Masa tuamu akan dipenuhi kemapanan dan warisan yang membanggakan." },
+  aquarius: { i:"♒", n:"Aquarius", t:"20 Januari - 18 Februari", karir: "Ide-ide eksentrikmu kini mulai terbukti brilian. Jangan takut mengusulkan inovasi tak lazim di tempat kerja.", cinta: "Kamu butuh pasangan yang juga sahabat terbaikmu. Pertahankan dia yang memahami jalan pikiran unikmu.", masa_depan: "Kamu akan membawa perubahan signifikan. Masa depan menjanjikan keterlibatan besar dalam proyek kemanusiaan." },
+  pisces: { i:"♓", n:"Pisces", t:"19 Februari - 20 Maret", karir: "Sisi kreatif dan empatimu sedang dominan. Karir di bidang seni atau penyembuhan akan mengalami lonjakan inspirasi.", cinta: "Hati-hati jangan terlalu banyak berkorban. Asmara yang sehat adalah tentang memberi dan menerima secara seimbang.", masa_depan: "Mimpi-mimpimu secara misterius akan bermanifestasi menjadi kenyataan. Intuisi adalah pemandu terbaikmu." }
+};
+
+const MBTI_TYPES = {
+  ENTP: {i:"💡",n:"Si Pendebat",d:"Pemikir inovatif, suka tantangan, dan berdebat secara logis.",plus:["Kreatif","Karismatik","Cepat Belajar"],minus:["Cepat Bosan","Argumentatif"],career:"Pengusaha, Pengacara",social:"Aktif berdebat",love:"Mandiri",match:"INFJ, INTJ"},
+  INTP: {i:"🔬",n:"Si Ahli Logika",d:"Pemikir abstrak, objektif, dan haus akan teori baru.",plus:["Analitis","Objektif","Imajinatif"],minus:["Terlihat Dingin","Overthinking"],career:"Ilmuwan, Arsitek Software",social:"Pemilih dalam bergaul",love:"Ruang personal tinggi",match:"ENTJ, ESTJ"},
+  ENFP: {i:"🌟",n:"Si Inspirator",d:"Visioner, berempati tinggi, dan selalu optimis.",plus:["Optimis","Empati Tinggi","Kreatif"],minus:["Terlalu Emosional","Gampang Stres"],career:"Jurnalis, Terapis",social:"Sangat populer",love:"Romantis totalitas",match:"INTJ, INFJ"},
+  INFP: {i:"🎨",n:"Si Mediator",d:"Idealis sejati, pencari makna, dan sangat loyal.",plus:["Setia","Artistik","Empatik"],minus:["Terlalu Idealis","Hindari Konflik"],career:"Penulis, Desainer",social:"Pendengar yang baik",love:"Mencari soulmate",match:"ENFJ, ENTJ"},
+  INTJ: {i:"🏛️",n:"Si Arsitek",d:"Pemikir strategis, mandiri, dan berorientasi rencana panjang.",plus:["Strategis","Rasional","Mandiri"],minus:["Arogan","Benci Emosi"],career:"Insinyur, Manajer",social:"Sirkel kecil berkualitas",love:"Setia dan logis",match:"ENFP, ENTP"},
+  ENTJ: {i:"👑",n:"Si Komandan",d:"Pemimpin alami, tegas, dan fokus pada pencapaian target.",plus:["Pemimpin","Efisien","Percaya Diri"],minus:["Keras Kepala","Kurang Toleran"],career:"CEO, Eksekutif",social:"Mendominasi",love:"Butuh pasangan kuat",match:"INTP, INFP"},
+  INFJ: {i:"🔮",n:"Si Advokat",d:"Tipe kepribadian paling langka. Idealis tapi pragmatis.",plus:["Visioner","Empati Dalam","Bertekad"],minus:["Perfeksionis","Burnout"],career:"Konselor, Psikiater",social:"Misterius tapi ramah",love:"Koneksi batin sangat dalam",match:"ENFP, ENTP"},
+  ENFJ: {i:"🌍",n:"Si Protagonis",d:"Karismatik, inspiratif, dan peduli pada perkembangan orang lain.",plus:["Karismatik","Altruistik"],minus:["Terlalu Idealis","Neglect Diri"],career:"Politisi, HRD",social:"Pemersatu grup",love:"Sangat perhatian",match:"INFP, ISFP"},
+  ISTJ: {i:"📋",n:"Si Ahli Logistik",d:"Praktis, faktual, dan bertanggung jawab.",plus:["Dapat Diandalkan","Teliti"],minus:["Kaku","Resisten Perubahan"],career:"Akuntan, Militer",social:"Disiplin & tepat waktu",love:"Tanggung jawab tinggi",match:"ESTP, ESFP"},
+  ISFJ: {i:"🛡️",n:"Si Pembela",d:"Pelindung yang hangat, setia, dan berdedikasi tinggi pada orang tersayang.",plus:["Setia","Perhatian"],minus:["Overload Kerja","Menahan Emosi"],career:"Perawat, Guru",social:"Mengingat detail teman",love:"Suka stabilitas tradisional",match:"ESFP, ESTP"},
+  ESTJ: {i:"⚖️",n:"Si Eksekutif",d:"Terorganisir, berorientasi fakta, dan suka mengatur.",plus:["Dedikasi","Tegas"],minus:["Terlalu Kaku","Suka Menghakimi"],career:"Manajer, Polisi",social:"Aktif komunitas formal",love:"Melindungi keluarga",match:"ISFP, ISTP"},
+  ESFJ: {i:"🤝",n:"Si Konsul",d:"Peduli, sosial, dan suka membantu orang lain.",plus:["Praktis","Hangat"],minus:["Haus Validasi","Takut Kritik"],career:"Resepsionis, Guru",social:"Bintang acara",love:"Butuh diapresiasi",match:"ISFP, ISTP"},
+  ISTP: {i:"🔧",n:"Si Pengrajin",d:"Praktis, logis, mekanikal, dan sangat tangguh dalam krisis.",plus:["Logis","Tenang"],minus:["Mudah Bosan","Keras Kepala"],career:"Mekanik, Atlet",social:"Sedikit bicara banyak aksi",love:"Benci drama dan aturan",match:"ESTJ, ENTJ"},
+  ISFP: {i:"🌸",n:"Si Petualang",d:"Artistik, hidup di momen saat ini, dan sangat damai.",plus:["Imajinatif","Hangat"],minus:["Mandiri Ekstrem","Fluktuatif"],career:"Seniman, Musisi",social:"Santai & anti konflik",love:"Romantis visual",match:"ESTJ, ESFJ"},
+  ESTP: {i:"⚡",n:"Si Pengusaha",d:"Energik, pragmatis, dan suka aksi langsung.",plus:["Berani","Sosial"],minus:["Impulsif","Tidak Sabaran"],career:"Pengusaha, Sales",social:"Pusat perhatian aksi",love:"Petualangan asmara",match:"ISFJ, ISTJ"},
+  ESFP: {i:"🎭",n:"Si Penghibur",d:"Spontan, energik, dan suka menjadi pusat perhatian.",plus:["Ceria","Adaptif"],minus:["Mudah Bosan","Sensitif"],career:"Aktor, Entertainer",social:"Haus interaksi & perhatian",love:"Menyenangkan & dinamis",match:"ISFJ, ISTJ"}
+};
+
+const MBTI_SHORT_Q = [
+  {q:"Setelah hari yang panjang, Anda lebih suka…",opts:["Kumpul bersama banyak teman","Menyendiri untuk recharge"],dim:"EI",scores:},
+  {q:"Saat belajar hal baru, Anda lebih suka…",opts:["Contoh dan fakta nyata","Teori dan konsep besar"],dim:"SN",scores:},
+  {q:"Saat membuat keputusan penting, Anda lebih mengandalkan…",opts:["Logika dan analisa objektif","Perasaan dan dampak pada orang"],dim:"TF",scores:},
+  {q:"Gaya kerja Anda lebih condong ke…",opts:["Jadwal terstruktur dan rencana jelas","Fleksibel dan improvisasi"],dim:"JP",scores:},
+  {q:"Di pesta atau acara sosial, Anda biasanya…",opts:["Banyak kenalan baru & jadi perhatian","Lebih nyaman dengan teman lama"],dim:"EI",scores:},
+  {q:"Dalam proyek, Anda lebih fokus pada…",opts:["Apa yang ada dan faktual","Kemungkinan dan inovasi baru"],dim:"SN",scores:},
+  {q:"Anda lebih kesal jika seseorang…",opts:["Tidak logis dan inkonsisten","Tidak peka dan terlalu kaku"],dim:"TF",scores:},
+  {q:"Anda merasa paling nyaman saat…",opts:["Rencana sudah ditetapkan","Membiarkan sesuatu mengalir"],dim:"JP",scores:},
+  {q:"Anda lebih senang bekerja dalam…",opts:["Tim yang ramai dan interaktif","Tim kecil atau sendiri"],dim:"EI",scores:},
+  {q:"Deskripsi mana yang lebih mencerminkan Anda?",opts:["Realistis dan membumi","Imajinatif dan penuh ide"],dim:"SN",scores:},
+  {q:"Dalam perdebatan, Anda lebih mementingkan…",opts:["Kebenaran faktual meski menyakitkan","Menjaga perasaan semua pihak"],dim:"TF",scores:},
+  {q:"Anda lebih suka proyek yang…",opts:["Selesai tepat waktu sesuai rencana","Terus berkembang dan beradaptasi"],dim:"JP",scores:}
+];
+
+const MBTI_LONG_Q = [
+  {q:"Anda percaya kebenaran objektif lebih penting daripada menjaga perasaan orang.",dim:"TF",r:false},
+  {q:"Meja kerja atau kamar Anda biasanya tertata sangat rapi dan terorganisir.",dim:"JP",r:false},
+  {q:"Anda lebih suka bekerja sendirian daripada dalam tim besar.",dim:"EI",r:true},
+  {q:"Anda lebih tertarik pada konsep/teori daripada detail praktis sehari-hari.",dim:"SN",r:true},
+  {q:"Saat berdebat, Anda cenderung mempertimbangkan dampak emosional lawan.",dim:"TF",r:true},
+  {q:"Anda merasa nyaman dengan perubahan jadwal yang mendadak.",dim:"JP",r:true},
+  {q:"Anda merasa lebih berenergi setelah menghabiskan waktu sendirian.",dim:"EI",r:true},
+  {q:"Anda lebih percaya pada pengalaman langsung daripada intuisi atau firasat.",dim:"SN",r:false},
+  {q:"Anda lebih suka membuat keputusan berdasarkan perasaan daripada logika.",dim:"TF",r:true},
+  {q:"Anda sering menyelesaikan tugas jauh sebelum batas waktu.",dim:"JP",r:false},
+  {q:"Anda mudah memulai percakapan dengan orang yang baru dikenal.",dim:"EI",r:false},
+  {q:"Anda sering memikirkan pola, makna, dan koneksi antara berbagai hal.",dim:"SN",r:true}
+];
+
+const EQ_QUESTIONS = [
+  {q:"Saya tahu persis emosi apa yang sedang saya rasakan beserta alasannya.", r:false},
+  {q:"Saya sering bertindak impulsif dan menyesalinya saat sedang marah.", r:true},
+  {q:"Saya mampu menenangkan diri dengan cepat setelah mengalami kejadian yang membuat frustrasi.", r:false},
+  {q:"Saya kesulitan memahami sudut pandang orang lain jika saya tidak setuju dengannya.", r:true},
+  {q:"Saya bisa membaca suasana hati seseorang hanya dari bahasa tubuh dan nada bicaranya.", r:false},
+  {q:"Saya sering merasa kewalahan dan kehabisan tenaga oleh emosi saya sendiri.", r:true}, 
+  {q:"Saya mampu memotivasi diri sendiri untuk bangkit kembali setelah mengalami kegagalan.", r:false},
+  {q:"Saya sering mengatakan hal-hal kasar yang saya sesali saat sedang terbawa emosi.", r:true}, 
+  {q:"Saya merasa mudah untuk membangun hubungan dan kepercayaan dengan orang baru.", r:false},
+  {q:"Saya kesulitan menerima kritik membangun tanpa bersikap defensif.", r:true}, 
+  {q:"Saya secara sadar meluangkan waktu untuk mendengarkan keluh kesah teman tanpa menghakimi.", r:false},
+  {q:"Saya sering merasa cemas dan tidak nyaman di situasi sosial yang baru.", r:true}, 
+  {q:"Saya tahu bagaimana cara mencairkan suasana yang tegang dalam sebuah diskusi.", r:false},
+  {q:"Saya kesulitan menolak permintaan orang lain meski saya sedang kewalahan.", r:true}, 
+  {q:"Saya selalu berusaha melihat sesuatu dari sudut pandang yang positif.", r:false}
+];
+
+const LL_QUESTIONS = [
+  {q:"Saya merasa sangat dihargai ketika pasangan/teman spesifik memuji pencapaian saya.", dim:"WA"},
+  {q:"Pelukan atau sentuhan fisik dari orang tersayang membuat saya merasa aman.", dim:"PT"},
+  {q:"Saya merasa spesial ketika seseorang memberikan kejutan hadiah, sekecil apapun.", dim:"RG"},
+  {q:"Saya sangat dicintai ketika seseorang mengambil alih tugas saya saat saya sibuk.", dim:"AS"},
+  {q:"Menghabiskan waktu berdua tanpa gangguan gawai adalah hal yang paling penting.", dim:"QT"},
+  {q:"Mendengar kalimat 'Aku sayang kamu' sangat menenangkan hati saya.", dim:"WA"},
+  {q:"Saya merasa kehilangan koneksi emosional jika jarang ada keintiman fisik.", dim:"PT"},
+  {q:"Saya sangat menghargai usaha seseorang membelikan barang yang saya sukai.", dim:"RG"},
+  {q:"Bantuan tak terduga seperti dibawakan makanan membuat hati saya meleleh.", dim:"AS"},
+  {q:"Saya merasa diabaikan jika lawan bicara tidak memberikan perhatian penuh.", dim:"QT"},
+  {q:"Kritik tajam jauh lebih menyakiti saya dibandingkan tindakan buruk lainnya.", dim:"WA"},
+  {q:"Bersandar pada pasangan memberi saya kenyamanan emosional yang dalam.", dim:"PT"},
+  {q:"Sebuah suvenir kecil membuktikan bahwa mereka selalu memikirkan saya.", dim:"RG"},
+  {q:"Bagi saya, tindakan membantu pekerjaan membuktikan cinta daripada sekadar kata.", dim:"AS"},
+  {q:"Jalan-jalan berdua atau ngobrol intim adalah cara terbaik mempererat hubungan.", dim:"QT"}
+];
+
+const LL_PROFILES = {
+  AS: { n:"Acts of Service", desc:"Kamu merasa paling dicintai ketika seseorang mengambil inisiatif meringankan tugasmu.", dinamika:"<strong>Mengatasi Rasa Bersalah:</strong> Gunakan 'I Statement' ('Aku merasa kewalahan') daripada menyalahkan." },
+  WA: { n:"Words of Affirmation", desc:"Kata-kata apresiasi, pujian, dan afirmasi positif adalah bahasa utamamu.", dinamika:"<strong>Menghadapi Kritik:</strong> Sampaikan secara terbuka bahwa kamu membutuhkan komunikasi yang lembut dan konstruktif." },
+  QT: { n:"Quality Time", desc:"Waktu yang dihabiskan bersama tanpa gangguan adalah segalanya bagimu.", dinamika:"<strong>Mengatasi Distraksi:</strong> Sepakati jadwal khusus 'bebas gangguan' agar koneksi emosional tetap terjaga." },
+  PT: { n:"Physical Touch", desc:"Sentuhan fisik seperti pelukan memberikan rasa aman yang tak tergantikan.", dinamika:"<strong>Menghadapi Jarak:</strong> Inisiasi keintiman fisik kecil setiap hari, atau cari pengganti afeksi jika sedang LDR." },
+  RG: { n:"Receiving Gifts", desc:"Hadiah bagimu bukanlah materialisme, melainkan simbol bahwa seseorang memikirkanmu.", dinamika:"<strong>Menghargai Makna:</strong> Komunikasikan bahwa kamu menghargai nilai sentimental di balik pemberian." }
+};
+
+// 50 IQ QUESTIONS (15 Matrix + 35 Text combined)
+const IQ_QUESTIONS = [
+  { type: 'matrix', lvl: 1, grid: ["◼","◻","◼", "◻","◼","◻", "◼","◻","?"], opts: ["◼","◻","▲","◯"], ans: 0 },
+  { type: 'matrix', lvl: 1, grid: ["▲","▲▲","▲▲▲", "●","●●","●●●", "◼","◼◼","?"], opts: ["◼","◼◼","◼◼◼","◼◼◼◼"], ans: 2 },
+  { type: 'matrix', lvl: 1, grid: ["⚪","⚫","⚪", "⚫","⚪","⚫", "⚪","⚫","?"], opts: ["⚪","⚫","🔴","🔵"], ans: 0 },
+  { type: 'matrix', lvl: 1, grid: ["|","||","|||", "-","--","---", "+","++","?"], opts: ["-","+++","||","+"], ans: 1 },
+  { type: 'matrix', lvl: 2, grid: ["◐","◓","◑", "◒","◐","◓", "◑","◒","?"], opts: ["◐","◑","◒","◓"], ans: 0 },
+  { type: 'matrix', lvl: 2, grid: ["◰","◳","◲", "◱","◰","◳", "◲","◱","?"], opts: ["◰","◱","◲","◳"], ans: 0 },
+  { type: 'matrix', lvl: 2, grid: ["↖","↗","↘", "↙","↖","↗", "↘","↙","?"], opts: ["↖","↗","↘","↙"], ans: 0 },
+  { type: 'matrix', lvl: 2, grid: ["🕐","🕒","🕔", "🕖","🕘","🕚", "🕐","🕒","?"], opts: ["🕑","🕓","🕔","🕕"], ans: 2 }, 
+  { type: 'matrix', lvl: 2, grid: ["▤","▥","▦", "▧","▨","▩", "▤","▥","?"], opts: ["▧","▨","▦","▩"], ans: 2 },
+  { type: 'matrix', lvl: 2, grid: ["P","b","d", "q","p","B", "d","q","?"], opts: ["p","b","P","Q"], ans: 0 },
+  { type: 'matrix', lvl: 3, grid: ["◯","⚫","◉", "◻","◼","▣", "△","▲","?"], opts: ["◬","▲","△","▼"], ans: 0 }, 
+  { type: 'matrix', lvl: 3, grid: ["◒","◓","◯", "◐","◑","◯", "◖","◗","?"], opts: ["◒","◯","◉","◐"], ans: 1 }, 
+  { type: 'matrix', lvl: 3, grid: ["◼","◻","◻", "◻","◼","◻", "◻","◻","?"], opts: ["◼","◻","▣","▪"], ans: 0 }, 
+  { type: 'matrix', lvl: 3, grid: ["⊗","⊕","⊖", "⊘","⊙","⊚", "⊛","⊜","?"], opts: ["⊗","⊝","⊖","⊙"], ans: 1 },
+  { type: 'matrix', lvl: 3, grid: ["＋","－","✕", "－","✕","＋", "✕","＋","?"], opts: ["＋","－","✕","➗"], ans: 1 },
+  { type: 'text', lvl: 1, q: "Pola angka: 2, 4, 8, 16, 32, ... Angka selanjutnya?", opts: ["48", "64", "56", "128"], ans: 1 },
+  { type: 'text', lvl: 1, q: "Pola angka: 3, 6, 9, 12, ... Angka selanjutnya?", opts: ["15", "18", "14", "16"], ans: 0 },
+  { type: 'text', lvl: 1, q: "Jika 5 mesin membuat 5 produk dalam 5 menit, berapa menit yang dibutuhkan 100 mesin untuk membuat 100 produk?", opts: ["100 menit", "50 menit", "5 menit", "1 menit"], ans: 2 },
+  { type: 'text', lvl: 1, q: "Kata manakah yang tidak sekelompok dengan yang lain?", opts: ["Apel", "Mangga", "Wortel", "Jeruk"], ans: 2 },
+  { type: 'text', lvl: 1, q: "Andi lebih tua dari Budi. Budi lebih tua dari Cici. Siapa yang paling muda?", opts: ["Andi", "Budi", "Cici", "Semua sama tua"], ans: 2 },
+  { type: 'text', lvl: 1, q: "Deret huruf: A, C, E, G, ... Huruf selanjutnya adalah?", opts: ["H", "I", "J", "K"], ans: 1 },
+  { type: 'text', lvl: 1, q: "Kata manakah yang tidak sekelompok?", opts: ["Meja", "Kursi", "Lemari", "Sepeda"], ans: 3 },
+  { type: 'text', lvl: 1, q: "Manakah yang tidak termasuk ke dalam sistem tata surya kita?", opts: ["Bumi", "Mars", "Bulan", "Bima Sakti"], ans: 3 },
+  { type: 'text', lvl: 1, q: "Jika hari ini adalah Kamis, 10 hari dari sekarang adalah hari?", opts: ["Sabtu", "Minggu", "Senin", "Selasa"], ans: 1 },
+  { type: 'text', lvl: 1, q: "Antonim dari kata 'Progresif' adalah...", opts: ["Regresif", "Agresif", "Positif", "Defensif"], ans: 0 },
+  { type: 'text', lvl: 2, q: "Deret angka: 1, 4, 9, 16, 25, ... Angka selanjutnya?", opts: ["30", "36", "49", "64"], ans: 1 },
+  { type: 'text', lvl: 2, q: "Jika semua X adalah Y, dan sebagian Y adalah Z. Maka kesimpulan yang pasti benar adalah:", opts: ["Semua X adalah Z", "Sebagian X adalah Z", "Tidak ada X yang Z", "Tidak dapat disimpulkan"], ans: 3 },
+  { type: 'text', lvl: 2, q: "2 + 3 = 10, 3 + 4 = 21, 4 + 5 = 32. Maka 5 + 6 = ?", opts: ["41", "43", "45", "51"], ans: 1 },
+  { type: 'text', lvl: 2, q: "Sebuah kereta bergerak ke utara dengan kecepatan 100 km/jam. Angin berhembus ke selatan dengan kecepatan 20 km/jam. Ke arah mana asap kereta mengepul?", opts: ["Utara", "Selatan", "Barat", "Kereta listrik tidak berasap"], ans: 3 },
+  { type: 'text', lvl: 2, q: "Deret angka: 1, 1, 2, 3, 5, 8, ... Angka selanjutnya?", opts: ["11", "12", "13", "15"], ans: 2 },
+  { type: 'text', lvl: 2, q: "Kata yang paling tidak cocok dalam kelompok ini?", opts: ["Dokter", "Pilot", "Sopir", "Mobil"], ans: 3 },
+  { type: 'text', lvl: 2, q: "Berapa banyak bulan dalam setahun yang memiliki 28 hari?", opts: ["1", "6", "Semua (12)", "Tergantung kabisat"], ans: 2 },
+  { type: 'text', lvl: 2, q: "Jika 2=8, 3=27, 4=64, maka 5=?", opts: ["125", "100", "81", "243"], ans: 0 },
+  { type: 'text', lvl: 2, q: "Ayah Mary memiliki 5 anak: Nana, Nene, Nini, Nono. Siapa nama anak kelima?", opts: ["Nunu", "Mary", "Nano", "Tidak tahu"], ans: 1 },
+  { type: 'text', lvl: 2, q: "Deret angka: 100, 90, 81, 73, ... Angka selanjutnya?", opts: ["64", "66", "70", "72"], ans: 1 },
+  { type: 'text', lvl: 2, q: "Hafalan Kata: Pasangan 'Hutan = Pohon', maka 'Gurun = ...'", opts: ["Air", "Pasir", "Panas", "Oase"], ans: 1 },
+  { type: 'text', lvl: 2, q: "Mana yang tidak sama polanya: Jakarta, Tokyo, London, Kanada", opts: ["Jakarta", "Tokyo", "London", "Kanada"], ans: 3 },
+  { type: 'text', lvl: 2, q: "Anda ikut perlombaan lari, lalu menyalip orang di posisi kedua. Sekarang Anda di posisi ke berapa?", opts: ["Pertama", "Kedua", "Ketiga", "Keempat"], ans: 1 },
+  { type: 'text', lvl: 2, q: "Satu jam yang lalu adalah pukul 14:30. Pukul berapakah 2,5 jam dari sekarang?", opts: ["16:00", "17:00", "18:00", "18:30"], ans: 2 },
+  { type: 'text', lvl: 2, q: "Deret angka: 7, 10, 13, 16, 19, ... Angka ke-8 dari deret tersebut adalah?", opts: ["25", "28", "31", "34"], ans: 1 },
+  { type: 'text', lvl: 3, q: "Jika 6+4=24, 8+3=48, 10+2=60. Maka 12+1=?", opts: ["78", "84", "72", "66"], ans: 0 },
+  { type: 'text', lvl: 3, q: "Logika: Saya memiliki cabang, tidak ada batang, daun, atau buah. Apakah saya?", opts: ["Sungai", "Bank", "Pohon mati", "Bayangan"], ans: 1 },
+  { type: 'text', lvl: 3, q: "Angka yang hilang dari susunan ini: 3, 5, 9, 17, ...", opts: ["25", "29", "33", "35"], ans: 2 },
+  { type: 'text', lvl: 3, q: "Sebuah kolam ditumbuhi teratai yang ukurannya berlipat ganda setiap hari. Jika butuh 48 hari untuk menutupi seluruh kolam, butuh berapa hari untuk menutupi setengahnya?", opts: ["24 hari", "47 hari", "12 hari", "36 hari"], ans: 1 },
+  { type: 'text', lvl: 3, q: "Berapa banyak angka 9 yang ada di antara 1 sampai 100?", opts: ["10", "11", "19", "20"], ans: 3 },
+  { type: 'text', lvl: 3, q: "Deret ganda: 2, 3, 4, 6, 8, 12, ... Dua angka berikutnya?", opts: ["16, 24", "10, 18", "14, 20", "12, 16"], ans: 0 },
+  { type: 'text', lvl: 3, q: "Jika DITUKAR = RAKUTID, maka KEBALIKAN = ?", opts: ["NAKILABEK", "NAKILEBAK", "NAKILBEKA", "NAKIBELAK"], ans: 0 },
+  { type: 'text', lvl: 3, q: "Berapa hasil dari 50 dibagi setengah, lalu ditambah 20?", opts: ["45", "120", "25", "70"], ans: 1 },
+  { type: 'text', lvl: 3, q: "Manakah pecahan yang nilainya paling besar?", opts: ["3/4", "5/8", "7/10", "2/3"], ans: 0 },
+  { type: 'text', lvl: 3, q: "Beberapa bulan memiliki 30 hari, bulan lain memiliki 31 hari. Bulan apa yang memiliki 28 hari?", opts: ["Februari", "Semua bulan", "Tidak ada", "Januari"], ans: 1 }
+];
+
+// STATE
+let currentTest='',currentStep=0,totalSteps=0,answers={},timerInterval=null,activeQuestions=[];
+
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  const el=document.getElementById(id);
+  if(el)el.classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+  if(id==='home')clearInterval(timerInterval);
+}
+
+function openMBTIModal(){document.getElementById('mbti-modal').classList.add('active');}
+function closeModal(){document.getElementById('mbti-modal').classList.remove('active');}
+
+function startTest(type){
+  if(type==='mbti_short'||type==='mbti_long')closeModal();
+  currentTest=type;currentStep=0;answers={};
+  
+  const labels={iq:"🧠 Tes IQ Ekstensif",eq:"❤️‍🔥 Tes Kecerdasan Emosional",ll:"💌 Love Language",mbti_short:"⚡ MBTI Singkat",mbti_long:"🧠 MBTI Lengkap",zodiac:"✨ Ramalan Zodiak",shio:"🐉 Profil Shio"};
+  document.getElementById('test-label').textContent=labels[type]||'Asesmen';
+  document.getElementById('test-timer').style.display='none';
+  document.getElementById('progress-bar').style.width='0%';
+  
+  const themeCard=document.getElementById('dynamic-theme-card');
+  if(themeCard){
+    const c=type.startsWith('mbti')?'--mbti':type==='zodiac'?'--zodiac':type==='shio'?'--shio':type==='eq'?'--eq':type==='ll'?'--ll':'--iq';
+    themeCard.style.setProperty('--c',`var(${c})`);
+    themeCard.style.setProperty('--c2',`var(${c}2, var(${c}))`);
+  }
+
+  const body=document.getElementById('form-body');
+  let html='';
+
+  if(type==='ll'||type==='eq'){
+    const qArr=type==='ll'?LL_QUESTIONS:EQ_QUESTIONS;
+    activeQuestions=qArr;
+    const qPerPage=5;
+    totalSteps=Math.ceil(qArr.length/qPerPage);
+    const c=type==='ll'?'--ll':'--eq';
+    const c2=type==='ll'?'--ll2':'--eq2';
+    
+    for(let p=0;p<totalSteps;p++){
+      html+=`<div class="question-container ${p===0?'active':''}" id="step-${p}">`;
+      for(let i=p*qPerPage;i<(p+1)*qPerPage&&i<qArr.length;i++){
+        const q=qArr[i];
+        let dots='';
+        for(let v=1;v<=7;v++){
+          const dim=type==='ll'?q.dim:'EQ';
+          const isR=type==='ll'?false:q.r;
+          dots+=`<button class="scale-dot d-${v}" id="m-${i}-${v}" onclick="selectScale(${i},${v},'${dim}',${isR})"></button>`;
+        }
+        html+=`<div style="margin-bottom:44px;border-bottom:1px solid var(--border);padding-bottom:28px;">
+          <div class="scale-q-text">${i+1}. ${q.q}</div>
+          <div class="scale-container" style="--c:var(${c});--c2:var(${c2});">
+            <span class="scale-label agree">Sangat Setuju</span>
+            <div class="scale-dots">${dots}</div>
+            <span class="scale-label disagree">Sangat Menolak</span>
+          </div></div>`;
+      }
+      html+=`</div>`;
+    }
+    body.innerHTML=html;
+  } else if(type==='shio'){
+    totalSteps=1;
+    body.innerHTML=`<div class="question-container active" id="step-0">
+      <div style="text-align:center;margin-bottom:30px;">
+        <div class="iq-q-text">Data Kelahiran Feng Shui</div>
+        <p style="color:var(--muted);font-size:14px;font-weight:600;">Masukkan tanggal lahir dan jenis kelamin untuk menghitung Elemen, Angka Kua, dan Profil Shio.</p>
+      </div>
+      <div style="display:flex;gap:16px;margin-bottom:20px;flex-wrap:wrap;">
+        <input type="date" id="shio-date" class="field-input" style="flex:2;min-width:160px;" onchange="checkInput()">
+        <select id="shio-gender" class="field-input" style="flex:1;min-width:120px;" onchange="checkInput()">
+          <option value="" disabled selected>Gender</option>
+          <option value="pria">Pria</option>
