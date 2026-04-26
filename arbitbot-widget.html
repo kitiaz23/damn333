@@ -1,0 +1,447 @@
+<!-- ═══════════════════════════════════════════════════════════════
+     ArbitBot Chat Widget — arbitfinder.my.id
+     Tempel seluruh kode ini sebelum tag </body> di website kamu
+     Ganti ARB_API dengan URL Railway API kamu
+════════════════════════════════════════════════════════════════ -->
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@600;700&family=DM+Sans:wght@400;500&display=swap');
+
+:root {
+  --arb-g1:      #2DBD85;
+  --arb-g2:      #1E9E6B;
+  --arb-dark:    #0A0A0A;
+  --arb-s1:      #131313;
+  --arb-s2:      #1A1A1A;
+  --arb-s3:      #222222;
+  --arb-border:  rgba(45,189,133,0.13);
+  --arb-text:    #EDEAE0;
+  --arb-muted:   #787470;
+  --arb-r:       14px;
+}
+
+/* ── Launcher ── */
+#arb-wrap {
+  position: fixed; bottom: 24px; right: 24px;
+  z-index: 99999; font-family: 'DM Sans', sans-serif;
+}
+#arb-btn {
+  width: 60px; height: 60px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--arb-g1), var(--arb-g2));
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 6px 28px rgba(45,189,133,0.4);
+  transition: transform .2s, box-shadow .2s;
+  animation: arb-float 3.5s ease-in-out infinite;
+  position: relative;
+}
+#arb-btn:hover {
+  transform: scale(1.09);
+  box-shadow: 0 8px 36px rgba(45,189,133,0.55);
+}
+@keyframes arb-float {
+  0%,100% { transform: translateY(0); }
+  50%      { transform: translateY(-7px); }
+}
+#arb-btn svg { width: 26px; height: 26px; }
+
+#arb-badge {
+  position: absolute; top: -3px; right: -3px;
+  width: 17px; height: 17px; border-radius: 50%;
+  background: #22C55E; border: 2px solid var(--arb-dark);
+  animation: arb-ping 2.2s ease-in-out infinite;
+}
+@keyframes arb-ping {
+  0%,100% { box-shadow: 0 0 0 0 rgba(34,197,94,.65); }
+  55%      { box-shadow: 0 0 0 7px rgba(34,197,94,0); }
+}
+#arb-label {
+  position: absolute; bottom: 70px; right: 0;
+  background: var(--arb-dark);
+  border: 1px solid var(--arb-border);
+  color: var(--arb-g1);
+  font-family: 'Syne', sans-serif;
+  font-size: 12px; font-weight: 600;
+  padding: 6px 13px; border-radius: 20px;
+  white-space: nowrap; pointer-events: none;
+  box-shadow: 0 4px 18px rgba(0,0,0,.45);
+  animation: arb-label-pulse 3.8s ease-in-out infinite;
+}
+@keyframes arb-label-pulse {
+  0%,45%,100% { opacity: 1; }
+  72%,90%     { opacity: 0.6; }
+}
+
+/* ── Chat window ── */
+#arb-win {
+  position: fixed; bottom: 96px; right: 24px;
+  width: 360px; height: 540px;
+  background: var(--arb-dark);
+  border: 1px solid var(--arb-border);
+  border-radius: var(--arb-r);
+  display: flex; flex-direction: column;
+  overflow: hidden; z-index: 99998;
+  box-shadow: 0 20px 60px rgba(0,0,0,.7),
+              0 0 0 1px rgba(45,189,133,.05);
+  transform: scale(.87) translateY(18px);
+  opacity: 0; pointer-events: none;
+  transition: transform .3s cubic-bezier(.34,1.56,.64,1),
+              opacity .22s ease;
+}
+#arb-win.open {
+  transform: scale(1) translateY(0);
+  opacity: 1; pointer-events: all;
+}
+
+/* ── Header ── */
+#arb-head {
+  background: var(--arb-s1);
+  border-bottom: 1px solid var(--arb-border);
+  padding: 13px 14px;
+  display: flex; align-items: center; gap: 10px;
+  flex-shrink: 0;
+}
+#arb-avatar {
+  width: 38px; height: 38px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--arb-g1), var(--arb-g2));
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+#arb-avatar svg { width: 18px; height: 18px; }
+#arb-info { flex: 1; }
+#arb-name {
+  font-family: 'Syne', sans-serif; font-size: 14px;
+  font-weight: 700; color: var(--arb-text);
+  line-height: 1; margin-bottom: 3px;
+}
+#arb-status {
+  font-size: 11px; color: #22C55E;
+  display: flex; align-items: center; gap: 4px;
+}
+#arb-status::before {
+  content: ''; width: 6px; height: 6px;
+  border-radius: 50%; background: #22C55E;
+  animation: arb-blink 2s ease-in-out infinite;
+}
+@keyframes arb-blink { 0%,100%{opacity:1} 50%{opacity:.3} }
+#arb-close {
+  width: 28px; height: 28px; border-radius: 8px;
+  background: var(--arb-s2); border: none; cursor: pointer;
+  color: var(--arb-muted); font-size: 15px;
+  display: flex; align-items: center; justify-content: center;
+  transition: background .15s, color .15s; flex-shrink: 0;
+}
+#arb-close:hover { background: var(--arb-s3); color: var(--arb-text); }
+
+/* ── Messages ── */
+#arb-msgs {
+  flex: 1; overflow-y: auto;
+  padding: 14px 12px;
+  display: flex; flex-direction: column; gap: 8px;
+  scroll-behavior: smooth;
+}
+#arb-msgs::-webkit-scrollbar { width: 3px; }
+#arb-msgs::-webkit-scrollbar-thumb { background: var(--arb-s3); border-radius: 3px; }
+
+.arb-msg {
+  max-width: 86%; font-size: 13px; line-height: 1.55;
+  animation: arb-in .22s ease;
+}
+@keyframes arb-in {
+  from { opacity: 0; transform: translateY(7px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.arb-bot {
+  align-self: flex-start;
+  background: var(--arb-s1);
+  border: 1px solid var(--arb-border);
+  color: var(--arb-text);
+  border-radius: 3px 12px 12px 12px;
+  padding: 9px 12px;
+}
+.arb-bot a { color: var(--arb-g1); text-decoration: underline; }
+.arb-user {
+  align-self: flex-end;
+  background: linear-gradient(135deg, var(--arb-g1), var(--arb-g2));
+  color: #0A0A0A; font-weight: 500;
+  border-radius: 12px 3px 12px 12px;
+  padding: 9px 12px;
+}
+
+/* ── Typing ── */
+.arb-typing {
+  align-self: flex-start;
+  background: var(--arb-s1);
+  border: 1px solid var(--arb-border);
+  border-radius: 3px 12px 12px 12px;
+  padding: 11px 15px;
+  display: flex; gap: 5px; align-items: center;
+}
+.arb-typing span {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--arb-g1);
+  animation: arb-dot 1.1s ease-in-out infinite;
+}
+.arb-typing span:nth-child(2) { animation-delay: .18s; }
+.arb-typing span:nth-child(3) { animation-delay: .36s; }
+@keyframes arb-dot {
+  0%,80%,100% { transform: scale(.5); opacity: .35; }
+  40%          { transform: scale(1);  opacity: 1; }
+}
+
+/* ── Quick replies ── */
+#arb-quick {
+  padding: 0 12px 8px;
+  display: flex; flex-wrap: wrap; gap: 6px;
+  flex-shrink: 0;
+}
+.arb-qr {
+  font-size: 11.5px; color: var(--arb-g1);
+  border: 1px solid rgba(45,189,133,0.25);
+  background: rgba(45,189,133,0.06);
+  border-radius: 20px; padding: 5px 10px;
+  cursor: pointer; white-space: nowrap;
+  transition: background .15s, border-color .15s;
+}
+.arb-qr:hover {
+  background: rgba(45,189,133,0.15);
+  border-color: rgba(45,189,133,0.5);
+}
+
+/* ── Input ── */
+#arb-input-row {
+  border-top: 1px solid var(--arb-border);
+  padding: 10px 12px;
+  display: flex; gap: 8px; align-items: flex-end;
+  background: var(--arb-s1); flex-shrink: 0;
+}
+#arb-input {
+  flex: 1;
+  background: var(--arb-s2);
+  border: 1px solid rgba(255,255,255,.06);
+  border-radius: 10px; color: var(--arb-text);
+  font-family: 'DM Sans', sans-serif; font-size: 13px;
+  padding: 9px 12px; outline: none; resize: none;
+  max-height: 90px; line-height: 1.45;
+  transition: border-color .18s;
+}
+#arb-input::placeholder { color: var(--arb-muted); }
+#arb-input:focus { border-color: rgba(45,189,133,0.35); }
+#arb-send {
+  width: 38px; height: 38px; border-radius: 10px;
+  border: none;
+  background: linear-gradient(135deg, var(--arb-g1), var(--arb-g2));
+  color: #0A0A0A; cursor: pointer; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  transition: transform .15s, opacity .2s;
+}
+#arb-send:hover { transform: scale(1.08); }
+#arb-send:disabled { opacity: .35; cursor: default; transform: none; }
+#arb-send svg { width: 15px; height: 15px; }
+
+#arb-footer {
+  text-align: center; font-size: 10px;
+  color: var(--arb-muted); padding: 4px 0 9px;
+  background: var(--arb-s1); flex-shrink: 0;
+}
+#arb-footer a { color: var(--arb-g2); text-decoration: none; }
+
+@media (max-width: 420px) {
+  #arb-win  { width: calc(100vw - 16px); right: 8px; bottom: 88px; height: 70vh; }
+  #arb-wrap { right: 16px; bottom: 18px; }
+}
+</style>
+
+<!-- Launcher button -->
+<div id="arb-wrap">
+  <div id="arb-label">💬 Chat Bot ArbitFinder</div>
+  <div id="arb-btn" onclick="arbToggle()" role="button" aria-label="Open ArbitBot">
+    <div id="arb-badge"></div>
+    <svg viewBox="0 0 24 24" fill="none" stroke="#0A0A0A"
+         stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+    </svg>
+  </div>
+</div>
+
+<!-- Chat window -->
+<div id="arb-win" role="dialog" aria-label="ArbitBot chat window">
+  <div id="arb-head">
+    <div id="arb-avatar">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#0A0A0A"
+           stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+      </svg>
+    </div>
+    <div id="arb-info">
+      <div id="arb-name">ArbitBot</div>
+      <div id="arb-status">Online</div>
+    </div>
+    <button id="arb-close" onclick="arbToggle()" aria-label="Close chat">✕</button>
+  </div>
+
+  <div id="arb-msgs"></div>
+
+  <div id="arb-quick">
+    <span class="arb-qr" onclick="arbQuick('What is ArbitFinder?')">What is ArbitFinder?</span>
+    <span class="arb-qr" onclick="arbQuick('Cara daftar ArbitFinder')">Cara daftar</span>
+    <span class="arb-qr" onclick="arbQuick('Harga membership')">Harga & membership</span>
+    <span class="arb-qr" onclick="arbQuick('Apa itu arbitrase crypto?')">Apa itu arbitrase?</span>
+  </div>
+
+  <div id="arb-input-row">
+    <textarea id="arb-input" rows="1"
+      placeholder="Tanya seputar ArbitFinder..."></textarea>
+    <button id="arb-send" onclick="arbSend()" aria-label="Send message">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+           stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="22" y1="2" x2="11" y2="13"/>
+        <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+      </svg>
+    </button>
+  </div>
+
+  <div id="arb-footer">
+    Powered by <a href="https://arbitfinder.my.id" target="_blank">ArbitFinder</a>
+  </div>
+</div>
+
+<script>
+// ─── WAJIB GANTI: URL Railway API kamu ────────────────────────────
+const ARB_API       = "https://YOUR-API-URL.railway.app/chat";
+// ─────────────────────────────────────────────────────────────────
+const ARB_COMMUNITY = "https://t.me/ArbitFinderGroup";
+const ARB_ADMIN     = "@ArbitFinderAdmin";
+
+const arbUserId = "web_" + Math.random().toString(36).slice(2, 11);
+let arbOpen    = false;
+let arbGreeted = false;
+let arbBusy    = false;
+
+const arbWin   = document.getElementById("arb-win");
+const arbMsgs  = document.getElementById("arb-msgs");
+const arbInp   = document.getElementById("arb-input");
+const arbSendB = document.getElementById("arb-send");
+const arbQuick = document.getElementById("arb-quick");
+
+function arbToggle() {
+  arbOpen = !arbOpen;
+  arbWin.classList.toggle("open", arbOpen);
+  if (arbOpen) {
+    if (!arbGreeted) { arbGreeted = true; _arbGreeting(); }
+    setTimeout(() => arbInp.focus(), 320);
+  }
+}
+
+function _arbGreeting() {
+  _arbAdd("bot",
+    "👋 Welcome to ArbitBot!\n\n" +
+    "Sebelum mulai crypto arbitrage, 2 hal penting:\n" +
+    "1️⃣ Withdraw on-chain — salah network = aset hilang ⚠️\n" +
+    "2️⃣ Pahami fee, slippage & execution speed\n\n" +
+    "Tanya apa saja seputar ArbitFinder! 🚀\n" +
+    "_(I'll reply in your language 🌐)_\n\n" +
+    "📖 Free guide: arbitfinder.my.id/FAQ/What_Is_Arbitrage"
+  );
+}
+
+function _arbAdd(who, text) {
+  const d = document.createElement("div");
+  d.className = "arb-msg arb-" + who;
+  d.innerHTML = text
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/\n/g,"<br>")
+    .replace(/_(.*?)_/g,"<em>$1</em>")
+    .replace(/(https?:\/\/[^\s<]+)/g,
+      '<a href="$1" target="_blank" rel="noopener noreferrer">$1</a>');
+  arbMsgs.appendChild(d);
+  arbMsgs.scrollTop = arbMsgs.scrollHeight;
+}
+
+function _arbTyping() {
+  const d = document.createElement("div");
+  d.className = "arb-typing"; d.id = "_arb_typing";
+  d.innerHTML = "<span></span><span></span><span></span>";
+  arbMsgs.appendChild(d);
+  arbMsgs.scrollTop = arbMsgs.scrollHeight;
+}
+function _arbHideTyping() {
+  const t = document.getElementById("_arb_typing");
+  if (t) t.remove();
+}
+
+function arbQuick(text) {
+  arbInp.value = text;
+  arbQuick.style.display = "none";
+  arbSend();
+}
+
+async function arbSend() {
+  if (arbBusy) return;
+  const msg = arbInp.value.trim();
+  if (!msg) return;
+
+  arbBusy = true;
+  arbInp.value = "";
+  arbInp.style.height = "auto";
+  arbSendB.disabled = true;
+  arbQuick.style.display = "none";
+
+  _arbAdd("user", msg);
+  _arbTyping();
+
+  try {
+    const res = await fetch(ARB_API, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ user_id: arbUserId, message: msg })
+    });
+
+    _arbHideTyping();
+
+    if (res.status === 429 || !res.ok) {
+      _arbRateLimit();
+    } else {
+      const data = await res.json();
+      _arbAdd("bot", data.reply || "Maaf, terjadi kesalahan.");
+    }
+  } catch (e) {
+    _arbHideTyping();
+    _arbRateLimit();
+  }
+
+  arbBusy = false;
+  arbSendB.disabled = false;
+  arbInp.focus();
+}
+
+function _arbRateLimit() {
+  _arbAdd("bot",
+    "Asisten kami sedang sangat sibuk melayani banyak pengguna 😊\n\n" +
+    "Untuk pertanyaan lanjutan, bergabunglah ke komunitas kami:\n\n" +
+    "👥 Grup Komunitas ArbitFinder\n" +
+    ARB_COMMUNITY + "\n\n" +
+    "Atau hubungi admin official: " + ARB_ADMIN
+  );
+}
+
+arbInp.addEventListener("keydown", e => {
+  if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); arbSend(); }
+});
+
+arbInp.addEventListener("input", function () {
+  this.style.height = "auto";
+  this.style.height = Math.min(this.scrollHeight, 90) + "px";
+});
+
+document.addEventListener("click", e => {
+  const wrap = document.getElementById("arb-wrap");
+  if (arbOpen && !arbWin.contains(e.target) && !wrap.contains(e.target)) arbToggle();
+});
+
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape" && arbOpen) arbToggle();
+});
+</script>
+<!-- ════════════════════ END ARBITBOT WIDGET ════════════════════ -->
